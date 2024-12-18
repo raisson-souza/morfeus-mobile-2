@@ -19,9 +19,13 @@ export default function RootLayout() {
         <AuthContextComponent>
           <SyncContextComponent>
             <Stack
-              initialRouteName='(tabs)'
+              initialRouteName='index'
               screenOptions={ LayoutStyles.stack }
             >
+              <Stack.Screen
+                name='index'
+                options={{ headerShown: false }}
+              />
               <Stack.Screen
                 name='(tabs)'
                 options={{ headerShown: false }}
@@ -33,9 +37,6 @@ export default function RootLayout() {
               <Stack.Screen
                 name='registry'
                 options={{ title: "Registre-se" }}
-              />
-              <Stack.Screen
-                name='info'
               />
             </Stack>
           </SyncContextComponent>

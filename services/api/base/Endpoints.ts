@@ -1,4 +1,5 @@
 import { DeleteProps, GetProps, PostProps, PutProps, RequestHeader } from "./EndpointProps"
+import { LocalStorage } from "../../../utils/LocalStorage"
 import env from "../../../config/env"
 import Response from "./Response"
 
@@ -14,7 +15,7 @@ export default abstract class Endpoints {
      */
     private static mountHeaders = (requestHeaders: RequestHeader[], authorization?: string): any => {
         if (authorization)
-            requestHeaders.push({ "Authorization": authorization })
+            requestHeaders.push({ "Authorization": `Bearer ${ authorization }` })
 
         return requestHeaders.reduce((previousHeader, currentHeader) => {
             return { ...previousHeader, ...currentHeader }
@@ -102,5 +103,13 @@ export default abstract class Endpoints {
             body,
             method: "DELETE"
         })
+    }
+
+    /** Captura e trata o dado da autenticação (token) */
+    protected static async GetAuthorization(): Promise<string> {
+        return await LocalStorage.tokenInfo.get()
+            .then(tokenInfo => {
+                return tokenInfo?.token ?? ""
+            })
     }
 }

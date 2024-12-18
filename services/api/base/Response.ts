@@ -37,7 +37,7 @@ export default class Response<T> {
     constructor({ data, status, fetchError }: ResponseProps) {
         this.Status = status
         this.Success = status < 400
-        this.Data = data
-        this.ErrorMessage = fetchError
+        this.Data = data["data"]
+        this.ErrorMessage = fetchError ? fetchError : data["data"]
     }
 }
