@@ -10,7 +10,15 @@ export default function RootLayout() {
     >
       <Stack.Screen
         name='index'
-        options={{ title: "xxx" }}
+        options={{ title: "Análises" }}
+      />
+      <Stack.Screen
+        name='listDreamsAnalysis'
+        options={{ title: "Análises de Sonho" }}
+      />
+      <Stack.Screen
+        name='listSleepsAnalysis'
+        options={{ title: "Análises de Ciclo de Sono" }}
       />
     </Stack>
   )
