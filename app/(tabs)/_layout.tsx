@@ -1,51 +1,43 @@
 import { Tabs } from "expo-router"
-import IconAntDesign from "react-native-vector-icons/AntDesign"
-import IconFontAwesome6 from "react-native-vector-icons/FontAwesome6"
 import IconIonicons from "react-native-vector-icons/Ionicons"
-
-const TabScreensStyle = {
-    /** Cor de fundo da tab ativa */
-    tabBarActiveBackgroundColor: "",
-    /** Cor de fundo das tabs inativas */
-    tabBarInactiveBackgroundColor: "",
-    /** Cor de título do header da tab atual */
-    headerTintColor: "white",
-    /** Cor de fundo do header da tab atual */
-    headerStyle: {
-        backgroundColor: "darkblue"
-    },
-    /** Cor de fundo do footer */
-    tabBarStyle: {
-        backgroundColor: "darkblue",
-    },
-}
+import LayoutStyles from "@/styles/layouts"
 
 export default function RootLayout() {
     return (
         <Tabs
             initialRouteName='index'
-            screenOptions={ TabScreensStyle }
+            screenOptions={ LayoutStyles.tabs }
         >
-            <Tabs.Screen
-                name='user'
-                options={{
-                    title: "Usuário",
-                    tabBarIcon: ({ color, size }) => (<IconAntDesign name="user" color={ color } size={ size } />),
-                }}
-            />
             <Tabs.Screen
                 name='index'
                 options={{
                     headerShown: false,
                     tabBarLabel: "Home",
-                    tabBarIcon: ({ color, size }) => (<IconIonicons name="home-outline" color={ color } size={ size } />),
+                    tabBarIcon: ({ size }) => (<IconIonicons name="home-outline" color="white" size={ size } />),
                 }}
             />
             <Tabs.Screen
-                name='posts'
+                name='(dreams)'
                 options={{
-                    title: "Posts",
-                    tabBarIcon: ({ color, size }) => (<IconFontAwesome6 name="newspaper" color={ color } size={ size } />),
+                    title: "Sonhos",
+                    headerShown: false,
+                    tabBarIcon: ({ size }) => (<IconIonicons name="cloudy-outline" color="white" size={ size } />),
+                }}
+            />
+            <Tabs.Screen
+                name='(sleeps)'
+                options={{
+                    title: "Ciclos de Sono",
+                    headerShown: false,
+                    tabBarIcon: ({ size }) => (<IconIonicons name="moon-outline" color="white" size={ size } />),
+                }}
+            />
+            <Tabs.Screen
+                name='(analysis)'
+                options={{
+                    title: "Análises",
+                    headerShown: false,
+                    tabBarIcon: ({ size }) => (<IconIonicons name="bar-chart-outline" color="white" size={ size } />),
                 }}
             />
         </Tabs>

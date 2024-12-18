@@ -3,16 +3,10 @@ import { Stack } from "expo-router"
 import { StatusBar } from 'expo-status-bar'
 import AuthContextComponent from "@/contexts/AuthContext"
 import InitialContextComponent from "@/contexts/InitialContext"
+import LayoutStyles from "@/styles/layouts"
 import React from "react"
 import SqliteDbManager from "@/db/database"
 import SyncContextComponent from "@/contexts/SyncContext"
-
-const StackScreensStyle = {
-  /** Cor do header */
-  headerStyle: { backgroundColor: "darkblue" },
-  /** Cor do título do header */
-  headerTintColor: "white",
-}
 
 export default function RootLayout() {
   return (
@@ -26,11 +20,23 @@ export default function RootLayout() {
           <SyncContextComponent>
             <Stack
               initialRouteName='(tabs)'
-              screenOptions={ StackScreensStyle }
+              screenOptions={ LayoutStyles.stack }
             >
-              <Stack.Screen name='(tabs)' options={{ title: "Tabs", headerShown: false }} />
-              <Stack.Screen name='post' options={{ title: "Post" }} />
-              <Stack.Screen name='credits' options={{ title: "Créditos" }} />
+              <Stack.Screen
+                name='(tabs)'
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name='login'
+                options={{ title: "Login" }}
+              />
+              <Stack.Screen
+                name='registry'
+                options={{ title: "Registre-se" }}
+              />
+              <Stack.Screen
+                name='info'
+              />
             </Stack>
           </SyncContextComponent>
         </AuthContextComponent>
