@@ -1,4 +1,5 @@
 import { Tabs } from "expo-router"
+import Header from "@/components/base/Header"
 import IconIonicons from "react-native-vector-icons/Ionicons"
 import LayoutStyles from "@/styles/layouts"
 
@@ -6,12 +7,16 @@ export default function RootLayout() {
     return (
         <Tabs
             initialRouteName='index'
-            screenOptions={ LayoutStyles.tabs }
+            screenOptions={{
+                ...LayoutStyles.tabs,
+                header: ({ navigation }) => {
+                    return <Header navigateTo={ (route) => navigation.navigate(route) } />
+                },
+            }}
         >
             <Tabs.Screen
                 name='index'
                 options={{
-                    headerShown: false,
                     tabBarLabel: "Home",
                     tabBarIcon: ({ size }) => (<IconIonicons name="home-outline" color="white" size={ size } />),
                 }}
