@@ -1,3 +1,5 @@
+import { DateTime } from "luxon"
+
 export const DateFormatter = {
     /** @example "2024-11-01T00:00:00.000Z" > "2024-11-01" */
     removeTime: (date: string) => {
@@ -37,5 +39,10 @@ export const DateFormatter = {
     },
     fixUTC: (unix: number) => {
         return DateFormatter.decreaseTime(3, unix)
+    },
+    luxon: {
+        now: () => {
+            return DateTime.now().setZone("UTC-3") as DateTime<true>
+        },
     },
 }
