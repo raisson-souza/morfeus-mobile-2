@@ -199,7 +199,7 @@ export default function GetDreamScreen() {
                                                         ? tags.length > 0
                                                             ? tags.map((tag, i) => (
                                                                 <Pressable
-                                                                    onPress={ () => router.navigate({ pathname: "/getDream", params: { title: tag.title, id: tag.id } }) }
+                                                                    onPress={ () => router.navigate({ pathname: "/getTag", params: { title: tag.title, id: tag.id } }) }
                                                                     key={ i }
                                                                 >
                                                                     <Text style={ styles.tagText }>{ tag.title }</Text>
