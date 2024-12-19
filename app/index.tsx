@@ -23,7 +23,7 @@ export default function InfoScreen() {
                     authContext.isLogged
                         ? (
                             <>
-                                <CustomButton btnWidth={ btnWidth } title="Entrar" onPress={ () => router.navigate("/(tabs)") } />
+                                <CustomButton btnWidth={ btnWidth } title="Entrar" onPress={ () => router.navigate("/home") } />
                             </>
                         )
                         : (

@@ -104,7 +104,7 @@ export default function DreamsList() {
                         <Box.Column style={ styles.headerButtonsContainer }>
                             <CustomButton
                                 title="Ver Mais"
-                                onPress={ () => router.navigate("/(tabs)/(dreams)/index" as any) } // TODO: Ajustar rotas index
+                                onPress={ () => router.navigate("/(tabs)/(dreams)/dreamsHome") }
                             />
                             <CustomButton
                                 title="Criar Sonho"

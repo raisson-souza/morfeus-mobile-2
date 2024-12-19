@@ -5,11 +5,11 @@ import React from "react"
 export default function RootLayout() {
   return (
     <Stack
-      initialRouteName='index'
+      initialRouteName='analysisHome'
       screenOptions={ LayoutStyles.stack }
     >
       <Stack.Screen
-        name='index'
+        name='analysisHome'
         options={{ title: "Análises" }}
       />
       <Stack.Screen

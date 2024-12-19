@@ -6,7 +6,7 @@ import LayoutStyles from "@/styles/layouts"
 export default function RootLayout() {
     return (
         <Tabs
-            initialRouteName='index'
+            initialRouteName='home'
             screenOptions={{
                 ...LayoutStyles.tabs,
                 header: ({ navigation }) => {
@@ -15,7 +15,7 @@ export default function RootLayout() {
             }}
         >
             <Tabs.Screen
-                name='index'
+                name='home'
                 options={{
                     tabBarLabel: "Home",
                     tabBarIcon: ({ size }) => (<IconIonicons name="home-outline" color="white" size={ size } />),
