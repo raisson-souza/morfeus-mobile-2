@@ -121,7 +121,7 @@ export default function DreamsList() {
                             ...listDreamsByUserForm,
                             dreamCaracteristicsFilter: e
                         })}
-                        style={ styles.dreamCaracteristicsPicker }
+                        style={ styles.picker }
                     >
                         <Picker.Item label="Todos os Sonhos" value="all" />
                         <Picker.Item label="Todos os Sonhos (menos os ocultos)" value="allNotHidden" />
@@ -136,7 +136,7 @@ export default function DreamsList() {
                             ...listDreamsByUserForm,
                             dreamOriginFilter: e
                         })}
-                        style={ styles.dreamOriginsPicker }
+                        style={ styles.picker }
                     >
                         <Picker.Item label="Todas as Origens" value="all" />
                         <Picker.Item label="Sonhos Completos" value="completeDreams" />
@@ -161,7 +161,7 @@ export default function DreamsList() {
                         listDreamsByUserForm.dreamEspecificCaracteristicsFilter.noEspecificy
                             ? <></>
                             : (
-                                <Box.Column>
+                                <Box.Column style={ styles.noEspecificyContainer }>
                                     { /** //TODO: style para centralizar e estilizar o switch */ }
                                     <SwitchNull
                                         label="Sonhos com Análise Pessoal"
@@ -452,7 +452,7 @@ export default function DreamsList() {
                                                 dreamHourId: e
                                             }
                                         })}
-                                        style={ styles.dreamHourPicker }
+                                        style={ styles.pickerNoEspecificy }
                                     >
                                         <Picker.Item label="Horário do Sonho..." value={ null } />
                                         <Picker.Item label="Amanhecer" value="1" />
@@ -471,7 +471,7 @@ export default function DreamsList() {
                                                 dreamDurationId: e
                                             }
                                         })}
-                                        style={ styles.dreamDurationPicker }
+                                        style={ styles.pickerNoEspecificy }
                                     >
                                         <Picker.Item label="Duração do Sonho..." value={ null } />
                                         <Picker.Item label="Instantâneo" value="1" />
@@ -488,7 +488,7 @@ export default function DreamsList() {
                                                 dreamLucidityLevelId: e
                                             }
                                         })}
-                                        style={ styles.dreamLucidityLevelPicker }
+                                        style={ styles.pickerNoEspecificy }
                                     >
                                         <Picker.Item label="Nível de Lucidez do Sonho..." value={ null } />
                                         <Picker.Item label="Não Lúcido" value="1" />
@@ -505,7 +505,7 @@ export default function DreamsList() {
                                                 dreamTypeId: e
                                             }
                                         })}
-                                        style={ styles.dreamTypePicker }
+                                        style={ styles.pickerNoEspecificy }
                                     >
                                         <Picker.Item label="Tipo de Sonho..." value={ null } />
                                         <Picker.Item label="Sonho" value="1" />
@@ -521,7 +521,7 @@ export default function DreamsList() {
                                                 dreamRealityLevelId: e
                                             }
                                         })}
-                                        style={ styles.dreamRealityLevelPicker }
+                                        style={ styles.pickerNoEspecificy }
                                     >
                                         <Picker.Item label="Nível de Realidade do Sonho..." value={ null } />
                                         <Picker.Item label="Irreal" value="1" />
@@ -537,7 +537,7 @@ export default function DreamsList() {
                                                 dreamPointOfViewId: e
                                             }
                                         })}
-                                        style={ styles.dreamPerspectivePicker }
+                                        style={ styles.pickerNoEspecificy }
                                     >
                                         <Picker.Item label="Perspectiva..." value={ null } />
                                         <Picker.Item label="Primeira Pessoa" value="1" />
@@ -592,11 +592,14 @@ const styles = StyleSheet.create({
     filterMessage: {
         fontSize: 20,
     },
-    dreamCaracteristicsPicker: {
-        width: 405,
+    noEspecificyContainer: {
+        width: "100%",
     },
-    dreamOriginsPicker: {
-        width: 405,
+    picker: {
+        width: "100%",
+    },
+    pickerNoEspecificy: {
+        width: "90%",
     },
     filterNoEspecificyContainer: {
         justifyContent: "center",
@@ -604,25 +607,6 @@ const styles = StyleSheet.create({
         gap: 5,
     },
     switchNullContainer: {
-
-    },
-    dreamHourPicker: {
-        width: 300,
-    },
-    dreamDurationPicker: {
-        width: 300,
-    },
-    dreamLucidityLevelPicker: {
-        width: 300,
-    },
-    dreamTypePicker: {
-        width: 300,
-    },
-    dreamRealityLevelPicker: {
-        width: 300,
-    },
-    dreamPerspectivePicker: {
-        width: 300,
     },
     header: {
         width: "100%",

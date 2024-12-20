@@ -69,7 +69,7 @@ export default function CreateCompleteDream({ dream, setDream }: CreateCompleteD
                         ...dream,
                         dreamPointOfViewId: e
                     })}
-                    style={ styles.dreamPointOfViewPicker }
+                    style={ styles.picker }
                 >
                     <Picker.Item label="Primeira Pessoa" value="1" />
                     <Picker.Item label="Segunda Pessoa" value="2" />
@@ -253,7 +253,7 @@ export default function CreateCompleteDream({ dream, setDream }: CreateCompleteD
                     ...dream,
                     dreamHourId: e
                 })}
-                style={ styles.dreamPointOfViewPicker }
+                style={ styles.picker }
             >
                 <Picker.Item label="Amanhecer" value="1" />
                 <Picker.Item label="Dia" value="2" />
@@ -276,7 +276,7 @@ export default function CreateCompleteDream({ dream, setDream }: CreateCompleteD
                     ...dream,
                     dreamDurationId: e
                 })}
-                style={ styles.dreamPointOfViewPicker }
+                style={ styles.picker }
             >
                 <Picker.Item label="Instantâneo" value="1" />
                 <Picker.Item label="Curto" value="2" />
@@ -297,7 +297,7 @@ export default function CreateCompleteDream({ dream, setDream }: CreateCompleteD
                     ...dream,
                     dreamLucidityLevelId: e
                 })}
-                style={ styles.dreamPointOfViewPicker }
+                style={ styles.picker }
             >
                 <Picker.Item label="Não Lúcido" value="1" />
                 <Picker.Item label="Parcialmente Lúcido" value="2" />
@@ -318,7 +318,7 @@ export default function CreateCompleteDream({ dream, setDream }: CreateCompleteD
                     ...dream,
                     dreamTypeId: e
                 })}
-                style={ styles.dreamPointOfViewPicker }
+                style={ styles.picker }
             >
                 <Picker.Item label="Sonho" value="1" />
                 <Picker.Item label="Pesadelo" value="2" />
@@ -338,7 +338,7 @@ export default function CreateCompleteDream({ dream, setDream }: CreateCompleteD
                     ...dream,
                     dreamRealityLevelId: e
                 })}
-                style={ styles.dreamPointOfViewPicker }
+                style={ styles.picker }
             >
                 <Picker.Item label="Irreal" value="1" />
                 <Picker.Item label="Parcialmente Real" value="2" />
@@ -433,8 +433,8 @@ const styles = StyleSheet.create({
     container: {
         gap: 10,
     },
-    dreamPointOfViewPicker: {
-        width: 395,
+    picker: {
+        width: "60%",
     },
     tagContainer: {
         gap: 5,
