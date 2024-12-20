@@ -3,7 +3,6 @@ import { Screen } from "@/components/base/Screen"
 import { StyleSheet } from "react-native"
 import { SyncContextProvider } from "@/contexts/SyncContext"
 import { useRouter } from "expo-router"
-import Auth from "@/components/auth/Auth"
 import Box from "@/components/base/Box"
 import CustomButton from "@/components/customs/CustomButton"
 import React from "react"
@@ -13,31 +12,29 @@ export default function AnalysisIndexScreen() {
     const { checkIsConnected } = SyncContextProvider()
 
     return (
-        <Auth>
-            <Screen>
-                <Box.Center style={ styles.container }>
-                    <CustomImage.Local
-                        filePathByRequire={ require("../../../assets/images/analysis_background.jpg") }
-                        style={ styles.image }
-                    />
-                    {
-                        checkIsConnected()
-                            ?
-                                <Box.Column style={ styles.btns }>
-                                    <CustomButton
-                                        title="Análises de Sonhos"
-                                        onPress={ () => router.navigate("/(tabs)/(analysis)/listDreamsAnalysis")}
-                                    />
-                                    <CustomButton
-                                        title="Análises de Ciclo de Sono"
-                                        onPress={ () => router.navigate("/(tabs)/(analysis)/listSleepsAnalysis")}
-                                    />
-                                </Box.Column>
-                            : <></>
-                    }
-                </Box.Center>
-            </Screen>
-        </Auth>
+        <Screen>
+            <Box.Center style={ styles.container }>
+                <CustomImage.Local
+                    filePathByRequire={ require("../../../assets/images/analysis_background.jpg") }
+                    style={ styles.image }
+                />
+                {
+                    checkIsConnected()
+                        ?
+                            <Box.Column style={ styles.btns }>
+                                <CustomButton
+                                    title="Análises de Sonhos"
+                                    onPress={ () => router.navigate("/(tabs)/(analysis)/listDreamsAnalysis")}
+                                />
+                                <CustomButton
+                                    title="Análises de Ciclo de Sono"
+                                    onPress={ () => router.navigate("/(tabs)/(analysis)/listSleepsAnalysis")}
+                                />
+                            </Box.Column>
+                        : <></>
+                }
+            </Box.Center>
+        </Screen>
     )
 }
 

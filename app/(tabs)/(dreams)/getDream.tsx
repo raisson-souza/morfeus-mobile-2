@@ -5,7 +5,6 @@ import { SyncContextProvider } from "@/contexts/SyncContext"
 import { TagModel } from "@/types/tag"
 import { useEffect, useState } from "react"
 import { useLocalSearchParams, useRouter } from "expo-router"
-import Auth from "@/components/auth/Auth"
 import Box from "@/components/base/Box"
 import CustomButton from "@/components/customs/CustomButton"
 import DreamService from "@/services/api/DreamService"
@@ -142,155 +141,153 @@ export default function GetDreamScreen() {
         : "Seu sonho não tem tags, não sonhou com nada relevante em específico? Tags reúnem sonhos com ocorridos em comum, edite esse sonho e adicione tags, ou visualize outro que possua, experimente!"
 
     return (
-        <Auth>
-            <Screen>
-                <Box.Column style={ styles.container }>
-                    {
-                        loading
-                            ? <Loading onlyLoading={ false } text="Buscando Sonho..." />
-                            : dream
-                                ? (
-                                    <Box.Column style={ styles.dreamContainer }>
+        <Screen>
+            <Box.Column style={ styles.container }>
+                {
+                    loading
+                        ? <Loading onlyLoading={ false } text="Buscando Sonho..." />
+                        : dream
+                            ? (
+                                <Box.Column style={ styles.dreamContainer }>
+                                    {
+                                        dream.hiddenDream
+                                            ? <View>
+                                                <IconIon name="alert-circle-sharp" color="black" size={ 20 } />
+                                                <Text>Esse sonho é oculto</Text>
+                                            </View>
+                                            : <></>
+                                    }
+                                    {
+                                        dream.dreamTypeId === 2
+                                            ? <Text>Pesadelo</Text>
+                                            : <></>
+                                    }
+                                    <Box.Column>
                                         {
-                                            dream.hiddenDream
-                                                ? <View>
-                                                    <IconIon name="alert-circle-sharp" color="black" size={ 20 } />
-                                                    <Text>Esse sonho é oculto</Text>
-                                                </View>
+                                            dream.eroticDream
+                                                ? (
+                                                    <Box.Row style={ styles.iconAndMessageStyle }>
+                                                        <IconIon name="alert-circle-sharp" color="black" size={ 20 } />
+                                                        <Text>Sonho erótico</Text>
+                                                    </Box.Row>
+                                                )
                                                 : <></>
                                         }
-                                        {
-                                            dream.dreamTypeId === 2
-                                                ? <Text>Pesadelo</Text>
-                                                : <></>
-                                        }
-                                        <Box.Column>
-                                            {
-                                                dream.eroticDream
-                                                    ? (
-                                                        <Box.Row style={ styles.iconAndMessageStyle }>
-                                                            <IconIon name="alert-circle-sharp" color="black" size={ 20 } />
-                                                            <Text>Sonho erótico</Text>
-                                                        </Box.Row>
-                                                    )
-                                                    : <></>
-                                            }
-                                            <Box.Row style={ styles.dreamTitleTextContainer }>
-                                                <Text style={ styles.dreamTitleText }>{ dream.title }</Text>
-                                                <Pressable onPress={ () => router.navigate({ pathname: "/updateDream", params: { id: id, sleepDate: sleepDate } }) }>
-                                                    <IconIon name="pencil-sharp" color="black" size={ 30 } />
-                                                </Pressable>
-                                            </Box.Row>
-                                            <Pressable
-                                                onPress={ () => { router.navigate({ pathname: "/(tabs)/(sleeps)/getSleep", params: { date: sleepDate }}) } }
-                                            >
-                                                <Text style={ styles.dreamTitleDateText }>{ sleepDate }</Text>
+                                        <Box.Row style={ styles.dreamTitleTextContainer }>
+                                            <Text style={ styles.dreamTitleText }>{ dream.title }</Text>
+                                            <Pressable onPress={ () => router.navigate({ pathname: "/updateDream", params: { id: id, sleepDate: sleepDate } }) }>
+                                                <IconIon name="pencil-sharp" color="black" size={ 30 } />
                                             </Pressable>
-                                        </Box.Column>
-                                        <Text style={ styles.dreamDescription }>{ dream.description }</Text>
-                                        <Box.Column style={ styles.tagsContainer }>
-                                            <Box.Row style={ styles.tagsInfoContainer }>
-                                                <Info
-                                                    modalTitle="MAPEAMENTO DE TAGS"
-                                                    modalDescription={ [...tagInfo] }
-                                                    overrideInfoColor="white"
-                                                />
-                                                <Text style={ styles.tagContainerTitle }>TAGS</Text>
-                                            </Box.Row>
-                                            <Box.Row style={ styles.tags }>
-                                                {
-                                                    tags
-                                                        ? tags.length > 0
-                                                            ? tags.map((tag, i) => (
-                                                                <Pressable
-                                                                    onPress={ () => router.navigate({ pathname: "/getTag", params: { title: tag.title, id: tag.id } }) }
-                                                                    key={ i }
-                                                                >
-                                                                    <Text style={ styles.tagText }>{ tag.title }</Text>
-                                                                </Pressable>
-                                                            ))
-                                                            : <Text style={ styles.tagText }>Não há tags</Text>
-                                                        : <Loading onlyLoading={ false } text="Buscando Tags...." />
-                                                }
-                                            </Box.Row>
-                                        </Box.Column>
-                                        <View>
-                                            {
-                                                dream.personalAnalysis
-                                                    ? (
-                                                        <Box.Column style={ styles.personalAnalysisContainer }>
-                                                            <Box.Row style={ styles.iconAndMessageStyle }>
-                                                                <IconIon name="person-outline" color="black" size={ 20 } />
-                                                                <Text style={ styles.personalAnalysisText }>Análise pessoal:</Text>
-                                                            </Box.Row>
-                                                            <Text style={ styles.personalAnalysisText }>{ dream.personalAnalysis }</Text>
-                                                        </Box.Column>
-                                                    )
-                                                    : <></>
-                                            }
-                                            <Box.Row style={ styles.iconAndMessageStyle }>
-                                                <IconIon name="rainy-sharp" color="black" size={ 20 } />
-                                                <Box.Row>
-                                                    <Text style={ styles.boldText }>Climas: </Text>
-                                                    <Text>{ renderClimates() }</Text>
-                                                </Box.Row>
-                                            </Box.Row>
-                                            <Box.Row style={ styles.iconAndMessageStyle }>
-                                                <IconIon name="game-controller" color="black" size={ 20 } />
-                                                <Text style={ styles.boldText }>Sonho em { renderDreamPointOfView() } pessoa</Text>
-                                            </Box.Row>
-                                            <Box.Row style={ styles.iconAndMessageStyle }>
-                                                <IconFontisto name="clock" color="black" size={ 20 } />
-                                                <Box.Row>
-                                                    <Text style={ styles.boldText }>Horário: </Text>
-                                                    <Text>{ renderHour() }</Text>
-                                                </Box.Row>
-                                            </Box.Row>
-                                            <Box.Row style={ styles.iconAndMessageStyle }>
-                                                <IconIon name="timer" color="black" size={ 20 } />
-                                                <Box.Row>
-                                                    <Text style={ styles.boldText }>Duração: </Text>
-                                                    <Text>{ renderDuration() }</Text>
-                                                </Box.Row>
-                                            </Box.Row>
-                                            <Box.Row style={ styles.iconAndMessageStyle }>
-                                                <IconEntypo name="drink" color="black" size={ 20 } />
-                                                <Box.Row>
-                                                    <Text style={ styles.boldText }>Nível de Lucidez: </Text>
-                                                    <Text>{ renderLucidityLevel() }</Text>
-                                                </Box.Row>
-                                            </Box.Row>
-                                            <Box.Row style={ styles.iconAndMessageStyle }>
-                                                <IconFoundation name="magnifying-glass" color="black" size={ 20 } />
-                                                <Box.Row>
-                                                    <Text style={ styles.boldText }>Nível de Realidade: </Text>
-                                                    <Text>{ renderRealityLevel() }</Text>
-                                                </Box.Row>
-                                            </Box.Row>
-                                            <Box.Row style={ styles.iconAndMessageStyle }>
-                                                <IconIon name="information-circle" color="black" size={ 20 } />
-                                                <Text style={ styles.boldText }>{ renderDreamOrigin() }</Text>
-                                            </Box.Row>
-                                        </View>
+                                        </Box.Row>
+                                        <Pressable
+                                            onPress={ () => { router.navigate({ pathname: "/(tabs)/(sleeps)/getSleep", params: { date: sleepDate }}) } }
+                                        >
+                                            <Text style={ styles.dreamTitleDateText }>{ sleepDate }</Text>
+                                        </Pressable>
                                     </Box.Column>
-                                )
-                                : <>
-                                    <Text>Houve um problema ao buscar o sonho:</Text>
-                                    <Text>{ errorMessage }</Text>
-                                </>
-                    }
-                    <CustomButton
-                        title="Voltar"
-                        onPress={ () => {
-                            if (router.canGoBack())
-                                router.back()
-                            else
-                                router.navigate("/dreamsHome")
-                        }}
-                    />
-                </Box.Column>
-            </Screen>
-        </Auth>
+                                    <Text style={ styles.dreamDescription }>{ dream.description }</Text>
+                                    <Box.Column style={ styles.tagsContainer }>
+                                        <Box.Row style={ styles.tagsInfoContainer }>
+                                            <Info
+                                                modalTitle="MAPEAMENTO DE TAGS"
+                                                modalDescription={ [...tagInfo] }
+                                                overrideInfoColor="white"
+                                            />
+                                            <Text style={ styles.tagContainerTitle }>TAGS</Text>
+                                        </Box.Row>
+                                        <Box.Row style={ styles.tags }>
+                                            {
+                                                tags
+                                                    ? tags.length > 0
+                                                        ? tags.map((tag, i) => (
+                                                            <Pressable
+                                                                onPress={ () => router.navigate({ pathname: "/getTag", params: { title: tag.title, id: tag.id } }) }
+                                                                key={ i }
+                                                            >
+                                                                <Text style={ styles.tagText }>{ tag.title }</Text>
+                                                            </Pressable>
+                                                        ))
+                                                        : <Text style={ styles.tagText }>Não há tags</Text>
+                                                    : <Loading onlyLoading={ false } text="Buscando Tags...." />
+                                            }
+                                        </Box.Row>
+                                    </Box.Column>
+                                    <View>
+                                        {
+                                            dream.personalAnalysis
+                                                ? (
+                                                    <Box.Column style={ styles.personalAnalysisContainer }>
+                                                        <Box.Row style={ styles.iconAndMessageStyle }>
+                                                            <IconIon name="person-outline" color="black" size={ 20 } />
+                                                            <Text style={ styles.personalAnalysisText }>Análise pessoal:</Text>
+                                                        </Box.Row>
+                                                        <Text style={ styles.personalAnalysisText }>{ dream.personalAnalysis }</Text>
+                                                    </Box.Column>
+                                                )
+                                                : <></>
+                                        }
+                                        <Box.Row style={ styles.iconAndMessageStyle }>
+                                            <IconIon name="rainy-sharp" color="black" size={ 20 } />
+                                            <Box.Row>
+                                                <Text style={ styles.boldText }>Climas: </Text>
+                                                <Text>{ renderClimates() }</Text>
+                                            </Box.Row>
+                                        </Box.Row>
+                                        <Box.Row style={ styles.iconAndMessageStyle }>
+                                            <IconIon name="game-controller" color="black" size={ 20 } />
+                                            <Text style={ styles.boldText }>Sonho em { renderDreamPointOfView() } pessoa</Text>
+                                        </Box.Row>
+                                        <Box.Row style={ styles.iconAndMessageStyle }>
+                                            <IconFontisto name="clock" color="black" size={ 20 } />
+                                            <Box.Row>
+                                                <Text style={ styles.boldText }>Horário: </Text>
+                                                <Text>{ renderHour() }</Text>
+                                            </Box.Row>
+                                        </Box.Row>
+                                        <Box.Row style={ styles.iconAndMessageStyle }>
+                                            <IconIon name="timer" color="black" size={ 20 } />
+                                            <Box.Row>
+                                                <Text style={ styles.boldText }>Duração: </Text>
+                                                <Text>{ renderDuration() }</Text>
+                                            </Box.Row>
+                                        </Box.Row>
+                                        <Box.Row style={ styles.iconAndMessageStyle }>
+                                            <IconEntypo name="drink" color="black" size={ 20 } />
+                                            <Box.Row>
+                                                <Text style={ styles.boldText }>Nível de Lucidez: </Text>
+                                                <Text>{ renderLucidityLevel() }</Text>
+                                            </Box.Row>
+                                        </Box.Row>
+                                        <Box.Row style={ styles.iconAndMessageStyle }>
+                                            <IconFoundation name="magnifying-glass" color="black" size={ 20 } />
+                                            <Box.Row>
+                                                <Text style={ styles.boldText }>Nível de Realidade: </Text>
+                                                <Text>{ renderRealityLevel() }</Text>
+                                            </Box.Row>
+                                        </Box.Row>
+                                        <Box.Row style={ styles.iconAndMessageStyle }>
+                                            <IconIon name="information-circle" color="black" size={ 20 } />
+                                            <Text style={ styles.boldText }>{ renderDreamOrigin() }</Text>
+                                        </Box.Row>
+                                    </View>
+                                </Box.Column>
+                            )
+                            : <>
+                                <Text>Houve um problema ao buscar o sonho:</Text>
+                                <Text>{ errorMessage }</Text>
+                            </>
+                }
+                <CustomButton
+                    title="Voltar"
+                    onPress={ () => {
+                        if (router.canGoBack())
+                            router.back()
+                        else
+                            router.navigate("/dreamsHome")
+                    }}
+                />
+            </Box.Column>
+        </Screen>
     )
 }
 

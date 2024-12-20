@@ -3,7 +3,6 @@ import { CustomImage } from "@/components/customs/CustomImage"
 import { Screen } from "@/components/base/Screen"
 import { StyleSheet, Text } from "react-native"
 import { useRouter } from "expo-router"
-import Auth from "@/components/auth/Auth"
 import Box from "@/components/base/Box"
 import CustomButton from "@/components/customs/CustomButton"
 import FutureDevelopmentButton from "@/components/utils/FutureDevelopmentButton"
@@ -15,27 +14,25 @@ export default function IndexScreen() {
     const { userInfo: { current: userInfo } } = AuthContextProvider()
 
     return (
-        <Auth>
-            <Screen>
-                <Box.Center style={ styles.container }>
-                    <Text style={ styles.welcome }>Bem vindo de volta, { userInfo.name }!</Text>
-                    <CustomImage.Local
-                        filePathByRequire={ require("../../assets/images/home_background.jpg") }
-                        style={ styles.image }
-                    />
-                    <SimpleSleep />
-                    <CustomButton
-                        title="Criar Sonho"
-                        onPress={ () => router.navigate("/createDream") }
-                    />
-                    <FutureDevelopmentButton btnTitle="Criar Sonho Rápido"/>
-                    <CustomButton
-                        title="Criar Ciclo de Sono"
-                        onPress={ () => router.navigate("/createSleep") }
-                    />
-                </Box.Center>
-            </Screen>
-        </Auth>
+        <Screen>
+            <Box.Center style={ styles.container }>
+                <Text style={ styles.welcome }>Bem vindo de volta, { userInfo.name }!</Text>
+                <CustomImage.Local
+                    filePathByRequire={ require("../../assets/images/home_background.jpg") }
+                    style={ styles.image }
+                />
+                <SimpleSleep />
+                <CustomButton
+                    title="Criar Sonho"
+                    onPress={ () => router.navigate("/createDream") }
+                />
+                <FutureDevelopmentButton btnTitle="Criar Sonho Rápido"/>
+                <CustomButton
+                    title="Criar Ciclo de Sono"
+                    onPress={ () => router.navigate("/createSleep") }
+                />
+            </Box.Center>
+        </Screen>
     )
 }
 

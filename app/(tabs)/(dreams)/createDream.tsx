@@ -5,7 +5,6 @@ import { StyleSheet } from "react-native"
 import { SyncContextProvider } from "@/contexts/SyncContext"
 import { useRouter } from "expo-router"
 import { useState } from "react"
-import Auth from "@/components/auth/Auth"
 import Box from "@/components/base/Box"
 import CreateCompleteDream from "@/components/screens/dreams/CreateCompleteDream"
 import CustomButton from "@/components/customs/CustomButton"
@@ -83,48 +82,46 @@ export default function CreateDreamScreen() {
     }
 
     return (
-        <Auth>
-            <Screen>
-                <Box.Column style={ styles.container }>
-                    <TextBold style={ styles.dreamDateText }>Defina a data de seu sonho</TextBold>
-                    <DefineDreamSleep
-                        date={ completeDreamModel }
-                        setDate={ setCompleteDreamModel }
-                        sleepId={ sleepId }
-                        setSleepId={ setSleepId }
-                    />
-                    <CreateCompleteDream
-                        dream={ dreamModel }
-                        setDream={ setDreamModel }
-                    />
-                    <Info
-                        infoDescription="Sua noite de sono"
-                        modalTitle="NOITE DE SONO"
-                        modalDescription={[
-                            "Agora você está cadastrando um sonho completo, mas durante a noite na qual esse sonho ocorreu você suou? dormiu cansado?",
-                            "Não esqueça de preencher essas informações editando a noite de sono que será criada para você ao salvar esse sonho!"
-                        ]}
-                    />
-                    <CustomButton
-                        title="Criar Sonho"
-                        onPress={ () => createDream() }
-                    />
-                    {
-                        loading
-                            ? <Loading onlyLoading={ false } text="Criando Sonho..." />
-                            : <CustomButton
-                                title="Voltar"
-                                onPress={ () => {
-                                    if (router.canGoBack())
-                                        router.back()
-                                    else
-                                        router.navigate("/")
-                                }}
-                            />
-                    }
-                </Box.Column>
-            </Screen>
-        </Auth>
+        <Screen>
+            <Box.Column style={ styles.container }>
+                <TextBold style={ styles.dreamDateText }>Defina a data de seu sonho</TextBold>
+                <DefineDreamSleep
+                    date={ completeDreamModel }
+                    setDate={ setCompleteDreamModel }
+                    sleepId={ sleepId }
+                    setSleepId={ setSleepId }
+                />
+                <CreateCompleteDream
+                    dream={ dreamModel }
+                    setDream={ setDreamModel }
+                />
+                <Info
+                    infoDescription="Sua noite de sono"
+                    modalTitle="NOITE DE SONO"
+                    modalDescription={[
+                        "Agora você está cadastrando um sonho completo, mas durante a noite na qual esse sonho ocorreu você suou? dormiu cansado?",
+                        "Não esqueça de preencher essas informações editando a noite de sono que será criada para você ao salvar esse sonho!"
+                    ]}
+                />
+                <CustomButton
+                    title="Criar Sonho"
+                    onPress={ () => createDream() }
+                />
+                {
+                    loading
+                        ? <Loading onlyLoading={ false } text="Criando Sonho..." />
+                        : <CustomButton
+                            title="Voltar"
+                            onPress={ () => {
+                                if (router.canGoBack())
+                                    router.back()
+                                else
+                                    router.navigate("/")
+                            }}
+                        />
+                }
+            </Box.Column>
+        </Screen>
     )
 }
 
