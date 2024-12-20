@@ -21,6 +21,7 @@ type SyncContext = {
      * É necessário setar como false em fluxos necessários nas services
      * */
     isDataUpToDate: React.MutableRefObject<boolean>
+    checkIsConnected: () => boolean
 }
 
 const SyncContext = createContext<SyncContext | null>(null)
@@ -36,7 +37,7 @@ export default function SyncContextComponent({ children }: SyncContextProps) {
         const syncInterval = setInterval(async () => {
             await InternetInfo()
                 .then(result => { isConnectedRef.current = result ? result.isConnected : false })
-        }, 10000)
+        }, 5000)
 
         /** Intervalo de processamento de sincronização */
         const syncDataActionInterval = setInterval(async () => {
@@ -82,8 +83,18 @@ export default function SyncContextComponent({ children }: SyncContextProps) {
         }
     }
 
+    const checkIsConnected = (): boolean => {
+        return isConnectedRef.current
+    }
+
     return (
-        <SyncContext.Provider value={{ isConnectedRef, isSyncingRef, syncData, isDataUpToDate }}>
+        <SyncContext.Provider value={{
+            isConnectedRef,
+            isSyncingRef,
+            syncData,
+            isDataUpToDate,
+            checkIsConnected,
+        }}>
             { children }
         </SyncContext.Provider>
     )
