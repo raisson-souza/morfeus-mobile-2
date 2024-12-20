@@ -17,10 +17,9 @@ export default function DreamListedByUser({ dream, showDate = true, titleSize = 
 
     const treatDate = () => {
         const dateFormatted = DateFormatter.removeTime(dream.date).split("-")
-        return `${ dateFormatted[1] }-${ dateFormatted[2] }`
+        return `${ dateFormatted[2] }-${ dateFormatted[1] }-${ dateFormatted[0][2] }${ dateFormatted[0][3] }`
     }
     const treatedDate = treatDate()
-
 
     return (
         <Box.Column style={{ ...styles.container, ...containerStyle as any }}>
@@ -32,7 +31,12 @@ export default function DreamListedByUser({ dream, showDate = true, titleSize = 
             </Pressable>
             {
                 showDate
-                    ? <Text style={ styles.dateText }>{ treatedDate }</Text>
+                    ?
+                        <Pressable
+                            onPress={ () => router.navigate({ pathname: "/(tabs)/(sleeps)/getSleep", params: { date: dream.date }})}
+                        >
+                            <Text style={ styles.dateText }>{ treatedDate }</Text>
+                        </Pressable>
                     : <></>
             }
             <Box.Row style={ styles.tags }>

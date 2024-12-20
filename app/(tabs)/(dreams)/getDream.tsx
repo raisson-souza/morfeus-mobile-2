@@ -181,7 +181,11 @@ export default function GetDreamScreen() {
                                                     <IconIon name="pencil-sharp" color="black" size={ 30 } />
                                                 </Pressable>
                                             </Box.Row>
-                                            <Text style={ styles.dreamTitleDateText }>{ sleepDate }</Text>
+                                            <Pressable
+                                                onPress={ () => { router.navigate({ pathname: "/(tabs)/(sleeps)/getSleep", params: { date: sleepDate }}) } }
+                                            >
+                                                <Text style={ styles.dreamTitleDateText }>{ sleepDate }</Text>
+                                            </Pressable>
                                         </Box.Column>
                                         <Text style={ styles.dreamDescription }>{ dream.description }</Text>
                                         <Box.Column style={ styles.tagsContainer }>
