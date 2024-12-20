@@ -139,7 +139,7 @@ export default function AuthContextComponent({ children }: AuthContextProps) {
             }
 
             setIsLogged(true)
-            router.navigate("/(tabs)")
+            router.navigate("/home")
             return
         }
 

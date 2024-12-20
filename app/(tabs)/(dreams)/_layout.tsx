@@ -9,7 +9,9 @@ export default function RootLayout() {
       screenOptions={ LayoutStyles.stack }
     >
       <Stack.Screen
-        name='dreamsHome' />
+        name='dreamsHome'
+        options={{ title: "Sonhos" }}
+      />
       <Stack.Screen
         name='createDream'
         options={{ title: "Criar Sonho" }} />
