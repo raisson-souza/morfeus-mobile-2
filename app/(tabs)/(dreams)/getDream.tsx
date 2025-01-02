@@ -180,7 +180,7 @@ export default function GetDreamScreen() {
                                             </Pressable>
                                         </Box.Row>
                                         <Pressable
-                                            onPress={ () => { router.navigate({ pathname: "/(tabs)/(sleeps)/getSleep", params: { date: sleepDate }}) } }
+                                            onPress={ () => { router.navigate({ pathname: "/(tabs)/(sleeps)/getSleep", params: { id: dream.sleepId }}) } }
                                         >
                                             <Text style={ styles.dreamTitleDateText }>{ sleepDate }</Text>
                                         </Pressable>

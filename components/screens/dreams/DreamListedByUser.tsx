@@ -10,9 +10,16 @@ type DreamListedByUserProps = {
     showDate?: boolean
     titleSize?: number
     containerStyle?: StyleProp<ViewStyle>
+    sleepId?: number
 }
 
-export default function DreamListedByUser({ dream, showDate = true, titleSize = 30, containerStyle = {} }: DreamListedByUserProps) {
+export default function DreamListedByUser({
+    dream,
+    showDate = true,
+    titleSize = 30,
+    containerStyle = {},
+    sleepId = undefined,
+}: DreamListedByUserProps) {
     const router = useRouter()
 
     const treatDate = () => {
@@ -20,6 +27,12 @@ export default function DreamListedByUser({ dream, showDate = true, titleSize = 
         return `${ dateFormatted[2] }-${ dateFormatted[1] }-${ dateFormatted[0][2] }${ dateFormatted[0][3] }`
     }
     const treatedDate = treatDate()
+
+    const onDreamDatePress = () => {
+        if (sleepId) {
+            router.navigate({ pathname: "/(tabs)/(sleeps)/getSleep", params: { id: sleepId }})
+        }
+    }
 
     return (
         <Box.Column style={{ ...styles.container, ...containerStyle as any }}>
@@ -32,9 +45,7 @@ export default function DreamListedByUser({ dream, showDate = true, titleSize = 
             {
                 showDate
                     ?
-                        <Pressable
-                            onPress={ () => router.navigate({ pathname: "/(tabs)/(sleeps)/getSleep", params: { date: dream.date }})}
-                        >
+                        <Pressable onPress={ () => onDreamDatePress() }>
                             <Text style={ styles.dateText }>{ treatedDate }</Text>
                         </Pressable>
                     : <></>

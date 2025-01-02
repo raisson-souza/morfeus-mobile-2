@@ -59,6 +59,7 @@ export default function GetTagScreen() {
                                                     }}
                                                     showDate={ false }
                                                     titleSize={ 23 }
+                                                    sleepId={ dream.sleepId }
                                                     key={ i }
                                                 />
                                             })
