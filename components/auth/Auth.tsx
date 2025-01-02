@@ -8,7 +8,6 @@ type AuthProps = {
 
 export default function AuthRoute({ children }: AuthProps) {
     const { isLogged } = AuthContextProvider()
-    console.log("auth", isLogged)
 
     useFocusEffect(() => {
         if (!isLogged) {
