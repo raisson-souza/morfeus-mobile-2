@@ -8,11 +8,10 @@ import { useEffect, useState } from "react"
 import { useRouter } from "expo-router"
 import Box from "@/components/base/Box"
 import CustomButton from "@/components/customs/CustomButton"
-import DatePicker from "@/components/customs/DatePicker"
 import DreamListedByUser from "@/components/screens/dreams/DreamListedByUser"
 import DreamService from "@/services/api/DreamService"
 import Loading from "@/components/base/Loading"
-import MonthParser from "@/utils/MonthParser"
+import MonthExtractor from "@/components/screens/general/MonthExtractor"
 import React from "react"
 import SwitchNull from "@/components/customs/CustomSwitchNull"
 import TextBold from "@/components/base/TextBold"
@@ -81,24 +80,10 @@ export default function DreamsList() {
         <Screen>
             <Box.Center style={ styles.container }>
                 <Box.Row style={ styles.header }>
-                    <Box.Center style={ styles.headerDateContainer }>
-                        <Box.Row style={ styles.headerDateContainerTexts }>
-                            <TextBold style={ styles.headerDateText }>
-                                { MonthParser(date.getMonth() + 1) }
-                            </TextBold>
-                            <TextBold style={ styles.headerDateText }>
-                                { date.getFullYear() }
-                            </TextBold>
-                        </Box.Row>
-                        <DatePicker
-                            date={ date }
-                            onChange={ (e) => setDate(e) }
-                            buttonProps={{
-                                title: "Selecione um mês",
-                                onPress: () => {}
-                            }}
-                        />
-                    </Box.Center>
+                    <MonthExtractor
+                        initialDate={ date }
+                        onChange={ (e) => setDate(e) }
+                    />
                     <Box.Column style={ styles.headerButtonsContainer }>
                         <CustomButton
                             title="Ver Mais"
@@ -609,15 +594,6 @@ const styles = StyleSheet.create({
         width: "100%",
         justifyContent: "space-around",
         alignItems: "center",
-    },
-    headerDateContainer: {
-        gap: 5,
-    },
-    headerDateContainerTexts: {
-        gap: 5,
-    },
-    headerDateText: {
-        fontSize: 20,
     },
     headerButtonsContainer: {
         gap: 10,

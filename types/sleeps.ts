@@ -35,3 +35,18 @@ export type GetSleepRequest = {
 }
 
 export type GetSleepResponse = SleepModel
+
+export type SleepListedByUserType = {
+    id: number
+    date: string
+    sleepTime: number
+    sleepStart: string
+    sleepEnd: string
+    isNightSleep: boolean
+}
+
+export type ListSleepByUserRequest = {
+    date: string
+}
+
+export type ListSleepByUserResponse = SleepListedByUserType[]

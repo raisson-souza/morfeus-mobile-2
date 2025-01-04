@@ -1,4 +1,4 @@
-import { GetSleepRequest, GetSleepResponse, ListSleepsForDreamCreationRequest, ListSleepsForDreamCreationResponse } from "../../types/sleeps"
+import { GetSleepRequest, GetSleepResponse, ListSleepByUserRequest, ListSleepByUserResponse, ListSleepsForDreamCreationRequest, ListSleepsForDreamCreationResponse } from "../../types/sleeps"
 import Endpoints from "./base/Endpoints"
 
 export default abstract class SleepService extends Endpoints {
@@ -21,8 +21,11 @@ export default abstract class SleepService extends Endpoints {
 
     }
 
-    static async ListByUser() {
-
+    static async ListByUser(online: boolean, request: ListSleepByUserRequest) {
+        return await this.Get<ListSleepByUserResponse>({
+            url: `/users/sleeps/list?date=${ request.date }`,
+            authorization: await this.GetAuthorization()
+        })
     }
 
     static async CreateSimpleSleep() {
