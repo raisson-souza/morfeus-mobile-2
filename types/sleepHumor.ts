@@ -9,3 +9,15 @@ export type SleepHumorType = {
     sadness: boolean
     other: boolean
 }
+
+export const DefaultSleepHumor: SleepHumorType = {
+    undefinedHumor: false,
+    calm: false,
+    drowsiness: false,
+    tiredness: false,
+    anxiety: false,
+    happiness: false,
+    fear: false,
+    sadness: false,
+    other: false,
+}

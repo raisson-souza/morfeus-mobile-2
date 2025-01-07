@@ -1,4 +1,5 @@
 import { BiologicalOccurencesType } from "./biologicalOccurences"
+import { DreamClimateModel } from "./dreamClimate"
 import { PaginationResponse } from "./pagination"
 import { SleepHumorType } from "./sleepHumor"
 
@@ -50,3 +51,39 @@ export type ListSleepByUserRequest = {
 }
 
 export type ListSleepByUserResponse = SleepListedByUserType[]
+
+export type DreamInSleepCycleModel = {
+    title: string
+    description: string
+    dreamPointOfViewId: number
+    climate: DreamClimateModel
+    dreamHourId: number
+    dreamDurationId: number
+    dreamLucidityLevelId: number
+    dreamTypeId: number
+    dreamRealityLevelId: number
+    eroticDream: boolean
+    hiddenDream: boolean
+    personalAnalysis?: string
+    tags: string[]
+}
+
+export type CreateSleepCycleModel = {
+    sleepStart: Date
+    sleepEnd: Date
+    wakeUpHumor: SleepHumorType,
+    layDownHumor: SleepHumorType
+    biologicalOccurences: BiologicalOccurencesType
+    dreams: DreamInSleepCycleModel[]
+}
+
+export type CreateSleepCycleRequest = {
+    sleepStart: string
+    sleepEnd: string
+    wakeUpHumor: SleepHumorType,
+    layDownHumor: SleepHumorType
+    biologicalOccurences: BiologicalOccurencesType
+    dreams: DreamInSleepCycleModel[]
+}
+
+export type CreateSleepCycleResponse = string
