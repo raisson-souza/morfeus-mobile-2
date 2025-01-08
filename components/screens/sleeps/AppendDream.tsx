@@ -7,16 +7,15 @@ import CustomButton from "@/components/customs/CustomButton"
 import CustomInput from "@/components/customs/CustomInput"
 import CustomSwitch from "@/components/customs/CustomSwitch"
 import Info from "@/components/base/Info"
+import React from "react"
 import TextBold from "@/components/base/TextBold"
 
 type AppendDreamProps = {
-    dreamId: number
     dream: DreamInSleepCycleModelListed
     onChange: (dream: DreamInSleepCycleModelListed) => void
 }
 
 export default function AppendDream({
-    dreamId,
     dream,
     onChange,
 }: AppendDreamProps) {

@@ -23,14 +23,22 @@ export default function DreamAppender({
     const [ dreams, setDreams ] = useState<DreamInSleepCycleModelListed[]>([])
     const [ creatingDream, setCreatingDream ] = useState<boolean>(false)
     const [ newDream, setNewDream ] = useState<DreamInSleepCycleModelListed | null>(null)
-
-    if (dreams.length === 0 && !creatingDream) {
-        return (
-            <CustomButton
-                title="Adicionar Sonho"
-                onPress={ () => setCreatingDream(true) }
-            />
-        )
+    const newDreamModel: DreamInSleepCycleModelListed = {
+        id: useId(),
+        open: false,
+        title: "",
+        description: "",
+        dreamPointOfViewId: 1,
+        climate: DefaultDreamClimate,
+        dreamHourId: 1,
+        dreamDurationId: 1,
+        dreamLucidityLevelId: 1,
+        dreamTypeId: 1,
+        dreamRealityLevelId: 1,
+        eroticDream: false,
+        hiddenDream: false,
+        personalAnalysis: undefined,
+        tags: [],
     }
 
     const cancelDream = () => {
@@ -39,13 +47,10 @@ export default function DreamAppender({
     }
 
     const saveDream = () => {
-        const newDreamListed: DreamInSleepCycleModelListed = {
-            ...newDream!,
-            id: useId()
-        }
-        const newDreamsList = [ ...dreams, newDreamListed ]
+        const newDreamsList = [ ...dreams, newDream! ]
         setDreams(newDreamsList)
         onChange(newDreamsList)
+        setNewDream(null)
     }
 
     const removeDream = (dreamId: string) => {
@@ -55,33 +60,27 @@ export default function DreamAppender({
         })
         dreamList.splice(i)
         setDreams(dreamList)
+        setNewDream(null)
+    }
+
+    const addNewDream = () => {
+        setNewDream(newDreamModel)
+    }
+
+    if (dreams.length === 0 && !creatingDream) {
+        return (
+            <CustomButton
+                title="Adicionar um Sonho"
+                onPress={ () => setCreatingDream(true) }
+            />
+        )
     }
 
     if (dreams.length === 0 && creatingDream) {
         return (
             <Box.Column>
                 <AppendDream
-                    dreamId={ 1 }
-                    dream={ newDream
-                        ? newDream
-                        : {
-                            id: useId(),
-                            open: true,
-                            title: "",
-                            description: "",
-                            dreamPointOfViewId: 1,
-                            climate: DefaultDreamClimate,
-                            dreamHourId: 1,
-                            dreamDurationId: 1,
-                            dreamLucidityLevelId: 1,
-                            dreamTypeId: 1,
-                            dreamRealityLevelId: 1,
-                            eroticDream: false,
-                            hiddenDream: false,
-                            personalAnalysis: undefined,
-                            tags: [],
-                        }
-                    }
+                    dream={ newDream ? newDream : newDreamModel }
                     onChange={ (e) => { setNewDream(e) }}
                 />
                 <CustomButton
@@ -96,12 +95,14 @@ export default function DreamAppender({
         )
     }
 
+    // TODO: Correção na edição de sonho já salvo
+
     return (
         <Box.Column>
-            <>
+            <Box.Column>
                 {
                     dreams.map((dream, i) => (
-                        <>
+                        <Box.Column key={ i }>
                             <Box.Row
                                 onPress={ () => {
                                     const dreamList = [...dreams]
@@ -113,33 +114,30 @@ export default function DreamAppender({
                                 }}
                             >
                                 <IconAntDesign name={ dream.open ? "down" : "right" } size={ 20 } />
-                                <TextBold>{ `Sonho ${ i } - ${ dream.title }` }</TextBold>
+                                <TextBold>{ `Sonho ${ i + 1 } - ${ dream.title }` }</TextBold>
                             </Box.Row>
                             {
                                 dream.open
                                     ? <AppendDream
-                                        dreamId={ i }
                                         dream={ dream }
-                                        onChange={ () => {
-                                            
-                                        }}
-                                        key={ i }
+                                        onChange={ (e) => setNewDream(e) }
                                     />
                                     : <></>
                             }
                             <CustomButton
                                 title="Excluir Sonho"
-                                onPress={ () =>
-                                    removeDream(dream.id)
-                                }
+                                onPress={ () => removeDream(dream.id) }
                             />
-                        </>
+                        </Box.Column>
                     ))
                 }
-            </>
+            </Box.Column>
             {
                 dreams.length < 3
-                    ? <CustomButton title="Adicionar Novo Sonho" onPress={ () => {}} />
+                    ? <CustomButton
+                        title="Adicionar Novo Sonho"
+                        onPress={ () => addNewDream() }
+                    />
                     : <></>
             }
         </Box.Column>

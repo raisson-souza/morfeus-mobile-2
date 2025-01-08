@@ -1,4 +1,4 @@
-import { CreateSleepCycleModel, DreamInSleepCycleModel } from "@/types/sleeps"
+import { CreateSleepCycleModel } from "@/types/sleeps"
 import { createSleepCycleValidator } from "@/validators/sleeps"
 import { DateFormatter } from "@/utils/DateFormatter"
 import { DefaultBiologicalOccurences } from "@/types/biologicalOccurences"
@@ -35,13 +35,6 @@ export default function CreateSleepScreen() {
     const [ showWakeUpHumors, setShowWakeUpHumors ] = useState<boolean>(false)
     const [ showBiologicalOccurences, setShowBiologicalOccurences ] = useState<boolean>(false)
     const [ openBiologicalOccurencesInfoModal, setOpenBiologicalOccurencesInfoModal ] = useState<boolean>(false)
-
-    // const appendDreamToSleepCycle = (dream: DreamInSleepCycleModel) => {
-    //     setSleepCycleModel({
-    //         ...sleepCycleModel,
-    //         dreams: [...sleepCycleModel.dreams, dream]
-    //     })
-    // }
 
     const createSleepCycle = async () => {
         const parsedSleepCycleModel = createSleepCycleValidator.safeParse(sleepCycleModel)
@@ -344,11 +337,9 @@ export default function CreateSleepScreen() {
                             : <></>
                     }
                 </Box.Column>
-                {/* <DreamAppender
-                    onChange={ (e) =>
-                        setSleepCycleModel({ ...sleepCycleModel, dreams: e })
-                    }
-                /> */}
+                <DreamAppender
+                    onChange={ (e) => setSleepCycleModel({ ...sleepCycleModel, dreams: e }) }
+                />
                 <Box.Column style={ styles.btns }>
                     <CustomButton
                         title="Criar Ciclo de Sono"
