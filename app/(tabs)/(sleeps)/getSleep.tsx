@@ -80,13 +80,15 @@ export default function GetSleepScreen() {
     const renderSleepTime = (): JSX.Element => {
         if (isNil(sleep!.sleepTime) || sleep!.sleepTime == 0)
             return <></>
-        else
+        else {
+            const fixedSleepTime = Number.parseFloat(sleep!.sleepTime.toFixed(2))
             return (
                 <Box.Row style={ styles.gap }>
                     <IconFeather name="clock" size={ 19 } color="white" />
-                    <TextBold style={{ color: "white" }}>{ `${ sleep!.sleepTime } horas de sono` }</TextBold>
+                    <TextBold style={{ color: "white" }}>{ `${ fixedSleepTime } horas de sono` }</TextBold>
                 </Box.Row>
-        )
+            )
+        }
     }
 
     const renderIsNightSleep = (): JSX.Element => {
