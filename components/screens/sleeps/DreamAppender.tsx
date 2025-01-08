@@ -1,5 +1,6 @@
 import { DefaultDreamClimate } from "@/types/dreamClimate"
 import { DreamInSleepCycleModel } from "@/types/sleeps"
+import { StyleSheet } from "react-native"
 import { useId, useState } from "react"
 import AppendDream from "./AppendDream"
 import Box from "@/components/base/Box"
@@ -78,7 +79,8 @@ export default function DreamAppender({
 
     if (dreams.length === 0 && creatingDream) {
         return (
-            <Box.Column>
+            <Box.Column style={ styles.firstDreamContainer }>
+                <TextBold>Cadastro de Sonho</TextBold>
                 <AppendDream
                     dream={ newDream ? newDream : newDreamModel }
                     onChange={ (e) => { setNewDream(e) }}
@@ -143,3 +145,9 @@ export default function DreamAppender({
         </Box.Column>
     )
 }
+
+const styles = StyleSheet.create({
+    firstDreamContainer: {
+        gap: 5,
+    },
+})
