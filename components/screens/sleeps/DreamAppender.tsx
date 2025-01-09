@@ -44,29 +44,29 @@ export default function DreamAppender({
         }
     }
 
-    const cancelDream = () => {
+    const cancelDreamCreation = () => {
         setCreatingDream(false)
         setNewDream(null)
     }
 
     const saveDream = () => {
         setCreatingDream(false)
-        const newDreamsList = [ ...dreams, newDream! ]
-        setDreams(newDreamsList)
-        onChange(newDreamsList)
+        const newDreamList = [ ...dreams, newDream! ]
+        setDreams(newDreamList)
+        onChange(newDreamList)
         setNewDream(null)
     }
 
     const removeDream = (dreamId: number) => {
         setCreatingDream(false)
-        const dreamList = [...dreams]
-        const i = dreamList.findIndex(dream => {
+        const newDreamList = [...dreams]
+        const i = newDreamList.findIndex(dream => {
             return dream.id === dreamId
         })
-        dreamList.splice(i)
-        setDreams(dreamList)
+        newDreamList.splice(i)
+        setDreams(newDreamList)
         setNewDream(null)
-        onChange(dreamList)
+        onChange(newDreamList)
     }
 
     const addNewDream = () => {
@@ -85,12 +85,12 @@ export default function DreamAppender({
     }
 
     const updateDream = (dream: DreamInSleepCycleModelListed) => {
-        const dreamList = [...dreams]
-        const i = dreamList.findIndex(_dream => _dream.id === dream.id)
-        dreamList[i] = dream
-        setDreams(dreamList)
+        const newDreamList = [...dreams]
+        const i = newDreamList.findIndex(_dream => _dream.id === dream.id)
+        newDreamList[i] = dream
+        setDreams(newDreamList)
         setNewDream(dream)
-        onChange(dreamList)
+        onChange(newDreamList)
     }
 
     if (dreams.length === 0 && !creatingDream) {
@@ -112,7 +112,7 @@ export default function DreamAppender({
                 />
                 <CustomButton
                     title="Cancelar Sonho"
-                    onPress={ () => cancelDream() }
+                    onPress={ () => cancelDreamCreation() }
                 />
                 <CustomButton
                     title="Salvar Sonho"
@@ -162,7 +162,7 @@ export default function DreamAppender({
                             />
                             <CustomButton
                                 title="Cancelar Sonho"
-                                onPress={ () => cancelDream() }
+                                onPress={ () => cancelDreamCreation() }
                             />
                             <CustomButton
                                 title="Salvar Sonho"

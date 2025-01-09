@@ -14,6 +14,7 @@ import CustomButton from "@/components/customs/CustomButton"
 import CustomSwitch from "@/components/customs/CustomSwitch"
 import DatePickerShow from "@/components/date/DatePickerShow"
 import DreamAppender from "@/components/screens/sleeps/DreamAppender"
+import Info from "@/components/base/Info"
 import React from "react"
 import SleepService from "@/services/api/SleepService"
 import TextBold from "@/components/base/TextBold"
@@ -337,9 +338,20 @@ export default function CreateSleepScreen() {
                             : <></>
                     }
                 </Box.Column>
-                <DreamAppender
-                    onChange={ (e) => setSleepCycleModel({ ...sleepCycleModel, dreams: e }) }
-                />
+                <Box.Column>
+                    <Info
+                        infoDescription="Cadastro de sonhos"
+                        modalTitle="Cadastrar um sonho ao cadastrar um ciclo de sono"
+                        modalDescription={[
+                            "Durante o cadastro de um ciclo de sono você pode cadastrar até 3 sonhos.",
+                            "Caso desejável, você pode cadastrar um 4° sonho neste mesmo ciclo de sono na aba de SONHOS.",
+                            "É possível editar e excluir os sonhos cadastrados aqui após o salvamento na aba de SONHOS."
+                        ]}
+                    />
+                    <DreamAppender
+                        onChange={ (e) => setSleepCycleModel({ ...sleepCycleModel, dreams: e }) }
+                    />
+                </Box.Column>
                 <Box.Column style={ styles.btns }>
                     <CustomButton
                         title="Criar Ciclo de Sono"
