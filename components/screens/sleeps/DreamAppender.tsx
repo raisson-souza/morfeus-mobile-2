@@ -63,7 +63,7 @@ export default function DreamAppender({
         const i = newDreamList.findIndex(dream => {
             return dream.id === dreamId
         })
-        newDreamList.splice(i)
+        newDreamList.splice(i, 1)
         setDreams(newDreamList)
         setNewDream(null)
         onChange(newDreamList)
@@ -76,10 +76,10 @@ export default function DreamAppender({
 
     const openDream = (dreamId: number) => {
         const dreamList = [...dreams]
-        const dreamInteractionIndex = dreamList.findIndex(_dream => {
+        const i = dreamList.findIndex(_dream => {
             return _dream.id === dreamId
         })
-        dreamList[dreamInteractionIndex].open = !dreamList[dreamInteractionIndex].open
+        dreamList[i].open = !dreamList[i].open
         setDreams(dreamList)
         onChange(dreamList)
     }
