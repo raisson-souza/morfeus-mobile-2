@@ -11,7 +11,7 @@ import TextBold from "@/components/base/TextBold"
 
 export type DreamInSleepCycleModelListed = {
     open: boolean
-    id: string
+    id: number
 } & DreamInSleepCycleModel
 
 type DreamAppenderProps = {
@@ -24,22 +24,24 @@ export default function DreamAppender({
     const [ dreams, setDreams ] = useState<DreamInSleepCycleModelListed[]>([])
     const [ creatingDream, setCreatingDream ] = useState<boolean>(false)
     const [ newDream, setNewDream ] = useState<DreamInSleepCycleModelListed | null>(null)
-    const newDreamModel: DreamInSleepCycleModelListed = {
-        id: useId(),
-        open: false,
-        title: "",
-        description: "",
-        dreamPointOfViewId: 1,
-        climate: DefaultDreamClimate,
-        dreamHourId: 1,
-        dreamDurationId: 1,
-        dreamLucidityLevelId: 1,
-        dreamTypeId: 1,
-        dreamRealityLevelId: 1,
-        eroticDream: false,
-        hiddenDream: false,
-        personalAnalysis: undefined,
-        tags: [],
+    const getNewDreamModel = (): DreamInSleepCycleModelListed => {
+        return {
+            id: new Date().getTime(),
+            open: false,
+            title: "",
+            description: "",
+            dreamPointOfViewId: 1,
+            climate: DefaultDreamClimate,
+            dreamHourId: 1,
+            dreamDurationId: 1,
+            dreamLucidityLevelId: 1,
+            dreamTypeId: 1,
+            dreamRealityLevelId: 1,
+            eroticDream: false,
+            hiddenDream: false,
+            personalAnalysis: undefined,
+            tags: [],
+        }
     }
 
     const cancelDream = () => {
@@ -55,7 +57,7 @@ export default function DreamAppender({
         setNewDream(null)
     }
 
-    const removeDream = (dreamId: string) => {
+    const removeDream = (dreamId: number) => {
         setCreatingDream(false)
         const dreamList = [...dreams]
         const i = dreamList.findIndex(dream => {
@@ -67,8 +69,17 @@ export default function DreamAppender({
     }
 
     const addNewDream = () => {
-        setNewDream(newDreamModel)
+        setNewDream(getNewDreamModel())
         setCreatingDream(true)
+    }
+
+    const openDream = (dreamId: number) => {
+        const dreamList = [...dreams]
+        const dreamInteractionIndex = dreamList.findIndex(_dream => {
+            return _dream.id === dreamId
+        })
+        dreamList[dreamInteractionIndex].open = !dreamList[dreamInteractionIndex].open
+        setDreams(dreamList)
     }
 
     if (dreams.length === 0 && !creatingDream) {
@@ -85,7 +96,7 @@ export default function DreamAppender({
             <Box.Column style={ styles.firstDreamContainer }>
                 <TextBold>Cadastro de Sonho</TextBold>
                 <AppendDream
-                    dream={ newDream ? newDream : newDreamModel }
+                    dream={ newDream ? newDream : getNewDreamModel() }
                     onChange={ (e) => { setNewDream(e) }}
                 />
                 <CustomButton
@@ -111,16 +122,7 @@ export default function DreamAppender({
                             style={ styles.dream }
                             key={ i }
                         >
-                            <Box.Row
-                                onPress={ () => {
-                                    const dreamList = [...dreams]
-                                    const dreamInteractionIndex = dreamList.findIndex(_dream => {
-                                        return dream.id === dream.id
-                                    })
-                                    dreamList[dreamInteractionIndex].open = !dreamList[dreamInteractionIndex].open
-                                    setDreams(dreamList)
-                                }}
-                            >
+                            <Box.Row onPress={ () => openDream(dream.id) }>
                                 <IconAntDesign name={ dream.open ? "down" : "right" } size={ 20 } />
                                 <TextBold>{ `Sonho ${ i + 1 } - ${ dream.title }` }</TextBold>
                             </Box.Row>

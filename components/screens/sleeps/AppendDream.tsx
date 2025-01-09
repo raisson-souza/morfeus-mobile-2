@@ -52,11 +52,13 @@ export default function AppendDream({
                 label="Título"
                 onChange={ (e) => onChange({ ...dream, title: e }) }
                 width="100%"
+                defaultValue={ dream.title }
             />
             <CustomInput
                 label="Descrição"
                 onChange={ (e) => onChange({ ...dream, description: e }) }
                 width="100%"
+                defaultValue={ dream.description }
             />
             <Box.Column>
                 <Info
@@ -392,6 +394,7 @@ export default function AppendDream({
                 label="Análise Pessoal"
                 onChange={ (e) => onChange({ ...dream, personalAnalysis: e }) }
                 width="100%"
+                defaultValue={ dream.personalAnalysis }
             />
             <Box.Column style={ styles.tagContainer }>
                 <Box.Column style={ styles.tagContainerActions }>
