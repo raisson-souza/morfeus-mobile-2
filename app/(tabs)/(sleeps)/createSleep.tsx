@@ -374,5 +374,6 @@ const styles = StyleSheet.create({
     },
     btns: {
         gap: 5,
+        paddingTop: 15,
     },
 })

@@ -48,6 +48,7 @@ export default function DreamAppender({
     }
 
     const saveDream = () => {
+        setCreatingDream(false)
         const newDreamsList = [ ...dreams, newDream! ]
         setDreams(newDreamsList)
         onChange(newDreamsList)
@@ -55,6 +56,7 @@ export default function DreamAppender({
     }
 
     const removeDream = (dreamId: string) => {
+        setCreatingDream(false)
         const dreamList = [...dreams]
         const i = dreamList.findIndex(dream => {
             return dream.id === dreamId
@@ -66,6 +68,7 @@ export default function DreamAppender({
 
     const addNewDream = () => {
         setNewDream(newDreamModel)
+        setCreatingDream(true)
     }
 
     if (dreams.length === 0 && !creatingDream) {
@@ -100,11 +103,14 @@ export default function DreamAppender({
     // TODO: Correção na edição de sonho já salvo
 
     return (
-        <Box.Column>
-            <Box.Column>
+        <Box.Column style={ styles.container }>
+            <Box.Column style={ styles.dreamList }>
                 {
                     dreams.map((dream, i) => (
-                        <Box.Column key={ i }>
+                        <Box.Column
+                            style={ styles.dream }
+                            key={ i }
+                        >
                             <Box.Row
                                 onPress={ () => {
                                     const dreamList = [...dreams]
@@ -135,7 +141,28 @@ export default function DreamAppender({
                 }
             </Box.Column>
             {
-                dreams.length < 3
+                creatingDream
+                    ? (
+                        <Box.Column style={ styles.anotherDreamContainer }>
+                            <TextBold>Cadastrando novo sonho</TextBold>
+                            <AppendDream
+                                dream={ newDream! }
+                                onChange={ (e) => setNewDream(e) }
+                            />
+                            <CustomButton
+                                title="Cancelar Sonho"
+                                onPress={ () => cancelDream() }
+                            />
+                            <CustomButton
+                                title="Salvar Sonho"
+                                onPress={ () => saveDream() }
+                            />
+                        </Box.Column>
+                    )
+                    : <></>
+            }
+            {
+                dreams.length < 3 && !creatingDream
                     ? <CustomButton
                         title="Adicionar Novo Sonho"
                         onPress={ () => addNewDream() }
@@ -148,6 +175,18 @@ export default function DreamAppender({
 
 const styles = StyleSheet.create({
     firstDreamContainer: {
+        gap: 5,
+    },
+    container: {
+        gap: 5,
+    },
+    dreamList: {
+        gap: 5,
+    },
+    dream: {
+        gap: 3,
+    },
+    anotherDreamContainer: {
         gap: 5,
     },
 })
