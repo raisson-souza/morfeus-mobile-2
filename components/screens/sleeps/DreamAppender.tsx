@@ -1,7 +1,7 @@
 import { DefaultDreamClimate } from "@/types/dreamClimate"
 import { DreamInSleepCycleModel } from "@/types/sleeps"
 import { StyleSheet } from "react-native"
-import { useId, useState } from "react"
+import { useState } from "react"
 import AppendDream from "./AppendDream"
 import Box from "@/components/base/Box"
 import CustomButton from "@/components/customs/CustomButton"
@@ -66,6 +66,7 @@ export default function DreamAppender({
         dreamList.splice(i)
         setDreams(dreamList)
         setNewDream(null)
+        onChange(dreamList)
     }
 
     const addNewDream = () => {
@@ -80,6 +81,16 @@ export default function DreamAppender({
         })
         dreamList[dreamInteractionIndex].open = !dreamList[dreamInteractionIndex].open
         setDreams(dreamList)
+        onChange(dreamList)
+    }
+
+    const updateDream = (dream: DreamInSleepCycleModelListed) => {
+        const dreamList = [...dreams]
+        const i = dreamList.findIndex(_dream => _dream.id === dream.id)
+        dreamList[i] = dream
+        setDreams(dreamList)
+        setNewDream(dream)
+        onChange(dreamList)
     }
 
     if (dreams.length === 0 && !creatingDream) {
@@ -97,7 +108,7 @@ export default function DreamAppender({
                 <TextBold>Cadastro de Sonho</TextBold>
                 <AppendDream
                     dream={ newDream ? newDream : getNewDreamModel() }
-                    onChange={ (e) => { setNewDream(e) }}
+                    onChange={ (e) => { updateDream(e) }}
                 />
                 <CustomButton
                     title="Cancelar Sonho"
@@ -110,8 +121,6 @@ export default function DreamAppender({
             </Box.Column>
         )
     }
-
-    // TODO: Correção na edição de sonho já salvo
 
     return (
         <Box.Column style={ styles.container }>
@@ -130,7 +139,7 @@ export default function DreamAppender({
                                 dream.open
                                     ? <AppendDream
                                         dream={ dream }
-                                        onChange={ (e) => setNewDream(e) }
+                                        onChange={ (e) => updateDream(e) }
                                     />
                                     : <></>
                             }
@@ -149,7 +158,7 @@ export default function DreamAppender({
                             <TextBold>Cadastrando novo sonho</TextBold>
                             <AppendDream
                                 dream={ newDream! }
-                                onChange={ (e) => setNewDream(e) }
+                                onChange={ (e) => updateDream(e) }
                             />
                             <CustomButton
                                 title="Cancelar Sonho"
