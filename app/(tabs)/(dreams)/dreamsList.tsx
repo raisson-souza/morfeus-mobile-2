@@ -11,7 +11,7 @@ import CustomButton from "@/components/customs/CustomButton"
 import DreamListedByUser from "@/components/screens/dreams/DreamListedByUser"
 import DreamService from "@/services/api/DreamService"
 import Loading from "@/components/base/Loading"
-import MonthExtractor from "@/components/screens/general/MonthExtractor"
+import MonthExtractorHeader from "@/components/screens/general/MonthExtractorHeader"
 import React from "react"
 import SwitchNull from "@/components/customs/CustomSwitchNull"
 import TextBold from "@/components/base/TextBold"
@@ -79,22 +79,15 @@ export default function DreamsList() {
     return (
         <Screen>
             <Box.Center style={ styles.container }>
-                <Box.Row style={ styles.header }>
-                    <MonthExtractor
-                        initialDate={ date }
-                        onChange={ (e) => setDate(e) }
-                    />
-                    <Box.Column style={ styles.headerButtonsContainer }>
-                        <CustomButton
-                            title="Ver Mais"
-                            onPress={ () => router.navigate("/(tabs)/(dreams)/dreamsHome") }
-                        />
-                        <CustomButton
-                            title="Criar Sonho"
-                            onPress={ () => router.navigate("/createDream") }
-                        />
-                    </Box.Column>
-                </Box.Row>
+                <MonthExtractorHeader
+                    monthExtractorProps={{
+                        initialDate: date,
+                        onChange: (e) => { setDate(e) },
+                    }}
+                    customActionBtnTitle="Criar Sonho"
+                    customActionBtnAction={ () => router.navigate('/(tabs)/(dreams)/createDream') }
+                    routerBtnRouterAction={ () => router.navigate('/(tabs)/(dreams)/dreamsHome') }
+                />
                 <Box.Row style={ styles.filterContainer }>
                     <TextBold style={ styles.filterMessage }>Filtragem de Sonhos</TextBold>
                 </Box.Row>
@@ -587,16 +580,6 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         gap: 5,
-    },
-    switchNullContainer: {
-    },
-    header: {
-        width: "100%",
-        justifyContent: "space-around",
-        alignItems: "center",
-    },
-    headerButtonsContainer: {
-        gap: 10,
     },
     dreamsListTitle: {
         fontSize: 18,

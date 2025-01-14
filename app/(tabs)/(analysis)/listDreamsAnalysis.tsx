@@ -10,7 +10,7 @@ import IconFontAwesome5 from "react-native-vector-icons/FontAwesome5"
 import IconMaterialIcons from "react-native-vector-icons/MaterialIcons"
 import Info from "@/components/base/Info"
 import Loading from "@/components/base/Loading"
-import MonthExtractor from "@/components/screens/general/MonthExtractor"
+import MonthExtractorHeader from "@/components/screens/general/MonthExtractorHeader"
 import React from "react"
 import TextBold from "@/components/base/TextBold"
 
@@ -200,27 +200,18 @@ export default function ListDreamsAnalysisScreen() {
         )
     }
 
-    // TODO: Componente de Header com MonthExtractor, botão de ação customizada e botão de navegação.
-
     return (
         <Screen>
             <Box.Column style={ styles.container }>
-                <Box.Row style={ styles.header }>
-                    <MonthExtractor
-                        initialDate={ date }
-                        onChange={ async (e) => await updateDate(e) }
-                    />
-                    <Box.Column>
-                        <CustomButton
-                            title="Voltar"
-                            onPress={ () => router.navigate("/(tabs)/(analysis)/analysisHome") }
-                        />
-                        <CustomButton
-                            title="Atualizar"
-                            onPress={ async () => await refreshAnalysis() }
-                        />
-                    </Box.Column>
-                </Box.Row>
+                <MonthExtractorHeader
+                    monthExtractorProps={{
+                        initialDate: date,
+                        onChange: async (e) => await updateDate(e),
+                    }}
+                    customActionBtnTitle="Atualizar"
+                    customActionBtnAction={ async () => await refreshAnalysis() }
+                    routerBtnRouterAction={ () => router.navigate("/(tabs)/(analysis)/analysisHome") }
+                />
                 {
                     loading
                         ? <Loading onlyLoading={ false } text="Buscando análise de sonhos..." />
@@ -245,11 +236,6 @@ const styles = StyleSheet.create({
     container: {
         width: "100%",
         gap: 15,
-    },
-    header: {
-        width: "100%",
-        justifyContent: 'space-between',
-        alignItems: "center",
     },
     analysisContainer: {
         gap: 10,

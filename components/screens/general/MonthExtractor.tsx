@@ -4,7 +4,7 @@ import DatePicker from "@/components/customs/DatePicker"
 import MonthParser from "@/utils/MonthParser"
 import TextBold from "@/components/base/TextBold"
 
-type MonthExtractorProps = {
+export type MonthExtractorProps = {
     initialDate: Date
     onChange: (date: Date) => void
 }

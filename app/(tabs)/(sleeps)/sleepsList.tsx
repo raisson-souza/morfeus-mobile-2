@@ -8,7 +8,7 @@ import { useRouter } from "expo-router"
 import Box from "@/components/base/Box"
 import CustomButton from "@/components/customs/CustomButton"
 import Loading from "@/components/base/Loading"
-import MonthExtractor from "@/components/screens/general/MonthExtractor"
+import MonthExtractorHeader from "@/components/screens/general/MonthExtractorHeader"
 import React from "react"
 import SleepListedByUser from "@/components/screens/sleeps/SleepListedByUser"
 import SleepService from "@/services/api/SleepService"
@@ -76,24 +76,15 @@ export default function SleepsListScreen() {
                     sleeps
                         ? (
                             <>
-                                <Box.Row style={ styles.header }>
-                                    <MonthExtractor
-                                        initialDate={ date }
-                                        onChange={ async (e) => {
-                                            setDate(e)
-                                        }}
-                                    />
-                                    <Box.Column style={ styles.headerMoreOptions }>
-                                        <CustomButton
-                                            title="Ver Mais"
-                                            onPress={ () => router.navigate('/(tabs)/(sleeps)/sleepsHome') }
-                                        />
-                                        <CustomButton
-                                            title="Criar Ciclo de Sono"
-                                            onPress={ () => router.navigate('/(tabs)/(sleeps)/createSleep') }
-                                        />
-                                    </Box.Column>
-                                </Box.Row>
+                                <MonthExtractorHeader
+                                    monthExtractorProps={{
+                                        initialDate: date,
+                                        onChange: (e) => { setDate(e) },
+                                    }}
+                                    customActionBtnTitle="Criar Ciclo de Sono"
+                                    customActionBtnAction={ () => router.navigate('/(tabs)/(sleeps)/createSleep') }
+                                    routerBtnRouterAction={ () => router.navigate('/(tabs)/(sleeps)/sleepsHome') }
+                                />
                                 { renderSleepsCycles() }
                                 {
                                     sleeps.length >= 10
@@ -119,13 +110,6 @@ export default function SleepsListScreen() {
 const styles = StyleSheet.create({
     container: {
         width: '100%',
-    },
-    header: {
-        width: "100%",
-        justifyContent: "space-between",
-    },
-    headerMoreOptions: {
-        gap: 10,
     },
     sleepsCycleList: {
         paddingTop: 5,
