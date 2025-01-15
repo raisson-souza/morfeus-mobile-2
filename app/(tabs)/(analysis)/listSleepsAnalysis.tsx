@@ -16,12 +16,21 @@ import React from "react"
 import SleepHumorTranslator from "@/utils/SleepHumorTranslator"
 import TextBold from "@/components/base/TextBold"
 
+type DisableFetchActions = {
+    get: boolean
+    create: boolean
+}
+
 export default function ListSleepsAnalysisScreen() {
     const router = useRouter()
     const [ date, setDate ] = useState<Date>(DateFormatter.fixUTC(new Date().getTime()))
     const [ analysis, setAnalysis ] = useState<SleepAnalysisModel | null>(null)
     const [ loading, setLoading ] = useState<boolean>(true)
     const [ errorMessage, setErrorMessage ] = useState<string>("")
+    const [ disableFetchActions, setDisableFetchActions ] = useState<DisableFetchActions>({
+        get: false,
+        create: false,
+    })
 
     const fetchGetAnalysis = async (fetchDate?: Date) => {
         const response = await AnalysisService.GetSleepAnalysis({
@@ -36,6 +45,7 @@ export default function ListSleepsAnalysisScreen() {
                 setErrorMessage("Não há análise criada para este mês, crie uma.")
             else
                 setErrorMessage(response.ErrorMessage ?? "")
+            setDisableFetchActions({ get: true, create: disableFetchActions.create })
         }
     }
 
@@ -47,8 +57,10 @@ export default function ListSleepsAnalysisScreen() {
 
         if (response.Success)
             await fetchGetAnalysis()
-        else
+        else {
             setErrorMessage(response.ErrorMessage ?? "")
+            setDisableFetchActions({ get: disableFetchActions.get, create: true })
+        }
 
         setLoading(false)
     }
@@ -64,6 +76,7 @@ export default function ListSleepsAnalysisScreen() {
         setDate(newDate)
         await fetchGetAnalysis(newDate)
         setLoading(false)
+        setDisableFetchActions({ get: false, create: false })
     }
 
     const refreshAnalysis = async () => {
@@ -71,6 +84,7 @@ export default function ListSleepsAnalysisScreen() {
         setAnalysis(null)
         await fetchCreateAnalysis()
         setLoading(false)
+        setDisableFetchActions({ get: false, create: false })
     }
 
     const renderAnalysis = () => {
@@ -85,6 +99,7 @@ export default function ListSleepsAnalysisScreen() {
                             await fetchGetAnalysis()
                             setLoading(false)
                         }}
+                        active={ !disableFetchActions.get }
                     />
                     <CustomButton
                         title="Criar Análise"
@@ -93,6 +108,7 @@ export default function ListSleepsAnalysisScreen() {
                             await fetchCreateAnalysis()
                             setLoading(false)
                         }}
+                        active={ !disableFetchActions.create }
                     />
                 </Box.Column>
             )
@@ -251,6 +267,7 @@ export default function ListSleepsAnalysisScreen() {
                     }}
                     customActionBtnTitle="Atualizar"
                     customActionBtnAction={ async () => await refreshAnalysis() }
+                    isCustomActionBtnActive={ !disableFetchActions.get || !disableFetchActions.create }
                     routerBtnRouterAction={ () => router.navigate("/(tabs)/(analysis)/analysisHome") }
                 />
                 {
