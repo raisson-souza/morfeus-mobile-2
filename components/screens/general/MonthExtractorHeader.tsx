@@ -13,10 +13,10 @@ type MonthExtractorHeaderProps = {
 
 export default function MonthExtractorHeader({
     monthExtractorProps,
-    customActionBtnTitle: actionBtnTitle,
-    customActionBtnAction: actionBtnAction,
+    customActionBtnTitle,
+    customActionBtnAction,
     isCustomActionBtnActive = true,
-    routerBtnRouterAction: moreActionsBtnRouterAction,
+    routerBtnRouterAction,
 }: MonthExtractorHeaderProps) {
     return (
         <Box.Row style={ styles.container }>
@@ -24,11 +24,11 @@ export default function MonthExtractorHeader({
             <Box.Column style={ styles.btns }>
                 <CustomButton
                     title="Ver Mais"
-                    onPress={ () => moreActionsBtnRouterAction() }
+                    onPress={ () => routerBtnRouterAction() }
                 />
                 <CustomButton
-                    title={ actionBtnTitle }
-                    onPress={ () => actionBtnAction() }
+                    title={ customActionBtnTitle }
+                    onPress={ () => customActionBtnAction() }
                     active={ isCustomActionBtnActive }
                 />
             </Box.Column>
