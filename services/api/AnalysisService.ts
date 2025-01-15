@@ -1,3 +1,4 @@
+import { CreateSleepAnalysisRequest, CreateSleepAnalysisResponse, GetSleepAnalysisRequest, GetSleepAnalysisResponse } from "@/types/sleepAnalysis"
 import Endpoints from "./base/Endpoints"
 
 export default abstract class AnalysisService extends Endpoints {
@@ -15,11 +16,17 @@ export default abstract class AnalysisService extends Endpoints {
         })
     }
 
-    static async CreateSleepAnalysis() {
-
+    static async CreateSleepAnalysis(request: CreateSleepAnalysisRequest) {
+        return await this.Post<CreateSleepAnalysisResponse>({
+            url: `/analysis/sleeps?date=${ request.date }`,
+            authorization: await this.GetAuthorization(),
+        })
     }
 
-    static async GetSleepAnalysis() {
-
+    static async GetSleepAnalysis(request: GetSleepAnalysisRequest) {
+        return await this.Get<GetSleepAnalysisResponse>({
+            url: `/analysis/sleeps/get?date=${ request.date }`,
+            authorization: await this.GetAuthorization(),
+        })
     }
 }
