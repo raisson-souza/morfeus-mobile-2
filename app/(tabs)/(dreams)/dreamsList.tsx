@@ -60,9 +60,13 @@ export default function DreamsList() {
     const [ dreamClimatesOutroNullSwitch, setDreamClimatesOutroNullSwitch ] = useState<boolean>(listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates.outro ?? true)
     const [ dreamClimatesIndefinidoNullSwitch, setDreamClimatesIndefinidoNullSwitch ] = useState<boolean>(listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates.indefinido ?? true)
 
-    useEffect(() => {
-        const fetchDreams = async () => {
-            await DreamService.ListByUser(isOnline, listDreamsByUserForm)
+    const fetchDreams = async (newDate?: Date) => {
+        await DreamService.ListByUser(isOnline, {
+            ...listDreamsByUserForm,
+            date: newDate
+                ? DateFormatter.forBackend.date(newDate.getTime())
+                : DateFormatter.forBackend.date(date.getTime())
+        })
             .then(response => {
                 if (response.Success) {
                     setDreamsList(response.Data)
@@ -70,11 +74,16 @@ export default function DreamsList() {
                 }
                 alert(response.ErrorMessage)
             })
-        }
-        fetchDreams()
-    }, [listDreamsByUserForm, date])
+    }
 
-    // TODO: validar comportamento da busca
+    useEffect(() => {
+        fetchDreams()
+    }, [listDreamsByUserForm])
+
+    const changeMonth = async (newDate: Date) => {
+        setDate(newDate)
+        await fetchDreams(newDate)
+    }
 
     return (
         <Screen>
@@ -82,7 +91,7 @@ export default function DreamsList() {
                 <MonthExtractorHeader
                     monthExtractorProps={{
                         initialDate: date,
-                        onChange: (e) => { setDate(e) },
+                        onChange: async (e) => { await changeMonth(e) },
                     }}
                     customActionBtnTitle="Criar Sonho"
                     customActionBtnAction={ () => router.navigate('/(tabs)/(dreams)/createDream') }
