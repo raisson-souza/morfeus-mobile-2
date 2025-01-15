@@ -163,16 +163,6 @@ export default function ListSleepsAnalysisScreen() {
             updatedAt,
         } = analysis
 
-        const renderUpdatedAt = () => {
-            return updatedAt === null
-                ? <></>
-                : (
-                    <Box.Row>
-                        { renderIndividualAnalysis(mostDreamsPerSleepDate, `Análise última vez atualizada: ${ mostDreamsPerSleepDate }`, "calendar-day") }
-                    </Box.Row>
-                )
-        }
-
         const renderGeneralStatisticsAnalysis = () => {
             if (dreamsCount != 0 || mostSleepDuration != 0 || leastSleepDuration != 0 || averageDreamPerSleep != 0 || sleepDurationAverage != 0) {
                 return (
@@ -242,6 +232,16 @@ export default function ListSleepsAnalysisScreen() {
                 )
             }
             return <></>
+        }
+
+        const renderUpdatedAt = () => {
+            return updatedAt === null
+                ? <></>
+                : (
+                    <Box.Row>
+                        { renderIndividualAnalysis(1, `Análise última vez atualizada: ${ DateFormatter.removeTime(updatedAt as any) }`, "calendar-day") }
+                    </Box.Row>
+                )
         }
 
         return (

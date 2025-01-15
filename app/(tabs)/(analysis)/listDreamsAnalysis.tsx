@@ -9,6 +9,7 @@ import CustomButton from "@/components/customs/CustomButton"
 import IconFontAwesome5 from "react-native-vector-icons/FontAwesome5"
 import IconMaterialIcons from "react-native-vector-icons/MaterialIcons"
 import Info from "@/components/base/Info"
+import isNil from "@/utils/IsNill"
 import Loading from "@/components/base/Loading"
 import MonthExtractorHeader from "@/components/screens/general/MonthExtractorHeader"
 import React from "react"
@@ -92,11 +93,23 @@ export default function ListDreamsAnalysisScreen() {
             )
         }
 
-        const _renderIconMessage = (
-            iconName: string,
+        const renderIndividualAnalysis = (
+            info: string | number | null,
             msg: string,
-            iconLib: "fontAwesome5" | "materialIcons" = "fontAwesome5"
+            iconName: string,
+            iconLib: "fontAwesome5" | "materialIcons" = "fontAwesome5",
         ) => {
+            if (info === null) return <></>
+
+            if (typeof info === "number") {
+                if (info === 0) return <></>
+            }
+
+            if (typeof info === "string") {
+                if (info === "null" || info === "0" || info === "0.00")
+                    return <></>
+            }
+
             return (
                 <Box.Row style={ styles.individualAnalysis }>
                     {
@@ -109,92 +122,103 @@ export default function ListDreamsAnalysisScreen() {
             )
         }
 
+        const {
+            mostPointOfViewOccurence,
+            mostClimateOccurence,
+            mostHourOccurence,
+            mostDurationOccurence,
+            mostLucidityLevelOccurence,
+            mostDreamTypeOccurence,
+            mostRealityLevelOccurenceOccurence,
+            eroticDreamsAverage,
+            tagPerDreamAverage,
+            longestDreamTitle,
+            updatedAt,
+        } = analysis
+
         const renderMostPointOfViewOccurence = () => {
-            switch (analysis!.mostPointOfViewOccurence) {
+            switch (mostPointOfViewOccurence) {
                 case 1:
-                    return _renderIconMessage("user", "Perspectiva: Primeira pessoa")
+                    return renderIndividualAnalysis(1, "Perspectiva: Primeira pessoa",  "user")
                 case 2:
-                    return _renderIconMessage("user", "Perspectiva: Segunda pessoa")
+                    return renderIndividualAnalysis(2, "Perspectiva: Segunda pessoa", "user")
                 case 3:
-                    return _renderIconMessage("user", "Perspectiva: Terceira pessoa")
+                    return renderIndividualAnalysis(3, "Perspectiva: Terceira pessoa", "user")
                 default:
-                    return _renderIconMessage("user", "Perspectiva: Primeira pessoa")
+                    return renderIndividualAnalysis(1, "Perspectiva: Primeira pessoa", "user")
             }
         }
 
         const renderMostClimateOccurence = () => {
-            if (analysis!.mostClimateOccurence === "multiplos")
-                return _renderIconMessage("cloud-sun-rain", "Múltiplos climas")
-            else if (analysis!.mostClimateOccurence === "outro")
-                return _renderIconMessage("cloud-sun-rain", "Outros climas")
-            else if (analysis!.mostClimateOccurence === "indefinido")
-                return _renderIconMessage("cloud-sun-rain", "Clima indefinido")
+            if (mostClimateOccurence === "multiplos")
+                return renderIndividualAnalysis(mostClimateOccurence, "Múltiplos climas", "cloud-sun-rain")
+            else if (mostClimateOccurence === "outro")
+                return renderIndividualAnalysis(mostClimateOccurence, "Outros climas", "cloud-sun-rain")
+            else if (mostClimateOccurence === "indefinido")
+                return renderIndividualAnalysis(mostClimateOccurence, "Clima indefinido", "cloud-sun-rain")
             else {
-                const message = `${ analysis!.mostClimateOccurence.charAt(0).toUpperCase() }${ analysis!.mostClimateOccurence.slice(1) }`
-                return _renderIconMessage("cloud-sun-rain", `Clima: ${ message }`)
+                const message = `Clima: ${ mostClimateOccurence.charAt(0).toUpperCase() }${ mostClimateOccurence.slice(1) }`
+                return renderIndividualAnalysis(mostClimateOccurence, message, "cloud-sun-rain")
             }
         }
 
-        const renderMostHourOccurence = () => {
-            return _renderIconMessage("clock", `Horário: ${ analysis!.mostHourOccurence }`)
+        const renderMostOccurencesAnalysis = () => {
+            return (
+                <Box.Column style={ styles.groupAnalysisContainer }>
+                    <TextBold>Maiores ocorrências:</TextBold>
+                    { renderMostPointOfViewOccurence() }
+                    { renderMostClimateOccurence() }
+                    { renderIndividualAnalysis(mostHourOccurence, `Horário: ${ mostHourOccurence }`, "clock") }
+                    { renderIndividualAnalysis(mostDurationOccurence, `Duração: ${ mostDurationOccurence }`, "hourglass") }
+                    { renderIndividualAnalysis(mostLucidityLevelOccurence, `Nível de Lucidez: ${ mostLucidityLevelOccurence }`, "beer") }
+                    { renderIndividualAnalysis(mostDreamTypeOccurence, `Tipo: ${ mostDreamTypeOccurence }`, "dot-circle") }
+                    { renderIndividualAnalysis(mostRealityLevelOccurenceOccurence, `Nível de Realidade: ${ mostRealityLevelOccurenceOccurence }`, "check-circle") }
+                </Box.Column>
+            )
         }
 
-        const renderMostDurationOccurence = () => {
-            return _renderIconMessage("hourglass", `Duração: ${ analysis!.mostDurationOccurence }`)
+        const renderAveragesAnalysis = () => {
+            if (eroticDreamsAverage != 0 || tagPerDreamAverage != 0) {
+                return (
+                    <Box.Column style={ styles.groupAnalysisContainer }>
+                        <TextBold>Médias:</TextBold>
+                        { renderIndividualAnalysis(eroticDreamsAverage, `Sonhos eróticos: ${ eroticDreamsAverage }`, "18-up-rating", "materialIcons") }
+                        { renderIndividualAnalysis(tagPerDreamAverage, `Tags por sonho: ${ tagPerDreamAverage }`, "tag") }
+                    </Box.Column>
+                )
+            }
+            return <></>
+
         }
 
-        const renderMostLucidityLevelOccurence = () => {
-            return _renderIconMessage("beer", `Nível de Lucidez: ${ analysis!.mostLucidityLevelOccurence }`)
-        }
-
-        const renderMostDreamTypeOccurence = () => {
-            return _renderIconMessage("dot-circle", `Tipo: ${ analysis!.mostDreamTypeOccurence }`)
-        }
-
-        const renderMostRealityLevelOccurenceOccurence = () => {
-            return _renderIconMessage("check-circle", `Nível de Realidade: ${ analysis!.mostRealityLevelOccurenceOccurence }`)
-        }
-
-        const renderEroticDreamsAverage = () => {
-            return _renderIconMessage("18-up-rating", `Sonhos eróticos: ${ analysis!.eroticDreamsAverage }`, "materialIcons")
-        }
-
-        const renderTagPerDreamAverage = () => {
-            return _renderIconMessage("tag", `Tags por sonho: ${ analysis!.tagPerDreamAverage }`)
-        }
-
-        const renderLongestDreamTitle = () => {
-            return _renderIconMessage("title", `Título mais longo: ${ analysis!.longestDreamTitle }`, "materialIcons")
+        const renderSeveralsAnalysis = () => {
+            if (!isNil(longestDreamTitle)) {
+                return (
+                    <Box.Column style={ styles.groupAnalysisContainer }>
+                        <TextBold>Diversos:</TextBold>
+                        { renderIndividualAnalysis(longestDreamTitle, `Título mais longo: ${ longestDreamTitle }`, "title", "materialIcons") }
+                    </Box.Column>
+                )
+            }
+            return <></>
         }
 
         const renderUpdatedAt = () => {
-            if (analysis.updatedAt)
-                return <TextBold>Última atualização da análise: { analysis!.updatedAt }</TextBold>
-            return <></>
+            return updatedAt === null
+                ? <></>
+                : (
+                    <Box.Row>
+                        { renderIndividualAnalysis(1, `Análise última vez atualizada: ${ DateFormatter.removeTime(updatedAt as any) }`, "calendar-day") }
+                    </Box.Row>
+                )
         }
 
         return (
             <Box.Column style={ styles.analysisContainer }>
                 <TextBold>Análises obtidas dos sonhos cadastrados no mês escolhido:</TextBold>
-                <Box.Column style={ styles.groupAnalysisContainer }>
-                    <TextBold>Maiores ocorrências:</TextBold>
-                    { renderMostPointOfViewOccurence() }
-                    { renderMostClimateOccurence() }
-                    { renderMostHourOccurence() }
-                    { renderMostDurationOccurence() }
-                    { renderMostLucidityLevelOccurence() }
-                    { renderMostDreamTypeOccurence() }
-                    { renderMostRealityLevelOccurenceOccurence() }
-                </Box.Column>
-                <Box.Column style={ styles.groupAnalysisContainer }>
-                    <TextBold>Médias:</TextBold>
-                    { renderEroticDreamsAverage() }
-                    { renderTagPerDreamAverage() }
-                </Box.Column>
-                <Box.Column style={ styles.groupAnalysisContainer }>
-                    <TextBold>Diversos:</TextBold>
-                    { renderLongestDreamTitle() }
-                </Box.Column>
+                { renderMostOccurencesAnalysis() }
+                { renderAveragesAnalysis() }
+                { renderSeveralsAnalysis() }
                 { renderUpdatedAt() }
             </Box.Column>
         )
