@@ -11,9 +11,7 @@ export default function RootLayout() {
                 initialRouteName='home'
                 screenOptions={{
                     ...LayoutStyles.tabs,
-                    header: ({ navigation }) => {
-                        return <Header navigateTo={ (route) => navigation.navigate(route) } />
-                    },
+                    header: () => { return <Header /> },
                 }}
             >
                 <Tabs.Screen

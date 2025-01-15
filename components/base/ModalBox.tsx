@@ -1,6 +1,7 @@
 import { StyleSheet, Text } from "react-native"
 import Box from "./Box"
 import CustomModal, { CustomModalProps } from "../customs/CustomModal"
+import React from "react"
 
 type ModalBoxProps = Omit<CustomModalProps, "children">  & {
     title?: string

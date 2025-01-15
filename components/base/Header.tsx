@@ -1,28 +1,32 @@
 import { AuthContextProvider } from "../../contexts/AuthContext"
 import { Text, StyleSheet, Pressable } from "react-native"
+import { useRouter } from "expo-router"
 import { useState } from "react"
+import AppInfo from "../screens/general/AppInfo"
 import Box from "./Box"
 import CustomButton from "../customs/CustomButton"
 import CustomModal from "../customs/CustomModal"
 import Icon from "react-native-vector-icons/Ionicons"
 import React from "react"
+import Support from "../screens/general/Support"
 
 type HeaderProps = {
-    navigateTo: (route: string) => void
 }
 
-export default function Header({ navigateTo }: HeaderProps): JSX.Element {
-    const [ modalOpen, setModalOpen ] = useState<boolean>(false)
+export default function Header({}: HeaderProps): JSX.Element {
+    const router = useRouter()
     const { logoff, isLogged } = AuthContextProvider()
+    const [ modalOpen, setModalOpen ] = useState<boolean>(false)
+    const [ openSuggestionsModal, setOpenSuggestionsModal ] = useState<boolean>(false)
+    const [ openAppInfoModal, setOpenAppInfoModal ] = useState<boolean>(false)
 
     const logoffAction = async () => {
         await logoff()
-        navigateTo("/")
+        router.navigate("/")
     }
 
-    if (!isLogged) {
+    if (!isLogged)
         return <></>
-    }
 
     return (
         <Box.Row style={ styles.container }>
@@ -31,6 +35,24 @@ export default function Header({ navigateTo }: HeaderProps): JSX.Element {
                 setVisible={ setModalOpen }
             >
                 <Box.Center style={ styles.modal }>
+                    <Support
+                        open={ openSuggestionsModal }
+                        setOpen={ setOpenSuggestionsModal }
+                    />
+                    <AppInfo
+                        open={ openAppInfoModal }
+                        setOpen={ setOpenAppInfoModal }
+                    />
+                    <CustomButton
+                        title="SUPORTE"
+                        onPress={ () => setOpenSuggestionsModal(true) }
+                        btnTextColor="white"
+                    />
+                    <CustomButton
+                        title="INFORMAÇÕES"
+                        onPress={ () => setOpenAppInfoModal(true) }
+                        btnTextColor="white"
+                    />
                     <CustomButton
                         title="SAIR DA CONTA"
                         onPress={ () => logoffAction() }
@@ -75,7 +97,7 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
     },
     modal: {
-        backgroundColor: "royalblue",
+        backgroundColor: "darkblue",
         padding: 30,
         borderRadius: 15,
         gap: 10,
