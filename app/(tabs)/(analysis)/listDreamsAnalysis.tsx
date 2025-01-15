@@ -15,12 +15,21 @@ import MonthExtractorHeader from "@/components/screens/general/MonthExtractorHea
 import React from "react"
 import TextBold from "@/components/base/TextBold"
 
+type DisableFetchActions = {
+    get: boolean
+    create: boolean
+}
+
 export default function ListDreamsAnalysisScreen() {
     const router = useRouter()
     const [ date, setDate ] = useState<Date>(DateFormatter.fixUTC(new Date().getTime()))
     const [ analysis, setAnalysis ] = useState<DreamAnalysisModel | null>(null)
     const [ loading, setLoading ] = useState<boolean>(true)
     const [ errorMessage, setErrorMessage ] = useState<string>("")
+    const [ disableFetchActions, setDisableFetchActions ] = useState<DisableFetchActions>({
+        get: false,
+        create: false,
+    })
 
     const fetchGetAnalysis = async (fetchDate?: Date) => {
         const response = await AnalysisService.GetDreamAnalysis({
@@ -35,6 +44,7 @@ export default function ListDreamsAnalysisScreen() {
                 setErrorMessage("Não há análise criada para este mês, crie uma.")
             else
                 setErrorMessage(response.ErrorMessage ?? "")
+            setDisableFetchActions({ get: true, create: disableFetchActions.create })
         }
     }
 
@@ -46,8 +56,10 @@ export default function ListDreamsAnalysisScreen() {
 
         if (response.Success)
             await fetchGetAnalysis()
-        else
+        else {
             setErrorMessage(response.ErrorMessage ?? "")
+            setDisableFetchActions({ get: disableFetchActions.get, create: true })
+        }
 
         setLoading(false)
     }
@@ -63,6 +75,7 @@ export default function ListDreamsAnalysisScreen() {
         setDate(newDate)
         await fetchGetAnalysis(newDate)
         setLoading(false)
+        setDisableFetchActions({ get: false, create: false })
     }
 
     const refreshAnalysis = async () => {
@@ -70,6 +83,7 @@ export default function ListDreamsAnalysisScreen() {
         setAnalysis(null)
         await fetchCreateAnalysis()
         setLoading(false)
+        setDisableFetchActions({ get: false, create: false })
     }
 
     const renderAnalysis = () => {
@@ -84,10 +98,12 @@ export default function ListDreamsAnalysisScreen() {
                             fetchGetAnalysis()
                             setLoading(false)
                         }}
+                        active={ !disableFetchActions.get }
                     />
                     <CustomButton
                         title="Criar Análise"
                         onPress={ async () => fetchCreateAnalysis() }
+                        active={ !disableFetchActions.create }
                     />
                 </Box.Column>
             )
@@ -213,6 +229,9 @@ export default function ListDreamsAnalysisScreen() {
                 )
         }
 
+        // TODO: Futuramente, criar componentes genéricos externos para uso nas análises de ciclo de sono
+        // e sonho (recriar externamente renderIndividualAnalysis e criar externamente por exemplo renderGroupAnalysis)
+
         return (
             <Box.Column style={ styles.analysisContainer }>
                 <TextBold>Análises obtidas dos sonhos cadastrados no mês escolhido:</TextBold>
@@ -234,6 +253,7 @@ export default function ListDreamsAnalysisScreen() {
                     }}
                     customActionBtnTitle="Atualizar"
                     customActionBtnAction={ async () => await refreshAnalysis() }
+                    isCustomActionBtnActive={ !disableFetchActions.get || !disableFetchActions.create }
                     routerBtnRouterAction={ () => router.navigate("/(tabs)/(analysis)/analysisHome") }
                 />
                 {

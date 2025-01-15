@@ -244,6 +244,9 @@ export default function ListSleepsAnalysisScreen() {
                 )
         }
 
+        // TODO: Futuramente, criar componentes genéricos externos para uso nas análises de ciclo de sono
+        // e sonho (recriar externamente renderIndividualAnalysis e criar externamente por exemplo renderGroupAnalysis)
+
         return (
             <Box.Column style={ styles.analysisContainer }>
                 <TextBold>Análises obtidas dos ciclos de sono cadastrados no mês escolhido:</TextBold>
