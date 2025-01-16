@@ -1,13 +1,15 @@
 {
   "expo": {
-    "name": "morfeus_mobile_2",
-    "slug": "morfeus_mobile_2",
+    "name": "Morfeus",
+    "slug": "morfeus",
     "version": "1.0.0",
+    "description": "Uma aplicação que realiza o controle do ciclo do sono e gerenciamento de sonhos.",
     "orientation": "portrait",
     "icon": "./assets/images/morfeus_logo.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "githubUrl": "https://github.com/raisson-souza/morfeus-mobile-2",
     "ios": {
       "supportsTablet": true
     },
