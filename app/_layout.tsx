@@ -2,12 +2,16 @@ import { SQLiteProvider } from "expo-sqlite"
 import { Stack } from "expo-router"
 import { StatusBar } from 'expo-status-bar'
 import AuthContextComponent from "@/contexts/AuthContext"
+import env from "@/config/env"
 import InitialContextComponent from "@/contexts/InitialContext"
 import LayoutStyles from "@/styles/layouts"
 import React from "react"
 import SqliteDbManager from "@/db/database"
 import StagingHeader from "@/components/screens/staging/StagingHeader"
 import SyncContextComponent from "@/contexts/SyncContext"
+
+const BACKEND_URL = { url: env.BackendUrl() }
+export { BACKEND_URL }
 
 export default function RootLayout() {
   return (

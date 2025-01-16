@@ -1,6 +1,6 @@
+import { BACKEND_URL } from "@/app/_layout"
 import { DeleteProps, GetProps, PostProps, PutProps, RequestHeader } from "./EndpointProps"
 import { LocalStorage } from "../../../utils/LocalStorage"
-import env from "../../../config/env"
 import Response from "./Response"
 
 export default abstract class Endpoints {
@@ -30,7 +30,7 @@ export default abstract class Endpoints {
     }: GetProps): Promise<Response<T>> {
         try {
             return await fetch(
-                `${ env.BackendUrl() }${ url }`,
+                `${ BACKEND_URL.url }${ url }`,
                 {
                     method: 'GET',
                     headers: this.mountHeaders(headers, authorization)
@@ -56,7 +56,7 @@ export default abstract class Endpoints {
     }: PostProps): Promise<Response<T>> {
         try {
             return await fetch(
-                `${ env.BackendUrl() }${ url }`,
+                `${ BACKEND_URL.url }${ url }`,
                 {
                     method: method,
                     headers: this.mountHeaders(headers, authorization),
