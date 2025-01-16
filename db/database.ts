@@ -23,11 +23,11 @@ export default async function SqliteDbManager(db: SQLiteDatabase): Promise<void>
 
         // O banco está devidamente atualizado
         if (userVersion >= DATABASE_VERSION) {
-            console.log(`BANCO DE DADOS JÁ ATUALIZADO v${ DATABASE_VERSION }`)
+            // console.log(`BANCO DE DADOS JÁ ATUALIZADO v${ DATABASE_VERSION }`)
             return
         }
 
-        console.log(`BANCO DE DADOS ${ userVersion } / ${ DATABASE_VERSION }.`)
+        // console.log(`BANCO DE DADOS ${ userVersion } / ${ DATABASE_VERSION }.`)
         let newUserVersion = userVersion
 
         if (newUserVersion === 0) {
@@ -44,10 +44,5 @@ export default async function SqliteDbManager(db: SQLiteDatabase): Promise<void>
         await db.execAsync(`PRAGMA user_version = ${ newUserVersion }`)
     } catch (ex) {
         console.log(`Ocorreu um erro ao atualizar o banco de dados: ${ (ex as Error).message }`)
-    }
-    finally {
-        console.log()
-        console.warn("\tPROJETO MODELO PARA MOBILE\n\tValidar necessidades de modificação conforme TODOS.")
-        console.log()
     }
 }
