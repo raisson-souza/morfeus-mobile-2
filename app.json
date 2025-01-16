@@ -17,7 +17,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.raissonrai.morfeus"
     },
     "web": {
       "bundler": "metro",
@@ -39,6 +40,11 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "c8c60f56-bc5a-40fb-94e6-ca06994b9814"
+      }
     }
   }
 }
