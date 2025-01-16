@@ -1,13 +1,25 @@
-import { StyleSheet, ScrollView } from "react-native"
+import { StyleSheet, ScrollView, StyleProp, ViewStyle } from "react-native"
 
 type ScreenProps = {
     children: JSX.Element[] | JSX.Element
+    flex?: boolean
+    compStyle?: StyleProp<ViewStyle>
 }
 
 /** Componente padrão de tela */
-export const Screen: React.FC<ScreenProps> = ({ children }) => {
+export const Screen: React.FC<ScreenProps> = ({
+    children,
+    flex = false,
+    compStyle = {},
+}) => {
     return (
-        <ScrollView contentContainerStyle={ styles.container }>
+        <ScrollView
+            contentContainerStyle={{
+                ...styles.container,
+                ...compStyle as any,
+                flex: flex ? 1 : "auto"
+            }}
+        >
             { children }
         </ScrollView>
     )

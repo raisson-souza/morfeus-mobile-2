@@ -27,7 +27,7 @@ export default function InitialContextComponent({ children }: InitialContextProp
 
     if (loading) {
         return (
-            <Screen>
+            <Screen flex>
                 <View style={ styles.logo }>
                     <CustomImage.Local filePathByRequire={ require('../assets/images/morfeus_logo.png') } />
                 </View>

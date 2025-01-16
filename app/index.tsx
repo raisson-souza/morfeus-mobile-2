@@ -13,7 +13,7 @@ export default function InfoScreen() {
     const btnWidth = 150
 
     return (
-        <Screen>
+        <Screen flex>
             <Box.Center style={ styles.container }>
                 <CustomImage.Local
                     filePathByRequire={ require("../assets/images/morfeus_logo.png") }

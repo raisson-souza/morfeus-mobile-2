@@ -38,7 +38,7 @@ export default function LoginScreen() {
 
     return (
         <AuthRedirect>
-            <Screen>
+            <Screen flex>
                 <Box.Center style={ styles.container }>
                     <Text style={ styles.title }>Realize seu login</Text>
                     <Box.Column style={ styles.container }>

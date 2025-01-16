@@ -94,7 +94,7 @@ export default function SyncContextComponent({ children }: SyncContextProps) {
 
     if (loading) {
         return (
-            <Screen>
+            <Screen flex>
                 <Loading onlyLoading={ false } />
             </Screen>
         )

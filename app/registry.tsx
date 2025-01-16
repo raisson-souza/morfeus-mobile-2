@@ -44,7 +44,7 @@ export default function RegistryScreen() {
 
     return (
         <AuthRedirect>
-            <Screen>
+            <Screen flex>
                 <Box.Center style={ styles.container }>
                     <Text style={ styles.title }>Cadastre-se em Morfeus</Text>
                     <Box.Column style={ styles.gap }>
