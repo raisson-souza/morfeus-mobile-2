@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     container: {
         justifyContent: "space-between",
         backgroundColor: "darkblue",
-        paddingTop: 30,
+        // paddingTop: 30, // Removido devido StagingHeader
         paddingBottom: 5,
         paddingHorizontal: 10,
         borderBottomWidth: 1,

@@ -6,6 +6,7 @@ import InitialContextComponent from "@/contexts/InitialContext"
 import LayoutStyles from "@/styles/layouts"
 import React from "react"
 import SqliteDbManager from "@/db/database"
+import StagingHeader from "@/components/screens/staging/StagingHeader"
 import SyncContextComponent from "@/contexts/SyncContext"
 
 export default function RootLayout() {
@@ -20,15 +21,18 @@ export default function RootLayout() {
           <SyncContextComponent>
             <Stack
               initialRouteName='index'
-              screenOptions={ LayoutStyles.stack }
+              screenOptions={{
+                ...LayoutStyles.stack,
+                header: () => <StagingHeader />,
+              }}
             >
               <Stack.Screen
                 name='index'
-                options={{ headerShown: false }}
+                options={{ headerShown: true /** alterado para true devido StagingHeader */ }}
               />
               <Stack.Screen
                 name='(tabs)'
-                options={{ headerShown: false }}
+                options={{ headerShown: true /** alterado para true devido StagingHeader */ }}
               />
               <Stack.Screen
                 name='login'
