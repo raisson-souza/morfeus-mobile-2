@@ -19,7 +19,7 @@ export default function InitialContextComponent({ children }: InitialContextProp
     useEffect(() => {
         const interval = setInterval(() => {
             setLoading(false)
-        }, 1500)
+        }, 1000)
         return () => {
             clearInterval(interval)
         }

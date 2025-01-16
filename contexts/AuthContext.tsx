@@ -6,6 +6,7 @@ import { Screen } from "../components/base/Screen"
 import { UserDataLocalStorage } from "@/types/user"
 import { useRouter } from "expo-router"
 import AuthService from "@/services/api/AuthService"
+import InternetInfo from "@/utils/InternetInfo"
 import Loading from "../components/base/Loading"
 import UserService from "@/services/api/UserService"
 
@@ -50,12 +51,18 @@ export default function AuthContextComponent({ children }: AuthContextProps) {
             // Verificamos se há token ativo ainda válido
             if (tokenInfo) {
                 if ((new Date().getTime() / 1000) < tokenInfo.tokenExpirationDateMilis) {
-                    setIsLogged(true)
                     loggedIn = true
+                }
+                else {
+                    // Verifica conexão com internet, caso não haja, usuário está offline
+                    const hasInternetConnection = await InternetInfo()
+                        .then(internetInfo => { return internetInfo?.isConnected ?? false })
+
+                    if (!hasInternetConnection) loggedIn = true
                 }
             }
             // Caso não haja token válido, é realizado login se houver credenciais
-            if (loginCredentials) {
+            else if (loginCredentials) {
                 const loginResponse = await AuthService.Login({
                     email: loginCredentials.email,
                     password: loginCredentials.password
@@ -72,7 +79,6 @@ export default function AuthContextComponent({ children }: AuthContextProps) {
                             password: loginCredentials.password
                         }
                     )
-                    setIsLogged(true)
                     loggedIn = true
                 }
             }
@@ -88,6 +94,7 @@ export default function AuthContextComponent({ children }: AuthContextProps) {
                     email: loginCredentials?.email ?? "",
                     password: loginCredentials?.password ?? "",
                 }
+                setIsLogged(true)
             }
 
             setLoading(false)

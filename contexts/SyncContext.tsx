@@ -1,5 +1,7 @@
-import { createContext, useContext, useEffect, useRef } from "react"
+import { createContext, useContext, useEffect, useRef, useState } from "react"
+import { Screen } from "@/components/base/Screen"
 import InternetInfo from "../utils/InternetInfo"
+import Loading from "@/components/base/Loading"
 
 type SyncContextProps = {
     children: JSX.Element | JSX.Element[]
@@ -31,8 +33,11 @@ export default function SyncContextComponent({ children }: SyncContextProps) {
     const isConnectedRef = useRef<boolean>(false)
     const isSyncingRef = useRef<boolean>(false)
     const isDataUpToDate = useRef<boolean>(false)
+    const [ loading, setLoading ] = useState<boolean>(true)
 
     useEffect(() => {
+        InternetInfo().finally(() => setLoading(false))
+
         /** Intervalo de verificação de conectividade */
         const syncInterval = setInterval(async () => {
             await InternetInfo()
@@ -85,6 +90,14 @@ export default function SyncContextComponent({ children }: SyncContextProps) {
 
     const checkIsConnected = (): boolean => {
         return isConnectedRef.current
+    }
+
+    if (loading) {
+        return (
+            <Screen>
+                <Loading onlyLoading={ false } />
+            </Screen>
+        )
     }
 
     return (

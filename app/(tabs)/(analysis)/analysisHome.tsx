@@ -2,14 +2,23 @@ import { CustomImage } from "@/components/customs/CustomImage"
 import { Screen } from "@/components/base/Screen"
 import { StyleSheet } from "react-native"
 import { SyncContextProvider } from "@/contexts/SyncContext"
-import { useRouter } from "expo-router"
+import { useRouter, useNavigation } from "expo-router"
 import Box from "@/components/base/Box"
 import CustomButton from "@/components/customs/CustomButton"
-import React from "react"
+import React, { useEffect, useState } from "react"
+import TextBold from "@/components/base/TextBold"
 
 export default function AnalysisIndexScreen() {
     const router = useRouter()
+    const navigation = useNavigation()
     const { checkIsConnected } = SyncContextProvider()
+    const [ isConnected, setIsConnected ] = useState<boolean>(checkIsConnected())
+    
+    useEffect(() => {
+        return navigation.addListener("focus", () => {
+            setIsConnected(checkIsConnected())
+        })
+    }, [])
 
     return (
         <Screen>
@@ -19,7 +28,7 @@ export default function AnalysisIndexScreen() {
                     style={ styles.image }
                 />
                 {
-                    checkIsConnected()
+                    isConnected
                         ?
                             <Box.Column style={ styles.btns }>
                                 <CustomButton
@@ -31,7 +40,7 @@ export default function AnalysisIndexScreen() {
                                     onPress={ () => router.navigate("/(tabs)/(analysis)/listSleepsAnalysis")}
                                 />
                             </Box.Column>
-                        : <></>
+                        : <TextBold style={ styles.offlineText }>As funcionalidades de análise não estão disponíveis offline, conecte-se a internet!</TextBold>
                 }
             </Box.Center>
         </Screen>
@@ -52,4 +61,7 @@ const styles = StyleSheet.create({
     btns: {
         gap: 10,
     },
+    offlineText: {
+        textAlign: "center",
+    }
 })

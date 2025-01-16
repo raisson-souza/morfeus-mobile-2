@@ -2,6 +2,7 @@ import { DateFormatter } from "@/utils/DateFormatter"
 import { SimpleSleepModel } from "@/types/simpleSleep"
 import { StyleSheet } from "react-native"
 import { useEffect, useState } from "react"
+import { useNavigation } from "expo-router"
 import Box from "@/components/base/Box"
 import CustomButton from "@/components/customs/CustomButton"
 import DatePickerShow from "@/components/date/DatePickerShow"
@@ -16,6 +17,7 @@ import TimePickerShow from "@/components/date/TimePickerShow"
 type SimpleSleepProps = { }
 
 export default function SimpleSleep({}: SimpleSleepProps) {
+    const navigation = useNavigation()
     const [ loading, setLoading ] = useState<boolean>(true)
     const [ simpleSleep, setSimpleSleep ] = useState<SimpleSleepModel>({
         sleepStart: null,
@@ -48,7 +50,10 @@ export default function SimpleSleep({}: SimpleSleepProps) {
     }
 
     useEffect(() => {
-        fetchSimpleSleep()
+        return navigation.addListener("focus", async () => {
+            setLoading(true)
+            await fetchSimpleSleep()
+        })
     }, [])
 
     const updateSimpleSleep = async (date: Date, simpleSleepPeriod: "sleepStart" | "sleepEnd") => {
