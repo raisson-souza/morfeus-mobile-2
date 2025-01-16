@@ -11,7 +11,8 @@ import StagingHeader from "@/components/screens/staging/StagingHeader"
 import SyncContextComponent from "@/contexts/SyncContext"
 
 const BACKEND_URL = { url: env.BackendUrl() }
-export { BACKEND_URL }
+const ORIGINAL_BACKEND_URL = env.BackendUrl()
+export { BACKEND_URL, ORIGINAL_BACKEND_URL }
 
 export default function RootLayout() {
   return (
