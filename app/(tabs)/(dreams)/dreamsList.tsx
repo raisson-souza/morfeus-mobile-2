@@ -18,7 +18,7 @@ import TextBold from "@/components/base/TextBold"
 
 export default function DreamsList() {
     const router = useRouter()
-    const [ dreamsList, setDreamsList ] = useState<DreamListedByUserType[] | null>(null)
+    const [ dreamList, setDreamList ] = useState<DreamListedByUserType[] | null>(null)
     const { isConnectedRef: { current: isOnline }} = SyncContextProvider()
     const [ date, setDate ] = useState<Date>(new Date())
     const [ listDreamsByUserForm, setListDreamsByUserForm ] = useState<ListDreamsByUserRequest>({
@@ -69,7 +69,7 @@ export default function DreamsList() {
         })
             .then(response => {
                 if (response.Success) {
-                    setDreamsList(response.Data)
+                    setDreamList(response.Data)
                     return
                 }
                 alert(response.ErrorMessage)
@@ -81,8 +81,45 @@ export default function DreamsList() {
     }, [listDreamsByUserForm])
 
     const changeMonth = async (newDate: Date) => {
+        setDreamList(null)
         setDate(newDate)
         await fetchDreams(newDate)
+    }
+
+    const renderDreamList = () => {
+        if (dreamList) {
+            if (dreamList.length > 0) {
+                return (
+                    <Box.Column style={ styles.dreamsListContainer }>
+                        {
+                            dreamList.map((dream, i) => (
+                                <Box.Center style={ styles.dreamOuterContainer } key={ i }>
+                                    <View style={ styles.dreamSeparator }></View>
+                                    <DreamListedByUser
+                                        dream={ dream }
+                                        containerStyle={ styles.dreamContainer }
+                                    />
+                                </Box.Center>
+                            ))
+                        }
+                    </Box.Column>
+                )
+            }
+            return <Text>Nenhum sonho encontrado.</Text>
+        }
+        return <Loading onlyLoading={ false } text="Buscando sonhos..." />
+    }
+
+    const renderCreateDreamBtn = () => {
+        if (dreamList) {
+            if (dreamList.length > 10) {
+                return <CustomButton
+                    title="Criar Sonho"
+                    onPress={ () => router.navigate("/createDream") }
+                />
+            }
+        }
+        return <></>
     }
 
     return (
@@ -534,32 +571,8 @@ export default function DreamsList() {
                         )
                 }
                 {/* FILTROS ESPECÍFICOS FIM */}
-                <TextBold style={ styles.dreamsListTitle }>Sonhos Encontrados</TextBold>
-                {
-                    dreamsList
-                        ? dreamsList.length > 0
-                            ? (
-                                <Box.Column style={ styles.dreamsListContainer }>
-                                    {
-                                        dreamsList.map((dream, i) => (
-                                            <Box.Center style={ styles.dreamOuterContainer } key={ i }>
-                                                <View style={ styles.dreamSeparator }></View>
-                                                <DreamListedByUser
-                                                    dream={ dream }
-                                                    containerStyle={ styles.dreamContainer }
-                                                />
-                                            </Box.Center>
-                                        ))
-                                    }
-                                </Box.Column>
-                            )
-                            : <Text>Nenhum sonho encontrado.</Text>
-                        : <Loading onlyLoading={ false } text="Buscando sonhos..." />
-                }
-                <CustomButton
-                    title="Criar Sonho"
-                    onPress={ () => router.navigate("/createDream") }
-                />
+                { renderDreamList() }
+                { renderCreateDreamBtn() }
             </Box.Center>
         </Screen>
     )
