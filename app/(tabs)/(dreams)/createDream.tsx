@@ -108,6 +108,7 @@ export default function CreateDreamScreen() {
                 <CreateCompleteDream
                     dream={ dreamModel }
                     setDream={ setDreamModel }
+                    isLocked={ loading }
                 />
                 <Info
                     infoDescription="Sua noite de sono"
@@ -117,23 +118,26 @@ export default function CreateDreamScreen() {
                         "Não esqueça de preencher essas informações editando a noite de sono que será criada para você ao salvar esse sonho!"
                     ]}
                 />
-                <CustomButton
-                    title="Criar Sonho"
-                    onPress={ () => createDream() }
-                />
                 {
                     loading
-                        ? <Loading onlyLoading={ false } text="Criando Sonho..." />
+                        ? <Box.Column style={ styles.loading }>
+                            <Loading onlyLoading={ false } text="Criando Sonho..." />
+                        </Box.Column>
                         : <CustomButton
-                            title="Voltar"
-                            onPress={ () => {
-                                if (router.canGoBack())
-                                    router.back()
-                                else
-                                    router.navigate("/")
-                            }}
+                            title="Criar Sonho"
+                            onPress={ () => createDream() }
                         />
                 }
+                <CustomButton
+                    title="Voltar"
+                    onPress={ () => {
+                        if (router.canGoBack())
+                            router.back()
+                        else
+                            router.navigate("/")
+                    }}
+                    active={ !loading }
+                />
             </Box.Column>
         </Screen>
     )
@@ -146,5 +150,8 @@ const styles = StyleSheet.create({
     },
     dreamDateText: {
         fontSize: 18,
+    },
+    loading: {
+        alignSelf: "center",
     },
 })
