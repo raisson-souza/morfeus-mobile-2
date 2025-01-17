@@ -80,10 +80,8 @@ const styles = StyleSheet.create({
     container: {
         justifyContent: "space-between",
         backgroundColor: "darkblue",
-        paddingTop: 30,
-        paddingBottom: 5,
+        paddingBottom: 3,
         paddingHorizontal: 10,
-        borderBottomWidth: 1,
         borderBottomColor: "black",
     },
     logo: {
