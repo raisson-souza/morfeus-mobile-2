@@ -43,64 +43,58 @@ export default function SleepsListScreen() {
         fetchSleeps()
     }, [date])
 
-    if (loading) {
-        return (
-            <Screen>
-                <Loading text="Buscando ciclos de sono..." />
-            </Screen>
-        )
-    }
-
     const renderSleepsCycles = () => {
         if (sleeps) {
             if (sleeps.length > 0) {
                 return (
-                    <Box.Column style={ styles.sleepsCycleList }>
+                    <>
+                        <Box.Column style={ styles.sleepsCycleList }>
+                            {
+                                sleeps.map((sleepCycle, i) => {
+                                    return <SleepListedByUser sleepCycle={ sleepCycle } key={ i } />
+                                })
+                            }
+                        </Box.Column>
                         {
-                            sleeps.map((sleepCycle, i) => {
-                                return <SleepListedByUser sleepCycle={ sleepCycle } key={ i } />
-                            })
+                            sleeps.length > 10
+                                ? (
+                                    <Box.Column style={ styles.createSleepCycleBtn }>
+                                        <CustomButton
+                                            title="Criar Ciclo de Sono"
+                                            onPress={ () => router.navigate('/(tabs)/(sleeps)/createSleep') }
+                                        />
+                                    </Box.Column>
+                                )
+                                : <></>
                         }
-                    </Box.Column>
+                    </>
                 )
             }
             return <TextBold style={ styles.noSleepCycleFound }>Nenhum Ciclo de Sono encontrado.</TextBold>
         }
-        return <></>
+        return <TextBold style={ styles.errorSleepCycle }>{ `Houve um erro ao buscar os ciclos de sono: ${ errorMessage }` }</TextBold>
     }
 
     return (
         <Screen>
             <Box.Column style={ styles.container }>
-                {
-                    sleeps
+                <MonthExtractorHeader
+                    monthExtractorProps={{
+                        initialDate: date,
+                        onChange: (e) => { setDate(e) },
+                    }}
+                    customActionBtnTitle="Criar Ciclo de Sono"
+                    customActionBtnAction={ () => router.navigate('/(tabs)/(sleeps)/createSleep') }
+                    routerBtnRouterAction={ () => router.navigate('/(tabs)/(sleeps)/sleepsHome') }
+                />
+                { 
+                    loading
                         ? (
-                            <>
-                                <MonthExtractorHeader
-                                    monthExtractorProps={{
-                                        initialDate: date,
-                                        onChange: (e) => { setDate(e) },
-                                    }}
-                                    customActionBtnTitle="Criar Ciclo de Sono"
-                                    customActionBtnAction={ () => router.navigate('/(tabs)/(sleeps)/createSleep') }
-                                    routerBtnRouterAction={ () => router.navigate('/(tabs)/(sleeps)/sleepsHome') }
-                                />
-                                { renderSleepsCycles() }
-                                {
-                                    sleeps.length >= 10
-                                        ?  (
-                                            <Box.Column style={ styles.createSleepCycleBtn }>
-                                                <CustomButton
-                                                    title="Criar Ciclo de Sono"
-                                                    onPress={ () => router.navigate('/(tabs)/(sleeps)/createSleep') }
-                                                />
-                                            </Box.Column>
-                                        )
-                                        : <></>
-                                }
-                            </>
+                            <Box.Row style={ styles.loading }>
+                                <Loading onlyLoading={ false } text="Buscando ciclos de sono..." />
+                            </Box.Row>
                         )
-                        : <TextBold style={ styles.errorSleepCycle }>{ `Houve um erro ao buscar os ciclos de sono: ${ errorMessage }` }</TextBold>
+                        : renderSleepsCycles()
                 }
             </Box.Column>
         </Screen>
@@ -123,6 +117,10 @@ const styles = StyleSheet.create({
         paddingTop: 10,
     },
     createSleepCycleBtn: {
+        paddingTop: 10,
+    },
+    loading: {
+        alignSelf: "center",
         paddingTop: 10,
     },
 })
