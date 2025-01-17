@@ -1,7 +1,8 @@
 import { CreateDreamModel } from "@/types/dream"
 import { Picker } from "@react-native-picker/picker"
 import { StyleSheet, Pressable } from "react-native"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { useNavigation } from "expo-router"
 import Box from "@/components/base/Box"
 import CustomButton from "@/components/customs/CustomButton"
 import CustomInput from "@/components/customs/CustomInput"
@@ -15,7 +16,14 @@ type CreateCompleteDream = {
 }
 
 export default function CreateCompleteDream({ dream, setDream }: CreateCompleteDream) {
+    const navigation = useNavigation()
     const [ tag, setTag ] = useState<string>("")
+
+    useEffect(() => {
+        return navigation.addListener("blur", () => {
+            setTag("")
+        })
+    }, [])
 
     const appendTag = () => {
         if (tag.trim() === "") return
@@ -48,11 +56,13 @@ export default function CreateCompleteDream({ dream, setDream }: CreateCompleteD
                 label="Título"
                 onChange={ (e) => setDream({ ...dream, title: e }) }
                 width="100%"
+                defaultValue={ dream.title }
             />
             <CustomInput
                 label="Descrição"
                 onChange={ (e) => setDream({ ...dream, description: e }) }
                 width="100%"
+                defaultValue={ dream.description }
             />
             <Box.Column>
                 <Info

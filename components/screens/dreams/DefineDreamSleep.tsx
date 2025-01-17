@@ -1,7 +1,8 @@
 import { CreateCompleteDreamModel } from "@/types/dream"
 import { DateFormatter } from "@/utils/DateFormatter"
 import { StyleSheet } from "react-native"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { useNavigation } from "expo-router"
 import Box from "@/components/base/Box"
 import CustomButton from "@/components/customs/CustomButton"
 import Info from "@/components/base/Info"
@@ -17,8 +18,15 @@ type DefineDreamSleepProps = {
 }
 
 export default function DefineDreamSleep({ date, setDate, sleepId, setSleepId }: DefineDreamSleepProps) {
+    const navigation = useNavigation()
     const [ sleepExtractionType, setSleepExtractionType ] = useState<"sleep" | "date" | "time">("sleep")
     const defaultDate = DateFormatter.luxon.now().set({ hour: 0, second: 0, minute: 0, millisecond: 0 })
+
+    useEffect(() => {
+        return navigation.addListener("blur", () => {
+            setSleepExtractionType("sleep")
+        })
+    }, [])
 
     const switchSleepExtraction = () => {
         if (sleepExtractionType === "sleep") {
