@@ -20,19 +20,27 @@ type SleepExtractionBySleepCycleProps = {
 export default function SleepExtractionBySleepCycle({ sleepId, setSleepId }: SleepExtractionBySleepCycleProps) {
     const [ sleeps, setSleeps ] = useState<ListedSleepForDreamCreation[] | null>(null)
     const [ selectedSleep, setSelectedSleep ] = useState<ListedSleepForDreamCreation | null>(null)
-    const [ pagination, setPagination ] = useState<PaginationConfig | null>(null)
+    const [ pagination, setPagination ] = useState<PaginationConfig>({
+        page: 1,
+        limit: 5,
+    })
     const [ loading, setLoading ] = useState<boolean>(true)
     const [ isOpen, setIsOpen ] = useState<boolean>(false)
 
-    const fetchSleeps = async () => {
+    const fetchSleeps = async (newPagination?: PaginationConfig) => {
         setLoading(true)
-        await SleepService.ListSleepsForDreamCreation({ pageNumber: pagination?.page ?? 1 })
+        await SleepService.ListSleepsForDreamCreation({
+            pageNumber: newPagination
+                ? newPagination.page
+                : pagination.page
+        })
             .then(response => {
                 if (response.Success) {
                     setSleeps(response.Data.data)
                     setPagination({
                         page: response.Data.meta.currentPage,
-                        limit: response.Data.meta.perPage,
+                        limit: 5,
+                        meta: { ...response.Data.meta },
                     })
                 }
                 else {
@@ -57,74 +65,86 @@ export default function SleepExtractionBySleepCycle({ sleepId, setSleepId }: Sle
             return <TextBold style={ styles.text }>Nenhum ciclo de sono encontrado</TextBold>
         }
         else {
-            if (sleeps.length === 1) {
-                return <TextBold style={ styles.text }>Nenhum ciclo de sono encontrado</TextBold>
+            const onSelectSleepCycle = (sleep: ListedSleepForDreamCreation) => {
+                selectSleepCycle(sleep)
+                setIsOpen(false)
             }
-            else {
-                const onSelectSleepCycle = (sleep: ListedSleepForDreamCreation) => {
-                    selectSleepCycle(sleep)
-                    setIsOpen(false)
-                }
-                const datagridRows = sleeps.map((sleep, i) => (
-                        <Pressable
-                            key={ i }
-                            onPress={ () => onSelectSleepCycle(sleep) }
-                        >
-                            <Box.Row>
-                                <Box.Column>
-                                    <Box.Row style={ styles.sleepCycleContainer }>
-                                        <TextBold
-                                            style={{
-                                                ...styles.sleepCycleText, 
-                                                ...styles.text,
-                                                color: sleepId === sleep.id
-                                                    ? "royalblue"
-                                                    : "white"
-                                        }}>Ciclo de sono</TextBold>
-                                        <TextBold
-                                            style={{
-                                                ...styles.sleepCycleText,
-                                                ...styles.text,
-                                                color: sleepId === sleep.id
-                                                    ? "royalblue"
-                                                    : "white"
-                                            }}
-                                        >{ sleep.date }</TextBold>
-                                    </Box.Row>
-                                    <Box.Row style={ styles.sleepCycleContainer }>
-                                        <Text style={{
-                                            ...styles.text,
-                                            color: sleepId === sleep.id
-                                                ? "royalblue"
-                                                : "white"
-                                        }}>{ DateFormatter.removeDate(sleep.sleepStart) }</Text>
-                                        <Text style={{
-                                            ...styles.text,
-                                            color: sleepId === sleep.id
-                                                ? "royalblue"
-                                                : "white"
-                                        }}>{ DateFormatter.removeDate(sleep.sleepEnd) }</Text>
-                                    </Box.Row>
-                                </Box.Column>
+
+            const datagridRows = sleeps.map((sleep, i) => (
+                <Pressable
+                    key={ i }
+                    onPress={ () => onSelectSleepCycle(sleep) }
+                >
+                    <Box.Row>
+                        <Box.Column>
+                            <Box.Row style={ styles.sleepCycleContainer }>
+                                <TextBold
+                                    style={{
+                                        ...styles.sleepCycleText, 
+                                        ...styles.text,
+                                        color: sleepId === sleep.id
+                                            ? "royalblue"
+                                            : "white",
+                                    }}
+                                >
+                                    Ciclo de sono
+                                </TextBold>
+                                <TextBold
+                                    style={{
+                                        ...styles.sleepCycleText,
+                                        ...styles.text,
+                                        color: sleepId === sleep.id
+                                            ? "royalblue"
+                                            : "white",
+                                    }}
+                                >
+                                    { sleep.date }
+                                </TextBold>
                             </Box.Row>
-                        </Pressable>
-                    ))
-                return (
-                    <Box.Center style={ styles.datagridContainer }>
-                        <Datagrid
-                            rows={ datagridRows }
-                            pagination={ pagination }
-                            setPagination={ setPagination as React.Dispatch<React.SetStateAction<PaginationConfig>> }
-                            onChange={ () => { fetchSleeps() } }
-                        />
-                        <CustomButton
-                            title="Fechar"
-                            onPress={ () => setIsOpen(false) }
-                            btnTextColor="white"
-                        />
-                    </Box.Center>
-                )
-            }
+                            <Box.Row style={ styles.sleepCycleContainer }>
+                                <Text
+                                    style={{
+                                        ...styles.text,
+                                        color: sleepId === sleep.id
+                                            ? "royalblue"
+                                            : "white",
+                                    }}
+                                >
+                                    { DateFormatter.removeDate(sleep.sleepStart) }
+                                </Text>
+                                <Text
+                                    style={{
+                                        ...styles.text,
+                                        color: sleepId === sleep.id
+                                            ? "royalblue"
+                                            : "white",
+                                    }}
+                                >
+                                    { DateFormatter.removeDate(sleep.sleepEnd) }
+                                </Text>
+                            </Box.Row>
+                        </Box.Column>
+                    </Box.Row>
+                </Pressable>
+            ))
+
+            return (
+                <Box.Center style={ styles.datagridContainer }>
+                    <Datagrid
+                        rows={ datagridRows }
+                        pagination={ pagination }
+                        onChange={ async (e) => await fetchSleeps(e) }
+                        showOrderByDirection={ false }
+                        showOrderBy={ false }
+                        showLimit={ false }
+                    />
+                    <CustomButton
+                        title="Fechar"
+                        onPress={ () => setIsOpen(false) }
+                        btnTextColor="white"
+                    />
+                </Box.Center>
+            )
         }
     }
 

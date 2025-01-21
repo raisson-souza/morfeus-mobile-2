@@ -1,16 +1,6 @@
 export type PaginationResponse<T> = {
     data: T[]
-    meta: {
-        currentPage: number
-        firstPage: number
-        lastPage: number
-        perPage: number
-        total: number
-        firstPageUrl: string
-        lastPageUrl: string
-        nextPageUrl: string
-        previousPageUrl: string
-    }
+    meta: Pagination
 }
 
 export type Pagination = {
@@ -27,9 +17,10 @@ export type Pagination = {
 
 export type PaginationConfig = {
     page: number
-    limit?: number
+    limit: number
     orderBy?: string
     orderByDirection?: "asc" | "desc"
+    meta?: Pagination
 }
 
 export type DatagridPaginationRender = {
