@@ -36,7 +36,12 @@ export default function SyncContextComponent({ children }: SyncContextProps) {
     const [ loading, setLoading ] = useState<boolean>(true)
 
     useEffect(() => {
-        InternetInfo().finally(() => setLoading(false))
+        InternetInfo()
+            .then(result => {
+                // Será definida a informação do REF sobre a conexão de internet antes do interval de 5 segundos 
+                isConnectedRef.current = result ? result.isConnected : false
+                setLoading(false)
+            })
 
         /** Intervalo de verificação de conectividade */
         const syncInterval = setInterval(async () => {
