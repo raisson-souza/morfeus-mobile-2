@@ -66,10 +66,11 @@ export default function StagingHeader(): JSX.Element {
             <Draggable
                 x={ 5 }
                 y={ 80 }
+                maxY={ 300 }
                 renderColor='red'
                 renderText='?'
                 isCircle
-                onPressIn={ () => setOpenModal(true) }
+                onShortPressRelease={ () => setOpenModal(true) }
             />
             <TextBold style={ styles.headerText }>STAGING MORFEUS { env.AppVersion() }</TextBold>
         </Box.Row>
@@ -79,7 +80,6 @@ export default function StagingHeader(): JSX.Element {
 const styles = StyleSheet.create({
     container: {
         backgroundColor: "darkblue",
-        paddingTop: 20,
         justifyContent: "center",
     },
     headerText: {
