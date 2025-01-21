@@ -30,6 +30,7 @@ export default function MonthExtractorHeader({
                     title={ customActionBtnTitle }
                     onPress={ () => customActionBtnAction() }
                     active={ isCustomActionBtnActive }
+                    important
                 />
             </Box.Column>
         </Box.Row>

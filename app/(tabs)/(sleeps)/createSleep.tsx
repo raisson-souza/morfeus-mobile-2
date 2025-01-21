@@ -6,8 +6,8 @@ import { DefaultSleepHumor } from "@/types/sleepHumor"
 import { Screen } from "@/components/base/Screen"
 import { StyleSheet } from "react-native"
 import { SyncContextProvider } from "@/contexts/SyncContext"
-import { useRouter } from "expo-router"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { useNavigation, useRouter } from "expo-router"
 import BiologicalOccurencesInfoModal from "@/components/screens/sleeps/biologicalOccurencesInfoModal"
 import Box from "@/components/base/Box"
 import CustomButton from "@/components/customs/CustomButton"
@@ -21,21 +21,34 @@ import TextBold from "@/components/base/TextBold"
 import TimePickerShow from "@/components/date/TimePickerShow"
 import validatorErrorParser from "@/validators/base/validatorErrorParser"
 
+const defaultSleepCycleModel: CreateSleepCycleModel = {
+    sleepStart: DateFormatter.fixUTC(new Date().getTime()),
+    sleepEnd: DateFormatter.fixUTC(new Date().getTime()),
+    wakeUpHumor: DefaultSleepHumor,
+    layDownHumor: DefaultSleepHumor,
+    biologicalOccurences: DefaultBiologicalOccurences,
+    dreams: [],
+}
+
 export default function CreateSleepScreen() {
     const router = useRouter()
+    const navigation = useNavigation()
     const { checkIsConnected } = SyncContextProvider()
-    const [ sleepCycleModel, setSleepCycleModel ] = useState<CreateSleepCycleModel>({
-        sleepStart: DateFormatter.fixUTC(new Date().getTime()),
-        sleepEnd: DateFormatter.fixUTC(new Date().getTime()),
-        wakeUpHumor: DefaultSleepHumor,
-        layDownHumor: DefaultSleepHumor,
-        biologicalOccurences: DefaultBiologicalOccurences,
-        dreams: [],
-    })
+    const [ sleepCycleModel, setSleepCycleModel ] = useState<CreateSleepCycleModel>(defaultSleepCycleModel)
     const [ showLayDownHumors, setShowLayDownHumors ] = useState<boolean>(false)
     const [ showWakeUpHumors, setShowWakeUpHumors ] = useState<boolean>(false)
     const [ showBiologicalOccurences, setShowBiologicalOccurences ] = useState<boolean>(false)
     const [ openBiologicalOccurencesInfoModal, setOpenBiologicalOccurencesInfoModal ] = useState<boolean>(false)
+
+    useEffect(() => {
+        return navigation.addListener("blur", () => {
+            setSleepCycleModel(defaultSleepCycleModel)
+            setShowLayDownHumors(false)
+            setShowWakeUpHumors(false)
+            setShowBiologicalOccurences(false)
+            setOpenBiologicalOccurencesInfoModal(false)
+        })
+    }, [])
 
     const createSleepCycle = async () => {
         const parsedSleepCycleModel = createSleepCycleValidator.safeParse(sleepCycleModel)
@@ -356,6 +369,7 @@ export default function CreateSleepScreen() {
                     <CustomButton
                         title="Criar Ciclo de Sono"
                         onPress={ () => createSleepCycle() }
+                        important
                     />
                     <CustomButton
                         title="Voltar"

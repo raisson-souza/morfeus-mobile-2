@@ -3,8 +3,8 @@ import { DateFormatter } from "@/utils/DateFormatter"
 import { Screen } from "@/components/base/Screen"
 import { StyleSheet } from "react-native"
 import { SyncContextProvider } from "@/contexts/SyncContext"
-import { useRouter } from "expo-router"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { useNavigation, useRouter } from "expo-router"
 import Box from "@/components/base/Box"
 import CreateCompleteDream from "@/components/screens/dreams/CreateCompleteDream"
 import CustomButton from "@/components/customs/CustomButton"
@@ -14,42 +14,56 @@ import Info from "@/components/base/Info"
 import Loading from "@/components/base/Loading"
 import TextBold from "@/components/base/TextBold"
 
+const defaultDreamModel: CreateDreamModel = {
+    title: "",
+    description: "",
+    dreamPointOfViewId: 1,
+    climate: {
+        ameno: false,
+        calor: false,
+        garoa: false,
+        chuva: false,
+        tempestade: false,
+        nevoa: false,
+        neve: false,
+        multiplos: false,
+        outro: false,
+        indefinido: false,
+    },
+    dreamHourId: 2,
+    dreamDurationId: 2,
+    dreamLucidityLevelId: 1,
+    dreamTypeId: 1,
+    dreamRealityLevelId: 1,
+    eroticDream: false,
+    hiddenDream: false,
+    personalAnalysis: null,
+    tags: [],
+    sleepId: null,
+}
+
 export default function CreateDreamScreen() {
     const router = useRouter()
+    const navigation = useNavigation()
     const { isConnectedRef: { current: isOnline }} = SyncContextProvider()
-    const [ dreamModel, setDreamModel ] = useState<CreateDreamModel>({
-        title: "",
-        description: "",
-        dreamPointOfViewId: 1,
-        climate: {
-            ameno: false,
-            calor: false,
-            garoa: false,
-            chuva: false,
-            tempestade: false,
-            nevoa: false,
-            neve: false,
-            multiplos: false,
-            outro: false,
-            indefinido: false,
-        },
-        dreamHourId: 2,
-        dreamDurationId: 2,
-        dreamLucidityLevelId: 1,
-        dreamTypeId: 1,
-        dreamRealityLevelId: 1,
-        eroticDream: false,
-        hiddenDream: false,
-        personalAnalysis: null,
-        tags: [],
-        sleepId: null,
-    })
+    const [ dreamModel, setDreamModel ] = useState<CreateDreamModel>(defaultDreamModel)
     const [ completeDreamModel, setCompleteDreamModel ] = useState<CreateCompleteDreamModel>({
         dreamNoSleepDateKnown: null,
         dreamNoSleepTimeKnown: null,
     })
     const [ sleepId, setSleepId ] = useState<number | null>(null)
     const [ loading, setLoading ] = useState<boolean>(false)
+
+    useEffect(() => {
+        return navigation.addListener("blur", () => {
+            setDreamModel(defaultDreamModel)
+            setCompleteDreamModel({
+                dreamNoSleepDateKnown: null,
+                dreamNoSleepTimeKnown: null,
+            })
+            setSleepId(null)
+        })
+    }, [])
 
     const createDream = async () => {
         setLoading(true)
@@ -94,6 +108,7 @@ export default function CreateDreamScreen() {
                 <CreateCompleteDream
                     dream={ dreamModel }
                     setDream={ setDreamModel }
+                    isLocked={ loading }
                 />
                 <Info
                     infoDescription="Sua noite de sono"
@@ -103,23 +118,27 @@ export default function CreateDreamScreen() {
                         "Não esqueça de preencher essas informações editando a noite de sono que será criada para você ao salvar esse sonho!"
                     ]}
                 />
-                <CustomButton
-                    title="Criar Sonho"
-                    onPress={ () => createDream() }
-                />
                 {
                     loading
-                        ? <Loading onlyLoading={ false } text="Criando Sonho..." />
+                        ? <Box.Column style={ styles.loading }>
+                            <Loading onlyLoading={ false } text="Criando Sonho..." />
+                        </Box.Column>
                         : <CustomButton
-                            title="Voltar"
-                            onPress={ () => {
-                                if (router.canGoBack())
-                                    router.back()
-                                else
-                                    router.navigate("/")
-                            }}
+                            title="Criar Sonho"
+                            onPress={ () => createDream() }
+                            important
                         />
                 }
+                <CustomButton
+                    title="Voltar"
+                    onPress={ () => {
+                        if (router.canGoBack())
+                            router.back()
+                        else
+                            router.navigate("/")
+                    }}
+                    active={ !loading }
+                />
             </Box.Column>
         </Screen>
     )
@@ -132,5 +151,8 @@ const styles = StyleSheet.create({
     },
     dreamDateText: {
         fontSize: 18,
+    },
+    loading: {
+        alignSelf: "center",
     },
 })

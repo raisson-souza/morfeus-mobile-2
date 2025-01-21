@@ -2,7 +2,7 @@ import { CustomImage } from "@/components/customs/CustomImage"
 import { Screen } from "../components/base/Screen"
 import { StyleSheet } from "react-native"
 import { View } from "react-native"
-import React, { createContext, useContext, useEffect, useState } from "react"
+import React, { createContext, useContext, useEffect, useRef, useState } from "react"
 
 type InitialContextProps = {
     children: JSX.Element | JSX.Element[]
@@ -15,14 +15,14 @@ const InitialContext = createContext<InitialContext | null>(null)
 /** Context especializado no tratamento / carregamento de dados iniciais da aplicação */
 export default function InitialContextComponent({ children }: InitialContextProps) {
     const [ loading, setLoading ] = useState<boolean>(true)
+    const initialLoadIntervalRef = useRef<NodeJS.Timeout | null>(null)
 
     useEffect(() => {
         const interval = setInterval(() => {
             setLoading(false)
+            clearInterval(initialLoadIntervalRef.current!)
         }, 1000)
-        return () => {
-            clearInterval(interval)
-        }
+        initialLoadIntervalRef.current = interval
     }, [])
 
     if (loading) {

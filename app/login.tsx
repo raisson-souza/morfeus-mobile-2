@@ -50,11 +50,13 @@ export default function LoginScreen() {
                             innerProps={{
                                 textContentType: "emailAddress"
                             }}
+                            active={ !loading }
                         />
                         <CustomInput
                             label="Senha"
                             defaultValue={ credentials.password }
                             onChange={ (e) => setCredentials({ email: credentials.email, password: e }) }
+                            active={ !loading }
                         />
                         {
                             loading

@@ -21,7 +21,10 @@ export default function RootLayout() {
       onInit={ SqliteDbManager }
     >
       <InitialContextComponent>
-        <StatusBar />
+        <StatusBar
+          backgroundColor="darkblue"
+          translucent={ false }
+        />
         <AuthContextComponent>
           <SyncContextComponent>
             <Stack

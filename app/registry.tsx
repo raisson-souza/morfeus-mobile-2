@@ -33,6 +33,11 @@ export default function RegistryScreen() {
             return
         }
 
+        if (credentials.password != credentials.passwordRepeat) {
+            alert("As senhas devem ser iguais.")
+            return
+        }
+
         setLoading(true)
         await registry({
             fullName: parsedRegistry.data.fullName,
@@ -53,6 +58,7 @@ export default function RegistryScreen() {
                             placeHolder="Fulano"
                             defaultValue={ credentials.fullName }
                             onChange={ (e) => setCredentials({ fullName: e, email: credentials.email, password: credentials.password, passwordRepeat: credentials.passwordRepeat }) }
+                            active={ !loading }
                         />
                         <CustomInput
                             label="Email"
@@ -62,16 +68,19 @@ export default function RegistryScreen() {
                             innerProps={{
                                 textContentType: "emailAddress"
                             }}
+                            active={ !loading }
                         />
                         <CustomInput
                             label="Senha"
                             defaultValue={ credentials.password }
                             onChange={ (e) => setCredentials({ fullName: credentials.fullName, email: credentials.email, password: e, passwordRepeat: credentials.passwordRepeat }) }
+                            active={ !loading }
                         />
                         <CustomInput
                             label="Repita a senha"
                             defaultValue={ credentials.passwordRepeat }
                             onChange={ (e) => setCredentials({ fullName: credentials.fullName, email: credentials.email, password: credentials.password, passwordRepeat: e }) }
+                            active={ !loading }
                         />
                     </Box.Column>
                     <Box.Column style={ styles.gap }>

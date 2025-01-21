@@ -36,13 +36,14 @@ export default abstract class Endpoints {
                     headers: this.mountHeaders(headers, authorization)
                 }
             )
-                .then(async (response) => {
-                    const json = await response.json()
-                    return new Response<T>({ data: json, status: response.status })
+                .then(async (_response) => {
+                    const { json, hasError } = await this.TreatRawResponse(_response)
+                    const response = this.ParseRawResponse<T>(json, _response.status, hasError)
+                    return this.TreatResponse(response)
                 })
         }
         catch (ex) {
-            return new Response<T>({ data: "", status: 500, fetchError: (ex as Error).message })
+            return this.TreatResponse(new Response<T>({ data: "", status: 500, fetchError: (ex as Error).message }))
         }
     }
 
@@ -63,13 +64,14 @@ export default abstract class Endpoints {
                     body: JSON.stringify(body)
                 }
             )
-                .then(async (response) => {
-                    const json = await response.json()
-                    return new Response<T>({ data: json, status: response.status })
+                .then(async (_response) => {
+                    const { json, hasError } = await this.TreatRawResponse(_response)
+                    const response = this.ParseRawResponse<T>(json, _response.status, hasError)
+                    return this.TreatResponse(response)
                 })
         }
         catch (ex) {
-            return new Response<T>({ data: "", status: 500, fetchError: (ex as Error).message })
+            return this.TreatResponse(new Response<T>({ data: "", status: 500, fetchError: (ex as Error).message }))
         }
     }
 
@@ -111,5 +113,55 @@ export default abstract class Endpoints {
             .then(tokenInfo => {
                 return tokenInfo?.token ?? ""
             })
+    }
+
+    /** Trata o Response final */
+    private static TreatResponse<T>(response: Response<T>): Response<T> {
+        if (response.Status === 401) {
+            response.Success = false
+            response.ErrorMessage = "Acesso não autorizado. Por favor, reinicie a aplicação e faça login novamente."
+        }
+        if (response.ErrorMessage === "Network request failed") {
+            response.Success = false
+            response.ErrorMessage = "Não foi possível conectar ao servidor. Verifique sua conexão com a internet ou tente novamente mais tarde."
+        }
+        return response
+    }
+
+    /** Realiza o tratamento da response original da função fetch */
+    private static async TreatRawResponse(rawResponse: globalThis.Response): Promise<{ json: any, hasError: boolean }> {
+        try {
+            return {
+                json: await rawResponse.json(),
+                hasError: false,
+            }
+        }
+        catch (ex) {
+            if (
+                (ex as Error).message === "JSON Parse error: Unexpected character: <" ||
+                (ex as Error).message === "JSON Parse error: Unexpected end of input"
+            ) {
+                return {
+                    json: "Serviço indisponível. Não foi possível conectar ao servidor. Verifique a conexão ou tente novamente mais tarde.",
+                    hasError: true
+                }
+            }
+
+            return {
+                json: (ex as Error).message,
+                hasError: true
+            }
+        }
+    }
+
+    /** Gera um Response<T> baseado no tratamento do JSON da response original, status da requisição e se há erro no tratamento original */
+    private static ParseRawResponse<T>(
+        json: any,
+        responseStatus: number,
+        rawResponseError: boolean,
+    ): Response<T> {
+        if (rawResponseError)
+            return new Response<T>({ data: json, fetchError: json, status: 400 })
+        return new Response<T>({ data: json, status: responseStatus })
     }
 }

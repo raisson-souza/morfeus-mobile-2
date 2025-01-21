@@ -1,7 +1,8 @@
 import { CreateDreamModel } from "@/types/dream"
 import { Picker } from "@react-native-picker/picker"
 import { StyleSheet, Pressable } from "react-native"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { useNavigation } from "expo-router"
 import Box from "@/components/base/Box"
 import CustomButton from "@/components/customs/CustomButton"
 import CustomInput from "@/components/customs/CustomInput"
@@ -12,10 +13,18 @@ import TextBold from "@/components/base/TextBold"
 type CreateCompleteDream = {
     dream: CreateDreamModel
     setDream: React.Dispatch<React.SetStateAction<CreateDreamModel>>
+    isLocked: boolean
 }
 
-export default function CreateCompleteDream({ dream, setDream }: CreateCompleteDream) {
+export default function CreateCompleteDream({ dream, setDream, isLocked }: CreateCompleteDream) {
+    const navigation = useNavigation()
     const [ tag, setTag ] = useState<string>("")
+
+    useEffect(() => {
+        return navigation.addListener("blur", () => {
+            setTag("")
+        })
+    }, [])
 
     const appendTag = () => {
         if (tag.trim() === "") return
@@ -48,11 +57,15 @@ export default function CreateCompleteDream({ dream, setDream }: CreateCompleteD
                 label="Título"
                 onChange={ (e) => setDream({ ...dream, title: e }) }
                 width="100%"
+                defaultValue={ dream.title }
+                active={ !isLocked }
             />
             <CustomInput
                 label="Descrição"
                 onChange={ (e) => setDream({ ...dream, description: e }) }
                 width="100%"
+                defaultValue={ dream.description }
+                active={ !isLocked }
             />
             <Box.Column>
                 <Info
@@ -70,6 +83,7 @@ export default function CreateCompleteDream({ dream, setDream }: CreateCompleteD
                         dreamPointOfViewId: e
                     })}
                     style={ styles.picker }
+                    enabled={ !isLocked }
                 >
                     <Picker.Item label="Primeira Pessoa" value="1" />
                     <Picker.Item label="Segunda Pessoa" value="2" />
@@ -254,6 +268,7 @@ export default function CreateCompleteDream({ dream, setDream }: CreateCompleteD
                     dreamHourId: e
                 })}
                 style={ styles.picker }
+                enabled={ !isLocked }
             >
                 <Picker.Item label="Amanhecer" value="1" />
                 <Picker.Item label="Dia" value="2" />
@@ -277,6 +292,7 @@ export default function CreateCompleteDream({ dream, setDream }: CreateCompleteD
                     dreamDurationId: e
                 })}
                 style={ styles.picker }
+                enabled={ !isLocked }
             >
                 <Picker.Item label="Instantâneo" value="1" />
                 <Picker.Item label="Curto" value="2" />
@@ -298,6 +314,7 @@ export default function CreateCompleteDream({ dream, setDream }: CreateCompleteD
                     dreamLucidityLevelId: e
                 })}
                 style={ styles.picker }
+                enabled={ !isLocked }
             >
                 <Picker.Item label="Não Lúcido" value="1" />
                 <Picker.Item label="Parcialmente Lúcido" value="2" />
@@ -319,6 +336,7 @@ export default function CreateCompleteDream({ dream, setDream }: CreateCompleteD
                     dreamTypeId: e
                 })}
                 style={ styles.picker }
+                enabled={ !isLocked }
             >
                 <Picker.Item label="Sonho" value="1" />
                 <Picker.Item label="Pesadelo" value="2" />
@@ -339,6 +357,7 @@ export default function CreateCompleteDream({ dream, setDream }: CreateCompleteD
                     dreamRealityLevelId: e
                 })}
                 style={ styles.picker }
+                enabled={ !isLocked }
             >
                 <Picker.Item label="Irreal" value="1" />
                 <Picker.Item label="Parcialmente Real" value="2" />
@@ -388,6 +407,7 @@ export default function CreateCompleteDream({ dream, setDream }: CreateCompleteD
                 label="Análise Pessoal"
                 onChange={ (e) => setDream({ ...dream, personalAnalysis: e }) }
                 width="100%"
+                        active={ !isLocked }
             />
             <Box.Column style={ styles.tagContainer }>
                 <Box.Column style={ styles.tagContainerActions }>
@@ -406,10 +426,12 @@ export default function CreateCompleteDream({ dream, setDream }: CreateCompleteD
                         onChange={ (e) => setTag(e.toUpperCase().trim()) }
                         innerProps={{ value: tag }}
                         width={ 200 }
+                        active={ !isLocked }
                     />
                     <CustomButton
                         title="Adicionar TAG"
                         onPress={ appendTag }
+                        active={ !isLocked }
                     />
                 </Box.Column>
                 <Box.Row style={ styles.tagsContainer }>
