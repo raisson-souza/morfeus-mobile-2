@@ -126,6 +126,7 @@ export default function CreateDreamScreen() {
                         : <CustomButton
                             title="Criar Sonho"
                             onPress={ () => createDream() }
+                            important
                         />
                 }
                 <CustomButton

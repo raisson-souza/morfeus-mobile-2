@@ -34,6 +34,14 @@ export type CustomButtonProps = {
     }
     /** Propriedades do botão (irão sobrepor as outras) */
     innerProps?: PressableProps | TouchableHighlightProps | TouchableOpacityProps
+    /** Botão com destaque (fundo) */
+    important?: boolean
+    /** Override CSS para botão importante */
+    importantOverride?: {
+        color: string
+        textColor: string
+        textColorInactive: string
+    }
 }
 
 /** Componente customizado para botão */
@@ -51,19 +59,47 @@ export default function CustomButton({
         fontSize: 16,
     },
     innerProps = {},
+    important = false,
+    importantOverride = {
+        color: "darkblue",
+        textColor: "white",
+        textColorInactive: "gray",
+    },
 }: CustomButtonProps) {
     const btnStyle: any = {
         width: btnWidth,
         height: btnHeight,
         borderRadius: 30,
         borderWidth: 1,
-        borderColor: active ? btnColor : "gray",
+        borderColor: active
+            ? important
+                ? importantOverride.color
+                : btnColor
+            : "gray",
         borderStyle: "solid",
         justifyContent: "center",
         alignItems: "center",
         padding: 3,
     }
-    const btnText = <Text style={{ color: btnTextColor, fontWeight: titleStyle.fontWeight, fontSize: titleStyle.fontSize, padding: 5 }}>{ title }</Text>
+
+    if (important) btnStyle["backgroundColor"] = importantOverride.color
+
+    const btnText = (
+            <Text
+                style={{
+                    color: important
+                        ? active
+                            ? importantOverride.textColor
+                            : importantOverride.textColorInactive
+                        : btnTextColor,
+                    fontWeight: titleStyle.fontWeight,
+                    fontSize: titleStyle.fontSize,
+                    padding: 5,
+                }}
+            >
+                { title }
+            </Text>
+        )
 
     if (btnAnimation === "highlight") {
         return (

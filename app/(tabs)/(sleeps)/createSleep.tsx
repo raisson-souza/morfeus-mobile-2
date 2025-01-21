@@ -369,6 +369,7 @@ export default function CreateSleepScreen() {
                     <CustomButton
                         title="Criar Ciclo de Sono"
                         onPress={ () => createSleepCycle() }
+                        important
                     />
                     <CustomButton
                         title="Voltar"
