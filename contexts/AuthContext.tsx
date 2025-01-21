@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react"
-import { LocalStorage } from "@/utils/LocalStorage"
+import { LocalStorage, LocalStorageCredentials } from "@/utils/LocalStorage"
 import { LoginRequest } from "@/types/login"
 import { RegistryRequest } from "@/types/registry"
 import { Screen } from "../components/base/Screen"
@@ -41,64 +41,9 @@ export default function AuthContextComponent({ children }: AuthContextProps) {
         email: "",
         password: "",
     })
+    const refreshInterval = useRef<NodeJS.Timeout | null>(null)
 
     useEffect(() => {
-        const manageAuth = async () => {
-            const loginCredentials = await LocalStorage.loginCredentials.get()
-            const tokenInfo = await LocalStorage.tokenInfo.get()
-            let loggedIn = false
-
-            // Verificamos se há token ativo ainda válido
-            if (tokenInfo) {
-                if ((new Date().getTime() / 1000) < tokenInfo.tokenExpirationDateMilis) {
-                    loggedIn = true
-                }
-                else {
-                    // Verifica conexão com internet, caso não haja, usuário está offline
-                    const hasInternetConnection = await InternetInfo()
-                        .then(internetInfo => { return internetInfo?.isConnected ?? false })
-
-                    if (!hasInternetConnection) loggedIn = true
-                }
-            }
-            // Caso não haja token válido, é realizado login se houver credenciais
-            else if (loginCredentials) {
-                const loginResponse = await AuthService.Login({
-                    email: loginCredentials.email,
-                    password: loginCredentials.password
-                })
-
-                if (loginResponse.Success) {
-                    await LocalStorage.login(
-                        {
-                            token: loginResponse.Data.token,
-                            tokenExpirationDateMilis: loginResponse.Data.expirationDateMilis
-                        },
-                        {
-                            email: loginCredentials.email,
-                            password: loginCredentials.password
-                        }
-                    )
-                    loggedIn = true
-                }
-            }
-
-            if (
-                (tokenInfo || loginCredentials) &&
-                loggedIn
-            ) {
-                const userInfoLocalStorage = await LocalStorage.userInfo.get()
-                userInfo.current = {
-                    id: userInfoLocalStorage?.id ?? 0,
-                    name: userInfoLocalStorage?.name ?? "",
-                    email: loginCredentials?.email ?? "",
-                    password: loginCredentials?.password ?? "",
-                }
-                setIsLogged(true)
-            }
-
-            setLoading(false)
-        }
         if (!isLogged)
             manageAuth()
     }, [])
@@ -147,6 +92,7 @@ export default function AuthContextComponent({ children }: AuthContextProps) {
 
             setIsLogged(true)
             router.navigate("/home")
+            await refreshTokenIntervalAction(credentials)
             return
         }
 
@@ -169,10 +115,110 @@ export default function AuthContextComponent({ children }: AuthContextProps) {
     }
 
     const logoff = async () => {
+        clearInterval(refreshInterval.current!)
+        refreshInterval.current = null
         setLoading(true)
         await LocalStorage.logoff()
         setIsLogged(false)
         setLoading(false)
+    }
+
+    const manageAuth = async () => {
+        const loginCredentials = await LocalStorage.loginCredentials.get()
+        const tokenInfo = await LocalStorage.tokenInfo.get()
+        let tokenExpirationMilis = 0
+        let loggedIn = false
+
+        // Há token
+        if (tokenInfo) {
+            const nowSeconds = new Date().getTime() / 1000
+            // Token válido
+            if (nowSeconds < tokenInfo.tokenExpirationDateMilis) {
+                loggedIn = true
+
+                const tokenExpirationDiff = tokenInfo.tokenExpirationDateMilis - nowSeconds
+                // Se o tempo de expiração for maior que um minuto, o refresh será feito
+                // quando 75% do tempo de expiração for atingido, se não,  imediatamente
+                tokenExpirationMilis = tokenExpirationDiff >= 60
+                    ? tokenExpirationDiff * 0.75
+                    : 1
+            }
+            // Token inválido
+            else {
+                // Verifica conexão
+                const hasInternetConnection = await InternetInfo()
+                    .then(internetInfo => { return internetInfo?.isConnected ?? false })
+
+                // Caso token inválido e sem internet, login offline
+                if (!hasInternetConnection) loggedIn = true
+            }
+        }
+        // Há credenciais e o usuário continua não logado
+        if (loginCredentials && !loggedIn) {
+            const { isLogged } = await refreshToken(loginCredentials)
+            loggedIn = isLogged
+        }
+
+        if (
+            (tokenInfo || loginCredentials) &&
+            loggedIn
+        ) {
+            const userInfoLocalStorage = await LocalStorage.userInfo.get()
+            userInfo.current = {
+                id: userInfoLocalStorage?.id ?? 0,
+                name: userInfoLocalStorage?.name ?? "",
+                email: loginCredentials?.email ?? "",
+                password: loginCredentials?.password ?? "",
+            }
+            setIsLogged(true)
+        }
+
+        if (tokenExpirationMilis != 0) {
+            // Timeout para refresh quando token com tempo de expiração incerta
+            setTimeout(async () => {
+                await refreshToken(loginCredentials!)
+
+                // Interval quando token com expiração conhecida
+                await refreshTokenIntervalAction(loginCredentials!)
+
+            }, tokenExpirationMilis * 1000)
+        }
+
+        setLoading(false)
+    }
+
+    const refreshToken = async (loginCredentials: LocalStorageCredentials ): Promise<{ isLogged: boolean }> => {
+        const loginResponse = await AuthService.Login({
+            email: loginCredentials.email,
+            password: loginCredentials.password
+        })
+
+        if (loginResponse.Success) {
+            await LocalStorage.login(
+                {
+                    token: loginResponse.Data.token,
+                    tokenExpirationDateMilis: loginResponse.Data.expirationDateMilis
+                },
+                {
+                    email: loginCredentials.email,
+                    password: loginCredentials.password
+                }
+            )
+            return {
+                isLogged: true,
+            }
+        }
+
+        return {
+            isLogged: false,
+        }
+    }
+
+    const refreshTokenIntervalAction = async (loginCredentials: LocalStorageCredentials) => {
+        const _refreshInterval = setInterval(async () => {
+            await refreshToken(loginCredentials!)
+        }, 1800000) // <- 30 minutos
+        refreshInterval.current = _refreshInterval
     }
 
     if (loading) {
