@@ -1,11 +1,13 @@
-import { View, Text, Switch } from "react-native"
+import { Text, Switch, StyleSheet } from "react-native"
+import Box from "../base/Box"
 import CustomButton from "./CustomButton"
+import React from "react"
 
 type SwitchNullProps = {
     /** Nome do switch */
     label: string
     /** Nome do botão de anulação do switch */
-    btnTitle: string
+    btnTitle?: string
     /** O valor do switch é nulo (não é falso ou verdadeiro) */
     isSwitchNull: boolean
     /** Set State para se o valor do switch é nulo */
@@ -16,7 +18,7 @@ type SwitchNullProps = {
     setSwitchValue: (value: any) => void
 }
 
-export default function SwitchNull({
+export default function SwitchNull({ // TODO: Implementar state interno para controlar controlador nulo
     label,
     btnTitle,
     isSwitchNull,
@@ -25,16 +27,24 @@ export default function SwitchNull({
     setSwitchValue,
 }: SwitchNullProps) {
     return (
-        <View>
-            <Text>{ label }</Text>
-            <CustomButton
-                title={ btnTitle }
-                onPress={ () => {
-                    setSwitchNull(!isSwitchNull)
-                    // Caso anulação do switch, o valor do switch é nulo
-                    if (!isSwitchNull) setSwitchValue(null)
-                }}
-            />
+        <Box.Column style={ styles.container }>
+            <Box.Row style={ styles.row }>
+                <CustomButton
+                    title={
+                        btnTitle
+                            ? btnTitle
+                            : isSwitchNull
+                                ? "Habilitar"
+                                : "Desabilitar"
+                    }
+                    onPress={ () => {
+                        setSwitchNull(!isSwitchNull)
+                        // Caso anulação do switch, o valor do switch é nulo
+                        if (!isSwitchNull) setSwitchValue(null)
+                    }}
+                />
+                <Text>{ label }</Text>
+            </Box.Row>
             {
                 isSwitchNull
                     ? <></>
@@ -45,6 +55,16 @@ export default function SwitchNull({
                         />
                     )
             }
-        </View>
+        </Box.Column>
     )
 }
+
+const styles = StyleSheet.create({
+    container: {
+        alignItems: "flex-start",
+    },
+    row: {
+        alignItems: 'center',
+        gap: 5,
+    },
+})

@@ -184,284 +184,201 @@ export default function DreamsList() {
                         ? <></>
                         : (
                             <Box.Column style={ styles.noEspecificyContainer }>
-                                { /** //TODO: style para centralizar e estilizar o switch */ }
-                                <SwitchNull
-                                    label="Sonhos com Análise Pessoal"
-                                    btnTitle={ dreamsWithPersonalAnalysisNullSwitch ? "Habilitar" : "Desabilitar" }
-                                    isSwitchNull={ dreamsWithPersonalAnalysisNullSwitch }
-                                    setSwitchNull={ setDreamsWithPersonalAnalysisNullSwitch }
-                                    switchValue={ listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamsWithPersonalAnalysis }
-                                    setSwitchValue={ (e) => setListDreamsByUserForm({
-                                        ...listDreamsByUserForm,
-                                        dreamEspecificCaracteristicsFilter: {
-                                            ...listDreamsByUserForm.dreamEspecificCaracteristicsFilter,
-                                            dreamsWithPersonalAnalysis: e,
+                                <Box.Column style={ styles.switches }>
+                                    <SwitchNull
+                                        label="Sonhos com Análise Pessoal"
+                                        isSwitchNull={ dreamsWithPersonalAnalysisNullSwitch }
+                                        setSwitchNull={ setDreamsWithPersonalAnalysisNullSwitch }
+                                        switchValue={ listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamsWithPersonalAnalysis }
+                                        setSwitchValue={ (e) => setListDreamsByUserForm({
+                                            ...listDreamsByUserForm,
+                                            dreamEspecificCaracteristicsFilter: {
+                                                ...listDreamsByUserForm.dreamEspecificCaracteristicsFilter,
+                                                dreamsWithPersonalAnalysis: e,
+                                            }
+                                        })}
+                                    />
+                                    {/* CLIMAS */}
+                                    <SwitchNull
+                                        label="Clima Ameno"
+                                        isSwitchNull={ dreamClimatesAmenoNullSwitch }
+                                        setSwitchNull={ setDreamClimatesAmenoNullSwitch }
+                                        switchValue={ listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates.ameno }
+                                        setSwitchValue={ (e) =>
+                                            setListDreamsByUserForm({
+                                                ...listDreamsByUserForm,
+                                                dreamEspecificCaracteristicsFilter: {
+                                                    ...listDreamsByUserForm.dreamEspecificCaracteristicsFilter,
+                                                    dreamClimates: {
+                                                        ...listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates,
+                                                        ameno: e
+                                                    },
+                                                }
+                                            })
                                         }
-                                    })}
-                                />
-                                {/* CLIMAS */}
-                                <Box.Column>
-                                    {/** // TODO: VALIDAR O USO DO SwitchNull */}
-                                    <Box.Column>
-                                        <Text>Clima Amenos</Text>
-                                        <CustomButton
-                                            title={ dreamClimatesAmenoNullSwitch ? "Habilitar" : "Desabilitar" }
-                                            onPress={ () => setDreamClimatesAmenoNullSwitch(!dreamClimatesAmenoNullSwitch) }
-                                        />
-                                        {
-                                            dreamClimatesAmenoNullSwitch
-                                                ? <></>
-                                                : (
-                                                    <Switch
-                                                        value={ listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates.ameno! }
-                                                        onValueChange={ (e) => setListDreamsByUserForm({
-                                                            ...listDreamsByUserForm,
-                                                            dreamEspecificCaracteristicsFilter: {
-                                                                ...listDreamsByUserForm.dreamEspecificCaracteristicsFilter,
-                                                                dreamClimates: {
-                                                                    ...listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates,
-                                                                    ameno: e
-                                                                },
-                                                            }
-                                                        })}
-                                                    />
-                                                )
+                                    />
+                                    <SwitchNull
+                                        label="Clima Calor"
+                                        isSwitchNull={ dreamClimatesCalorNullSwitch }
+                                        setSwitchNull={ setDreamClimatesCalorNullSwitch }
+                                        switchValue={ listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates.calor }
+                                        setSwitchValue={ (e) =>
+                                            setListDreamsByUserForm({
+                                                ...listDreamsByUserForm,
+                                                dreamEspecificCaracteristicsFilter: {
+                                                    ...listDreamsByUserForm.dreamEspecificCaracteristicsFilter,
+                                                    dreamClimates: {
+                                                        ...listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates,
+                                                        calor: e
+                                                    },
+                                                }
+                                            })
                                         }
-                                    </Box.Column>
-                                    <Box.Column>
-                                        <Text>Clima Calor</Text>
-                                        <CustomButton
-                                            title={ dreamClimatesCalorNullSwitch ? "Habilitar" : "Desabilitar" }
-                                            onPress={ () => setDreamClimatesCalorNullSwitch(!dreamClimatesCalorNullSwitch) }
-                                        />
-                                        {
-                                            dreamClimatesCalorNullSwitch
-                                                ? <></>
-                                                : (
-                                                    <Switch
-                                                        value={ listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates.calor! }
-                                                        onValueChange={ (e) => setListDreamsByUserForm({
-                                                            ...listDreamsByUserForm,
-                                                            dreamEspecificCaracteristicsFilter: {
-                                                                ...listDreamsByUserForm.dreamEspecificCaracteristicsFilter,
-                                                                dreamClimates: {
-                                                                    ...listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates,
-                                                                    calor: e
-                                                                },
-                                                            }
-                                                        })}
-                                                    />
-                                                )
+                                    />
+                                    <SwitchNull
+                                        label="Clima Garoa"
+                                        isSwitchNull={ dreamClimatesGaroaNullSwitch }
+                                        setSwitchNull={ setDreamClimatesGaroaNullSwitch }
+                                        switchValue={ listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates.garoa }
+                                        setSwitchValue={ (e) =>
+                                            setListDreamsByUserForm({
+                                                ...listDreamsByUserForm,
+                                                dreamEspecificCaracteristicsFilter: {
+                                                    ...listDreamsByUserForm.dreamEspecificCaracteristicsFilter,
+                                                    dreamClimates: {
+                                                        ...listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates,
+                                                        garoa: e
+                                                    },
+                                                }
+                                            })
                                         }
-                                    </Box.Column>
-                                    <Box.Column>
-                                        <Text>Clima Garoa</Text>
-                                        <CustomButton
-                                            title={ dreamClimatesGaroaNullSwitch ? "Habilitar" : "Desabilitar" }
-                                            onPress={ () => setDreamClimatesGaroaNullSwitch(!dreamClimatesGaroaNullSwitch) }
-                                        />
-                                        {
-                                            dreamClimatesGaroaNullSwitch
-                                                ? <></>
-                                                : (
-                                                    <Switch
-                                                        value={ listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates.garoa! }
-                                                        onValueChange={ (e) => setListDreamsByUserForm({
-                                                            ...listDreamsByUserForm,
-                                                            dreamEspecificCaracteristicsFilter: {
-                                                                ...listDreamsByUserForm.dreamEspecificCaracteristicsFilter,
-                                                                dreamClimates: {
-                                                                    ...listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates,
-                                                                    garoa: e
-                                                                },
-                                                            }
-                                                        })}
-                                                    />
-                                                )
+                                    />
+                                    <SwitchNull
+                                        label="Clima Chuva"
+                                        isSwitchNull={ dreamClimatesChuvaNullSwitch }
+                                        setSwitchNull={ setDreamClimatesChuvaNullSwitch }
+                                        switchValue={ listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates.chuva }
+                                        setSwitchValue={ (e) =>
+                                            setListDreamsByUserForm({
+                                                ...listDreamsByUserForm,
+                                                dreamEspecificCaracteristicsFilter: {
+                                                    ...listDreamsByUserForm.dreamEspecificCaracteristicsFilter,
+                                                    dreamClimates: {
+                                                        ...listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates,
+                                                        chuva: e
+                                                    },
+                                                }
+                                            })
                                         }
-                                    </Box.Column>
-                                    <Box.Column>
-                                        <Text>Clima Chuva</Text>
-                                        <CustomButton
-                                            title={ dreamClimatesChuvaNullSwitch ? "Habilitar" : "Desabilitar" }
-                                            onPress={ () => setDreamClimatesChuvaNullSwitch(!dreamClimatesChuvaNullSwitch) }
-                                        />
-                                        {
-                                            dreamClimatesChuvaNullSwitch
-                                                ? <></>
-                                                : (
-                                                    <Switch
-                                                        value={ listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates.chuva! }
-                                                        onValueChange={ (e) => setListDreamsByUserForm({
-                                                            ...listDreamsByUserForm,
-                                                            dreamEspecificCaracteristicsFilter: {
-                                                                ...listDreamsByUserForm.dreamEspecificCaracteristicsFilter,
-                                                                dreamClimates: {
-                                                                    ...listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates,
-                                                                    chuva: e
-                                                                },
-                                                            }
-                                                        })}
-                                                    />
-                                                )
+                                    />
+                                    <SwitchNull
+                                        label="Clima Tempestade"
+                                        isSwitchNull={ dreamClimatesTempestadeNullSwitch }
+                                        setSwitchNull={ setDreamClimatesTempestadeNullSwitch }
+                                        switchValue={ listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates.tempestade }
+                                        setSwitchValue={ (e) =>
+                                            setListDreamsByUserForm({
+                                                ...listDreamsByUserForm,
+                                                dreamEspecificCaracteristicsFilter: {
+                                                    ...listDreamsByUserForm.dreamEspecificCaracteristicsFilter,
+                                                    dreamClimates: {
+                                                        ...listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates,
+                                                        tempestade: e
+                                                    },
+                                                }
+                                            })
                                         }
-                                    </Box.Column>
-                                    <Box.Column>
-                                        <Text>Clima Tempestade</Text>
-                                        <CustomButton
-                                            title={ dreamClimatesTempestadeNullSwitch ? "Habilitar" : "Desabilitar" }
-                                            onPress={ () => setDreamClimatesTempestadeNullSwitch(!dreamClimatesTempestadeNullSwitch) }
-                                        />
-                                        {
-                                            dreamClimatesTempestadeNullSwitch
-                                                ? <></>
-                                                : (
-                                                    <Switch
-                                                        value={ listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates.tempestade! }
-                                                        onValueChange={ (e) => setListDreamsByUserForm({
-                                                            ...listDreamsByUserForm,
-                                                            dreamEspecificCaracteristicsFilter: {
-                                                                ...listDreamsByUserForm.dreamEspecificCaracteristicsFilter,
-                                                                dreamClimates: {
-                                                                    ...listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates,
-                                                                    tempestade: e
-                                                                },
-                                                            }
-                                                        })}
-                                                    />
-                                                )
+                                    />
+                                    <SwitchNull
+                                        label="Clima Névoa"
+                                        isSwitchNull={ dreamClimatesNevoaNullSwitch }
+                                        setSwitchNull={ setDreamClimatesNevoaNullSwitch }
+                                        switchValue={ listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates.nevoa }
+                                        setSwitchValue={ (e) =>
+                                            setListDreamsByUserForm({
+                                                ...listDreamsByUserForm,
+                                                dreamEspecificCaracteristicsFilter: {
+                                                    ...listDreamsByUserForm.dreamEspecificCaracteristicsFilter,
+                                                    dreamClimates: {
+                                                        ...listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates,
+                                                        nevoa: e
+                                                    },
+                                                }
+                                            })
                                         }
-                                    </Box.Column>
-                                    <Box.Column>
-                                        <Text>Clima Nevoa</Text>
-                                        <CustomButton
-                                            title={ dreamClimatesNevoaNullSwitch ? "Habilitar" : "Desabilitar" }
-                                            onPress={ () => setDreamClimatesNevoaNullSwitch(!dreamClimatesNevoaNullSwitch) }
-                                        />
-                                        {
-                                            dreamClimatesNevoaNullSwitch
-                                                ? <></>
-                                                : (
-                                                    <Switch
-                                                        value={ listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates.nevoa! }
-                                                        onValueChange={ (e) => setListDreamsByUserForm({
-                                                            ...listDreamsByUserForm,
-                                                            dreamEspecificCaracteristicsFilter: {
-                                                                ...listDreamsByUserForm.dreamEspecificCaracteristicsFilter,
-                                                                dreamClimates: {
-                                                                    ...listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates,
-                                                                    nevoa: e
-                                                                },
-                                                            }
-                                                        })}
-                                                    />
-                                                )
+                                    />
+                                    <SwitchNull
+                                        label="Clima Neve"
+                                        isSwitchNull={ dreamClimatesNeveNullSwitch }
+                                        setSwitchNull={ setDreamClimatesNeveNullSwitch }
+                                        switchValue={ listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates.neve }
+                                        setSwitchValue={ (e) =>
+                                            setListDreamsByUserForm({
+                                                ...listDreamsByUserForm,
+                                                dreamEspecificCaracteristicsFilter: {
+                                                    ...listDreamsByUserForm.dreamEspecificCaracteristicsFilter,
+                                                    dreamClimates: {
+                                                        ...listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates,
+                                                        neve: e
+                                                    },
+                                                }
+                                            })
                                         }
-                                    </Box.Column>
-                                    <Box.Column>
-                                        <Text>Clima Neve</Text>
-                                        <CustomButton
-                                            title={ dreamClimatesNeveNullSwitch ? "Habilitar" : "Desabilitar" }
-                                            onPress={ () => setDreamClimatesNeveNullSwitch(!dreamClimatesNeveNullSwitch) }
-                                        />
-                                        {
-                                            dreamClimatesNeveNullSwitch
-                                                ? <></>
-                                                : (
-                                                    <Switch
-                                                        value={ listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates.neve! }
-                                                        onValueChange={ (e) => setListDreamsByUserForm({
-                                                            ...listDreamsByUserForm,
-                                                            dreamEspecificCaracteristicsFilter: {
-                                                                ...listDreamsByUserForm.dreamEspecificCaracteristicsFilter,
-                                                                dreamClimates: {
-                                                                    ...listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates,
-                                                                    neve: e
-                                                                },
-                                                            }
-                                                        })}
-                                                    />
-                                                )
+                                    />
+                                    <SwitchNull
+                                        label="Múltiplos Climas"
+                                        isSwitchNull={ dreamClimatesMultiplosNullSwitch }
+                                        setSwitchNull={ setDreamClimatesMultiplosNullSwitch }
+                                        switchValue={ listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates.multiplos }
+                                        setSwitchValue={ (e) =>
+                                            setListDreamsByUserForm({
+                                                ...listDreamsByUserForm,
+                                                dreamEspecificCaracteristicsFilter: {
+                                                    ...listDreamsByUserForm.dreamEspecificCaracteristicsFilter,
+                                                    dreamClimates: {
+                                                        ...listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates,
+                                                        multiplos: e
+                                                    },
+                                                }
+                                            })
                                         }
-                                    </Box.Column>
-                                    <Box.Column>
-                                        <Text>Múltiplos Climas</Text>
-                                        <CustomButton
-                                            title={ dreamClimatesMultiplosNullSwitch ? "Habilitar" : "Desabilitar" }
-                                            onPress={ () => setDreamClimatesMultiplosNullSwitch(!dreamClimatesMultiplosNullSwitch) }
-                                        />
-                                        {
-                                            dreamClimatesMultiplosNullSwitch
-                                                ? <></>
-                                                : (
-                                                    <Switch
-                                                        value={ listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates.multiplos! }
-                                                        onValueChange={ (e) => setListDreamsByUserForm({
-                                                            ...listDreamsByUserForm,
-                                                            dreamEspecificCaracteristicsFilter: {
-                                                                ...listDreamsByUserForm.dreamEspecificCaracteristicsFilter,
-                                                                dreamClimates: {
-                                                                    ...listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates,
-                                                                    multiplos: e
-                                                                },
-                                                            }
-                                                        })}
-                                                    />
-                                                )
+                                    />
+                                    <SwitchNull
+                                        label="Outro Clima"
+                                        isSwitchNull={ dreamClimatesOutroNullSwitch }
+                                        setSwitchNull={ setDreamClimatesOutroNullSwitch }
+                                        switchValue={ listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates.outro }
+                                        setSwitchValue={ (e) =>
+                                            setListDreamsByUserForm({
+                                                ...listDreamsByUserForm,
+                                                dreamEspecificCaracteristicsFilter: {
+                                                    ...listDreamsByUserForm.dreamEspecificCaracteristicsFilter,
+                                                    dreamClimates: {
+                                                        ...listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates,
+                                                        outro: e
+                                                    },
+                                                }
+                                            })
                                         }
-                                    </Box.Column>
-                                    <Box.Column>
-                                        <Text>Outro Clima</Text>
-                                        <CustomButton
-                                            title={ dreamClimatesOutroNullSwitch ? "Habilitar" : "Desabilitar" }
-                                            onPress={ () => setDreamClimatesOutroNullSwitch(!dreamClimatesOutroNullSwitch) }
-                                        />
-                                        {
-                                            dreamClimatesOutroNullSwitch
-                                                ? <></>
-                                                : (
-                                                    <Switch
-                                                        value={ listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates.outro! }
-                                                        onValueChange={ (e) => setListDreamsByUserForm({
-                                                            ...listDreamsByUserForm,
-                                                            dreamEspecificCaracteristicsFilter: {
-                                                                ...listDreamsByUserForm.dreamEspecificCaracteristicsFilter,
-                                                                dreamClimates: {
-                                                                    ...listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates,
-                                                                    outro: e
-                                                                },
-                                                            }
-                                                        })}
-                                                    />
-                                                )
+                                    />
+                                    <SwitchNull
+                                        label="Clima Indefinido"
+                                        isSwitchNull={ dreamClimatesIndefinidoNullSwitch }
+                                        setSwitchNull={ setDreamClimatesIndefinidoNullSwitch }
+                                        switchValue={ listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates.indefinido }
+                                        setSwitchValue={ (e) =>
+                                            setListDreamsByUserForm({
+                                                ...listDreamsByUserForm,
+                                                dreamEspecificCaracteristicsFilter: {
+                                                    ...listDreamsByUserForm.dreamEspecificCaracteristicsFilter,
+                                                    dreamClimates: {
+                                                        ...listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates,
+                                                        indefinido: e
+                                                    },
+                                                }
+                                            })
                                         }
-                                    </Box.Column>
-                                    <Box.Column>
-                                        <Text>Clima Indefinido</Text>
-                                        <CustomButton
-                                            title={ dreamClimatesIndefinidoNullSwitch ? "Habilitar" : "Desabilitar" }
-                                            onPress={ () => setDreamClimatesIndefinidoNullSwitch(!dreamClimatesIndefinidoNullSwitch) }
-                                        />
-                                        {
-                                            dreamClimatesIndefinidoNullSwitch
-                                                ? <></>
-                                                : (
-                                                    <Switch
-                                                        value={ listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates.indefinido! }
-                                                        onValueChange={ (e) => setListDreamsByUserForm({
-                                                            ...listDreamsByUserForm,
-                                                            dreamEspecificCaracteristicsFilter: {
-                                                                ...listDreamsByUserForm.dreamEspecificCaracteristicsFilter,
-                                                                dreamClimates: {
-                                                                    ...listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates,
-                                                                    indefinido: e
-                                                                },
-                                                            }
-                                                        })}
-                                                    />
-                                                )
-                                        }
-                                    </Box.Column>
+                                    />
                                 </Box.Column>
                                 {/* CLIMAS FIM */}
                                 {/* PICKERS */}
@@ -591,6 +508,9 @@ const styles = StyleSheet.create({
     },
     noEspecificyContainer: {
         width: "100%",
+    },
+    switches: {
+        gap: 10,
     },
     picker: {
         width: "100%",
