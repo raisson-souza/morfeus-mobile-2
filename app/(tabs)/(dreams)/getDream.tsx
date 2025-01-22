@@ -272,10 +272,11 @@ export default function GetDreamScreen() {
                                     </View>
                                 </Box.Column>
                             )
-                            : <>
-                                <Text>Houve um problema ao buscar o sonho:</Text>
-                                <Text>{ errorMessage }</Text>
-                            </>
+                            : (
+                                <Box.Column style={ styles.errorOnFetchDream }>
+                                    <Text>{ errorMessage }</Text>
+                                </Box.Column>
+                            )
                 }
                 <CustomButton
                     title="Voltar"
@@ -350,5 +351,8 @@ const styles = StyleSheet.create({
         alignItems: "center",
         paddingBottom: 10,
         gap: 5,
+    },
+    errorOnFetchDream: {
+        paddingBottom: 15,
     },
 })

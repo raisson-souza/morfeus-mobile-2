@@ -5,7 +5,7 @@ import { SleepModel } from "@/types/sleeps"
 import { StyleSheet, Text } from "react-native"
 import { SyncContextProvider } from "@/contexts/SyncContext"
 import { useEffect, useState } from "react"
-import { useLocalSearchParams } from "expo-router"
+import { useLocalSearchParams, useRouter } from "expo-router"
 import BiologicalOccurencesInfoModal from "@/components/screens/sleeps/biologicalOccurencesInfoModal"
 import Box from "@/components/base/Box"
 import CustomButton from "@/components/customs/CustomButton"
@@ -24,6 +24,7 @@ type GetDreamParams = {
 }
 
 export default function GetSleepScreen() {
+    const router = useRouter()
     const { isConnectedRef: { current: isOnline }} = SyncContextProvider()
     const { id } = useLocalSearchParams<GetDreamParams>()
     const [ sleep, setSleep ] = useState<SleepModel | null>(null)
@@ -60,9 +61,12 @@ export default function GetSleepScreen() {
     if (errorMessage != "" && isNil(sleep)) {
         return (
             <Screen>
-                <Box.Column>
-                    <Text>Houve um problema ao buscar o sonho:</Text>
+                <Box.Column style={ styles.errorOnFetchSleep }>
                     <Text>{ errorMessage }</Text>
+                    <CustomButton
+                        title="Voltar"
+                        onPress={ () => router.navigate("/(tabs)/(sleeps)/sleepsList") }
+                    />
                 </Box.Column>
             </Screen>
         )
@@ -250,5 +254,8 @@ const styles = StyleSheet.create({
     },
     biologicalOccurencesInfoBtn: {
         fontSize: 13,
+    },
+    errorOnFetchSleep: {
+        gap: 15,
     },
 })
