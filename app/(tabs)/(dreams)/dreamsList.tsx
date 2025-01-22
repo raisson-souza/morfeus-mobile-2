@@ -48,17 +48,6 @@ export default function DreamsList() {
         },
         date: DateFormatter.forBackend.date(date.getTime())
     })
-    const [ dreamsWithPersonalAnalysisNullSwitch, setDreamsWithPersonalAnalysisNullSwitch ] = useState<boolean>(listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamsWithPersonalAnalysis ?? true)
-    const [ dreamClimatesAmenoNullSwitch, setDreamClimatesAmenoNullSwitch ] = useState<boolean>(listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates.ameno ?? true)
-    const [ dreamClimatesCalorNullSwitch, setDreamClimatesCalorNullSwitch ] = useState<boolean>(listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates.calor ?? true)
-    const [ dreamClimatesGaroaNullSwitch, setDreamClimatesGaroaNullSwitch ] = useState<boolean>(listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates.garoa ?? true)
-    const [ dreamClimatesChuvaNullSwitch, setDreamClimatesChuvaNullSwitch ] = useState<boolean>(listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates.chuva ?? true)
-    const [ dreamClimatesTempestadeNullSwitch, setDreamClimatesTempestadeNullSwitch ] = useState<boolean>(listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates.tempestade ?? true)
-    const [ dreamClimatesNevoaNullSwitch, setDreamClimatesNevoaNullSwitch ] = useState<boolean>(listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates.nevoa ?? true)
-    const [ dreamClimatesNeveNullSwitch, setDreamClimatesNeveNullSwitch ] = useState<boolean>(listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates.neve ?? true)
-    const [ dreamClimatesMultiplosNullSwitch, setDreamClimatesMultiplosNullSwitch ] = useState<boolean>(listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates.multiplos ?? true)
-    const [ dreamClimatesOutroNullSwitch, setDreamClimatesOutroNullSwitch ] = useState<boolean>(listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates.outro ?? true)
-    const [ dreamClimatesIndefinidoNullSwitch, setDreamClimatesIndefinidoNullSwitch ] = useState<boolean>(listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates.indefinido ?? true)
 
     const fetchDreams = async (newDate?: Date) => {
         await DreamService.ListByUser(isOnline, {
@@ -187,8 +176,6 @@ export default function DreamsList() {
                                 <Box.Column style={ styles.switches }>
                                     <SwitchNull
                                         label="Sonhos com Análise Pessoal"
-                                        isSwitchNull={ dreamsWithPersonalAnalysisNullSwitch }
-                                        setSwitchNull={ setDreamsWithPersonalAnalysisNullSwitch }
                                         switchValue={ listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamsWithPersonalAnalysis }
                                         setSwitchValue={ (e) => setListDreamsByUserForm({
                                             ...listDreamsByUserForm,
@@ -201,8 +188,6 @@ export default function DreamsList() {
                                     {/* CLIMAS */}
                                     <SwitchNull
                                         label="Clima Ameno"
-                                        isSwitchNull={ dreamClimatesAmenoNullSwitch }
-                                        setSwitchNull={ setDreamClimatesAmenoNullSwitch }
                                         switchValue={ listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates.ameno }
                                         setSwitchValue={ (e) =>
                                             setListDreamsByUserForm({
@@ -219,8 +204,6 @@ export default function DreamsList() {
                                     />
                                     <SwitchNull
                                         label="Clima Calor"
-                                        isSwitchNull={ dreamClimatesCalorNullSwitch }
-                                        setSwitchNull={ setDreamClimatesCalorNullSwitch }
                                         switchValue={ listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates.calor }
                                         setSwitchValue={ (e) =>
                                             setListDreamsByUserForm({
@@ -237,8 +220,6 @@ export default function DreamsList() {
                                     />
                                     <SwitchNull
                                         label="Clima Garoa"
-                                        isSwitchNull={ dreamClimatesGaroaNullSwitch }
-                                        setSwitchNull={ setDreamClimatesGaroaNullSwitch }
                                         switchValue={ listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates.garoa }
                                         setSwitchValue={ (e) =>
                                             setListDreamsByUserForm({
@@ -255,8 +236,6 @@ export default function DreamsList() {
                                     />
                                     <SwitchNull
                                         label="Clima Chuva"
-                                        isSwitchNull={ dreamClimatesChuvaNullSwitch }
-                                        setSwitchNull={ setDreamClimatesChuvaNullSwitch }
                                         switchValue={ listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates.chuva }
                                         setSwitchValue={ (e) =>
                                             setListDreamsByUserForm({
@@ -273,8 +252,6 @@ export default function DreamsList() {
                                     />
                                     <SwitchNull
                                         label="Clima Tempestade"
-                                        isSwitchNull={ dreamClimatesTempestadeNullSwitch }
-                                        setSwitchNull={ setDreamClimatesTempestadeNullSwitch }
                                         switchValue={ listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates.tempestade }
                                         setSwitchValue={ (e) =>
                                             setListDreamsByUserForm({
@@ -291,8 +268,6 @@ export default function DreamsList() {
                                     />
                                     <SwitchNull
                                         label="Clima Névoa"
-                                        isSwitchNull={ dreamClimatesNevoaNullSwitch }
-                                        setSwitchNull={ setDreamClimatesNevoaNullSwitch }
                                         switchValue={ listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates.nevoa }
                                         setSwitchValue={ (e) =>
                                             setListDreamsByUserForm({
@@ -309,8 +284,6 @@ export default function DreamsList() {
                                     />
                                     <SwitchNull
                                         label="Clima Neve"
-                                        isSwitchNull={ dreamClimatesNeveNullSwitch }
-                                        setSwitchNull={ setDreamClimatesNeveNullSwitch }
                                         switchValue={ listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates.neve }
                                         setSwitchValue={ (e) =>
                                             setListDreamsByUserForm({
@@ -327,8 +300,6 @@ export default function DreamsList() {
                                     />
                                     <SwitchNull
                                         label="Múltiplos Climas"
-                                        isSwitchNull={ dreamClimatesMultiplosNullSwitch }
-                                        setSwitchNull={ setDreamClimatesMultiplosNullSwitch }
                                         switchValue={ listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates.multiplos }
                                         setSwitchValue={ (e) =>
                                             setListDreamsByUserForm({
@@ -345,8 +316,6 @@ export default function DreamsList() {
                                     />
                                     <SwitchNull
                                         label="Outro Clima"
-                                        isSwitchNull={ dreamClimatesOutroNullSwitch }
-                                        setSwitchNull={ setDreamClimatesOutroNullSwitch }
                                         switchValue={ listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates.outro }
                                         setSwitchValue={ (e) =>
                                             setListDreamsByUserForm({
@@ -363,8 +332,6 @@ export default function DreamsList() {
                                     />
                                     <SwitchNull
                                         label="Clima Indefinido"
-                                        isSwitchNull={ dreamClimatesIndefinidoNullSwitch }
-                                        setSwitchNull={ setDreamClimatesIndefinidoNullSwitch }
                                         switchValue={ listDreamsByUserForm.dreamEspecificCaracteristicsFilter.dreamClimates.indefinido }
                                         setSwitchValue={ (e) =>
                                             setListDreamsByUserForm({

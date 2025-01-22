@@ -1,31 +1,27 @@
 import { Text, Switch, StyleSheet } from "react-native"
 import Box from "../base/Box"
 import CustomButton from "./CustomButton"
-import React from "react"
+import React, { useState } from "react"
 
 type SwitchNullProps = {
     /** Nome do switch */
     label: string
     /** Nome do botão de anulação do switch */
     btnTitle?: string
-    /** O valor do switch é nulo (não é falso ou verdadeiro) */
-    isSwitchNull: boolean
-    /** Set State para se o valor do switch é nulo */
-    setSwitchNull: React.Dispatch<React.SetStateAction<boolean>>
     /** Valor do switch */
     switchValue: any
     /** Set State do valor do switch */
     setSwitchValue: (value: any) => void
 }
 
-export default function SwitchNull({ // TODO: Implementar state interno para controlar controlador nulo
+export default function SwitchNull({
     label,
     btnTitle,
-    isSwitchNull,
-    setSwitchNull,
     switchValue,
     setSwitchValue,
 }: SwitchNullProps) {
+    const [ isNull, setIsNull ] = useState<boolean>(true)
+
     return (
         <Box.Column style={ styles.container }>
             <Box.Row style={ styles.row }>
@@ -33,20 +29,20 @@ export default function SwitchNull({ // TODO: Implementar state interno para con
                     title={
                         btnTitle
                             ? btnTitle
-                            : isSwitchNull
+                            : isNull
                                 ? "Habilitar"
                                 : "Desabilitar"
                     }
                     onPress={ () => {
-                        setSwitchNull(!isSwitchNull)
+                        setIsNull(!isNull)
                         // Caso anulação do switch, o valor do switch é nulo
-                        if (!isSwitchNull) setSwitchValue(null)
+                        if (!isNull) setSwitchValue(null)
                     }}
                 />
                 <Text>{ label }</Text>
             </Box.Row>
             {
-                isSwitchNull
+                isNull
                     ? <></>
                     : (
                         <Switch
