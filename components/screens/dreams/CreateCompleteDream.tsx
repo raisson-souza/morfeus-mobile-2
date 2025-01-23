@@ -465,7 +465,8 @@ const styles = StyleSheet.create({
         gap: 10,
     },
     tagsContainer: {
-        gap: 10,
+        columnGap: 10,
+        flexWrap: "wrap",
     },
     tag: {
         fontSize: 19,
