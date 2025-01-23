@@ -18,6 +18,7 @@ import TextBold from "@/components/base/TextBold"
 
 export default function DreamsList() {
     const router = useRouter()
+    const [ loading, setLoading ] = useState<boolean>(true)
     const [ dreamList, setDreamList ] = useState<DreamListedByUserType[] | null>(null)
     const { isConnectedRef: { current: isOnline }} = SyncContextProvider()
     const [ date, setDate ] = useState<Date>(new Date())
@@ -50,6 +51,8 @@ export default function DreamsList() {
     })
 
     const fetchDreams = async (newDate?: Date) => {
+        setLoading(true)
+        setDreamList(null)
         await DreamService.ListByUser(isOnline, {
             ...listDreamsByUserForm,
             date: newDate
@@ -63,6 +66,7 @@ export default function DreamsList() {
                 }
                 alert(response.ErrorMessage)
             })
+        setLoading(false)
     }
 
     useEffect(() => {
@@ -70,7 +74,6 @@ export default function DreamsList() {
     }, [listDreamsByUserForm])
 
     const changeMonth = async (newDate: Date) => {
-        setDreamList(null)
         setDate(newDate)
         await fetchDreams(newDate)
     }
@@ -79,36 +82,34 @@ export default function DreamsList() {
         if (dreamList) {
             if (dreamList.length > 0) {
                 return (
-                    <Box.Column style={ styles.dreamsListContainer }>
+                    <>
+                        <Box.Column style={ styles.dreamsListContainer }>
+                            {
+                                dreamList.map((dream, i) => (
+                                    <Box.Center style={ styles.dreamOuterContainer } key={ i }>
+                                        <View style={ styles.dreamSeparator }></View>
+                                        <DreamListedByUser
+                                            dream={ dream }
+                                            containerStyle={ styles.dreamContainer }
+                                        />
+                                    </Box.Center>
+                                ))
+                            }
+                        </Box.Column>
                         {
-                            dreamList.map((dream, i) => (
-                                <Box.Center style={ styles.dreamOuterContainer } key={ i }>
-                                    <View style={ styles.dreamSeparator }></View>
-                                    <DreamListedByUser
-                                        dream={ dream }
-                                        containerStyle={ styles.dreamContainer }
-                                    />
-                                </Box.Center>
-                            ))
+                            dreamList.length >= 10
+                                ? <CustomButton
+                                    title="Criar Sonho"
+                                    onPress={ () => router.navigate("/createDream") }
+                                />
+                                : <></>
                         }
-                    </Box.Column>
+                    </>
                 )
             }
             return <Text>Nenhum sonho encontrado.</Text>
         }
-        return <Loading onlyLoading={ false } text="Buscando sonhos..." />
-    }
-
-    const renderCreateDreamBtn = () => {
-        if (dreamList) {
-            if (dreamList.length > 10) {
-                return <CustomButton
-                    title="Criar Sonho"
-                    onPress={ () => router.navigate("/createDream") }
-                />
-            }
-        }
-        return <></>
+        return <Text>Houve um erro ao buscar os sonhos.</Text>
     }
 
     return (
@@ -123,10 +124,7 @@ export default function DreamsList() {
                     firstCustomActionBtnAction={ () => router.navigate('/(tabs)/(dreams)/createDream') }
                     routerBtnRouterAction={ () => router.navigate('/(tabs)/(dreams)/dreamsHome') }
                     secondCustomActionBtnTitle="Atualizar"
-                    secondCustomActionBtnAction={ async () => {
-                        setDreamList(null)
-                        await fetchDreams()
-                    }}
+                    secondCustomActionBtnAction={ async () => await fetchDreams() }
                 />
                 {
                     dreamList
@@ -145,8 +143,11 @@ export default function DreamsList() {
                         )
                         : <></>
                 }
-                { renderDreamList() }
-                { renderCreateDreamBtn() }
+                {
+                    loading
+                        ? <Loading onlyLoading={ false } text="Buscando sonhos..." />
+                        : renderDreamList()
+                }
             </Box.Center>
         </Screen>
     )

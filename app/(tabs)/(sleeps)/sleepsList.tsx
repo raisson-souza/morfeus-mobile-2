@@ -56,7 +56,7 @@ export default function SleepsListScreen() {
                             }
                         </Box.Column>
                         {
-                            sleeps.length > 10
+                            sleeps.length >= 10
                                 ? (
                                     <Box.Column style={ styles.createSleepCycleBtn }>
                                         <CustomButton
