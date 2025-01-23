@@ -57,6 +57,7 @@ export default function LoginScreen() {
                             defaultValue={ credentials.password }
                             onChange={ (e) => setCredentials({ email: credentials.email, password: e }) }
                             active={ !loading }
+                            isPassword
                         />
                         {
                             loading

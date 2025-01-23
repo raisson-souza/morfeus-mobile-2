@@ -75,12 +75,14 @@ export default function RegistryScreen() {
                             defaultValue={ credentials.password }
                             onChange={ (e) => setCredentials({ fullName: credentials.fullName, email: credentials.email, password: e, passwordRepeat: credentials.passwordRepeat }) }
                             active={ !loading }
+                            isPassword
                         />
                         <CustomInput
                             label="Repita a senha"
                             defaultValue={ credentials.passwordRepeat }
                             onChange={ (e) => setCredentials({ fullName: credentials.fullName, email: credentials.email, password: credentials.password, passwordRepeat: e }) }
                             active={ !loading }
+                            isPassword
                         />
                     </Box.Column>
                     <Box.Column style={ styles.gap }>
