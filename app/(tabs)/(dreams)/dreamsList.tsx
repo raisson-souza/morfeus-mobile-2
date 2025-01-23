@@ -119,21 +119,32 @@ export default function DreamsList() {
                         initialDate: date,
                         onChange: async (e) => { await changeMonth(e) },
                     }}
-                    customActionBtnTitle="Criar Sonho"
-                    customActionBtnAction={ () => router.navigate('/(tabs)/(dreams)/createDream') }
+                    firstCustomActionBtnTitle="Criar Sonho"
+                    firstCustomActionBtnAction={ () => router.navigate('/(tabs)/(dreams)/createDream') }
                     routerBtnRouterAction={ () => router.navigate('/(tabs)/(dreams)/dreamsHome') }
+                    secondCustomActionBtnTitle="Atualizar"
+                    secondCustomActionBtnAction={ async () => {
+                        setDreamList(null)
+                        await fetchDreams()
+                    }}
                 />
-                <Box.Column style={ styles.filterContainer }>
-                    <TextBold style={ styles.filterMessage }>Filtragem de Sonhos</TextBold>
-                    <DreamsListObjectiveFilters
-                        listDreamsByUserForm={ listDreamsByUserForm }
-                        setListDreamsByUserForm={ setListDreamsByUserForm }
-                    />
-                    <DreamsListEspecificFilters
-                        listDreamsByUserForm={ listDreamsByUserForm }
-                        setListDreamsByUserForm={ setListDreamsByUserForm }
-                    />
-                </Box.Column>
+                {
+                    dreamList
+                        ? (
+                            <Box.Column style={ styles.filterContainer }>
+                                <TextBold style={ styles.filterMessage }>Filtragem de Sonhos</TextBold>
+                                <DreamsListObjectiveFilters
+                                    listDreamsByUserForm={ listDreamsByUserForm }
+                                    setListDreamsByUserForm={ setListDreamsByUserForm }
+                                />
+                                <DreamsListEspecificFilters
+                                    listDreamsByUserForm={ listDreamsByUserForm }
+                                    setListDreamsByUserForm={ setListDreamsByUserForm }
+                                />
+                            </Box.Column>
+                        )
+                        : <></>
+                }
                 { renderDreamList() }
                 { renderCreateDreamBtn() }
             </Box.Center>

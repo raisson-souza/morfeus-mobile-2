@@ -251,9 +251,9 @@ export default function ListDreamsAnalysisScreen() {
                         initialDate: date,
                         onChange: async (e) => await updateDate(e),
                     }}
-                    customActionBtnTitle="Atualizar"
-                    customActionBtnAction={ async () => await refreshAnalysis() }
-                    isCustomActionBtnActive={ !disableFetchActions.get || !disableFetchActions.create }
+                    firstCustomActionBtnTitle="Atualizar"
+                    firstCustomActionBtnAction={ async () => await refreshAnalysis() }
+                    isFirstCustomActionBtnActive={ !disableFetchActions.get || !disableFetchActions.create }
                     routerBtnRouterAction={ () => router.navigate("/(tabs)/(analysis)/analysisHome") }
                 />
                 {
