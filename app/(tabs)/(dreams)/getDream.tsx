@@ -280,12 +280,7 @@ export default function GetDreamScreen() {
                 }
                 <CustomButton
                     title="Voltar"
-                    onPress={ () => {
-                        if (router.canGoBack())
-                            router.back()
-                        else
-                            router.navigate("/dreamsHome")
-                    }}
+                    onPress={ () => router.navigate("/(tabs)/(dreams)/dreamsList") }
                 />
             </Box.Column>
         </Screen>

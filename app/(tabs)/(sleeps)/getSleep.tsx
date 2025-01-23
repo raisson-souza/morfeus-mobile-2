@@ -224,6 +224,10 @@ export default function GetSleepScreen() {
                     visible={ openBiologicalOccurencesInfo }
                     setVisible={ setOpenBiologicalOccurencesInfo }
                 />
+                <CustomButton
+                    title="Voltar"
+                    onPress={ () => router.navigate("/(tabs)/(sleeps)/sleepsList") }
+                />
             </Box.Column>
         </Screen>
     )
