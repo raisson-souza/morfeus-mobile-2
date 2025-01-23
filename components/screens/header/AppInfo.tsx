@@ -17,7 +17,7 @@ export default function AppInfo({
     return <ModalBox
         visible={ open }
         setVisible={ setOpen }
-        title="Informações Sobre Morfeus"
+        title="Informações sobre a aplicação"
         description={
             <Box.Column style={ styles.container }>
                 <CustomButton
