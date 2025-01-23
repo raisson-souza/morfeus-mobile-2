@@ -2,7 +2,7 @@ import { AuthContextProvider } from "@/contexts/AuthContext"
 import { LoginForm } from "@/types/login"
 import { loginValidator } from "@/validators/login"
 import { Screen } from "@/components/base/Screen"
-import { StyleSheet, Text, View } from "react-native"
+import { StyleSheet, Text } from "react-native"
 import { useRouter } from "expo-router"
 import { useState } from "react"
 import AuthRedirect from "@/components/auth/AuthRedirect"
@@ -62,9 +62,9 @@ export default function LoginScreen() {
                             loading
                                 ? <Loading />
                                 : <>
-                                    <CustomButton title="Entrar" onPress={ loginAction } />
+                                    <CustomButton title="Entrar" onPress={ loginAction } important />
                                     <CustomButton title="Voltar" onPress={ () => router.navigate("/") } />
-                                    <CustomButton title="Cadastre-se" onPress={ () => router.navigate("/registry") } />
+                                    <CustomButton title="Não possui uma conta?" onPress={ () => router.navigate("/registry") } />
                                 </>
                         }
                     </Box.Column>

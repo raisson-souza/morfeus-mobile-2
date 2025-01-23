@@ -51,7 +51,7 @@ export default function RegistryScreen() {
         <AuthRedirect>
             <Screen flex>
                 <Box.Center style={ styles.container }>
-                    <Text style={ styles.title }>Cadastre-se em Morfeus</Text>
+                    <Text style={ styles.title }>Crie sua conta</Text>
                     <Box.Column style={ styles.gap }>
                         <CustomInput
                             label="Nome"
@@ -88,9 +88,9 @@ export default function RegistryScreen() {
                             loading
                                 ? <Loading />
                                 : <>
-                                    <CustomButton title="Cadastrar-se" onPress={ registryAction } />
+                                    <CustomButton title="Cadastrar-se" onPress={ registryAction } important />
                                     <CustomButton title="Voltar" onPress={ () => router.navigate("/") } />
-                                    <CustomButton title="Já tem uma conta?" onPress={ () => router.navigate("/login") } />
+                                    <CustomButton title="Possui uma conta?" onPress={ () => router.navigate("/login") } />
                                 </>
                         }
                     </Box.Column>
