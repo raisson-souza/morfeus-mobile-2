@@ -56,7 +56,7 @@ export default function SleepsListScreen() {
                             }
                         </Box.Column>
                         {
-                            sleeps.length > 10
+                            sleeps.length >= 10
                                 ? (
                                     <Box.Column style={ styles.createSleepCycleBtn }>
                                         <CustomButton
@@ -83,9 +83,11 @@ export default function SleepsListScreen() {
                         initialDate: date,
                         onChange: (e) => { setDate(e) },
                     }}
-                    customActionBtnTitle="Criar Ciclo de Sono"
-                    customActionBtnAction={ () => router.navigate('/(tabs)/(sleeps)/createSleep') }
+                    firstCustomActionBtnTitle="Criar Ciclo de Sono"
+                    firstCustomActionBtnAction={ () => router.navigate('/(tabs)/(sleeps)/createSleep') }
                     routerBtnRouterAction={ () => router.navigate('/(tabs)/(sleeps)/sleepsHome') }
+                    secondCustomActionBtnTitle="Atualizar"
+                    secondCustomActionBtnAction={ async () => await fetchSleeps() }
                 />
                 { 
                     loading

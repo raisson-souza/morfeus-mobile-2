@@ -9,7 +9,7 @@ import React from "react"
 
 export default function InfoScreen() {
     const router = useRouter()
-    const authContext = AuthContextProvider()
+    const { isLogged, logoff } = AuthContextProvider()
     const btnWidth = 150
 
     return (
@@ -19,20 +19,19 @@ export default function InfoScreen() {
                     filePathByRequire={ require("../assets/images/morfeus_logo.png") }
                 />
                 <Text style={ styles.description }>Uma aplicação que realiza o controle do ciclo do sono e gerenciamento de sonhos.</Text>
-                {
-                    authContext.isLogged
-                        ? (
-                            <>
-                                <CustomButton btnWidth={ btnWidth } title="Entrar" onPress={ () => router.navigate("/home") } />
+                <Box.Column style={ styles.btns }>
+                    {
+                        isLogged
+                            ? <>
+                                <CustomButton btnWidth={ btnWidth } title="Entrar" onPress={ () => router.navigate("/home") } important />
+                                <CustomButton btnWidth={ btnWidth } title="Sair" onPress={ async () => await logoff() } />
                             </>
-                        )
-                        : (
-                            <Box.Column style={ styles.notLogged }>
+                            : <>
+                                <CustomButton btnWidth={ btnWidth } title="Login" onPress={ () => router.navigate("/login") } important />
                                 <CustomButton btnWidth={ btnWidth } title="Cadastre-se" onPress={ () => router.navigate("/registry") } />
-                                <CustomButton btnWidth={ btnWidth } title="Login" onPress={ () => router.navigate("/login") } />
-                            </Box.Column>
-                        )
-                }
+                            </>
+                    }
+                </Box.Column>
             </Box.Center>
         </Screen>
     )
@@ -49,7 +48,7 @@ const styles = StyleSheet.create({
         fontSize: 25,
         fontWeight: "bold",
     },
-    notLogged: {
+    btns: {
         gap: 10,
     },
 })

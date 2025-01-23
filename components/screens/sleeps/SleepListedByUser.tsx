@@ -38,7 +38,7 @@ export default function SleepListedByUser({
     const renderSleepTime = () => {
         const fixedSleepTime = Number.parseFloat(sleepCycle.sleepTime.toFixed(2))
         return fixedSleepTime != 0
-            ? <Text>{ `${ fixedSleepTime } horas` }</Text>
+            ? <Text>{ `${ fixedSleepTime } ${ fixedSleepTime === 1 ? "hora" : "horas" }` }</Text>
             : <></>
     }
 

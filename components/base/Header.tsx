@@ -1,77 +1,50 @@
 import { AuthContextProvider } from "../../contexts/AuthContext"
 import { Text, StyleSheet, Pressable } from "react-native"
-import { useRouter } from "expo-router"
 import { useState } from "react"
-import AppInfo from "../screens/general/AppInfo"
 import Box from "./Box"
-import CustomButton from "../customs/CustomButton"
-import CustomModal from "../customs/CustomModal"
-import Icon from "react-native-vector-icons/Ionicons"
+import ChangelogModal from "../screens/header/ChangelogModal"
+import ConfigModal from "../screens/header/ConfigModal"
+import IconIon from "react-native-vector-icons/Ionicons"
+import IconMaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
 import React from "react"
-import Support from "../screens/general/Support"
 
 type HeaderProps = {
 }
 
 export default function Header({}: HeaderProps): JSX.Element {
-    const router = useRouter()
-    const { logoff, isLogged } = AuthContextProvider()
-    const [ modalOpen, setModalOpen ] = useState<boolean>(false)
-    const [ openSuggestionsModal, setOpenSuggestionsModal ] = useState<boolean>(false)
-    const [ openAppInfoModal, setOpenAppInfoModal ] = useState<boolean>(false)
-
-    const logoffAction = async () => {
-        await logoff()
-        router.navigate("/")
-    }
+    const { isLogged } = AuthContextProvider()
+    const [ openChangelogModal, setOpenChangelogModal ] = useState<boolean>(false)
+    // const [ openNotificationsModal, setOpenNotificationsModal ] = useState<boolean>(false)
+    const [ openConfigModal, setOpenConfigModal ] = useState<boolean>(false)
 
     if (!isLogged)
         return <></>
 
     return (
         <Box.Row style={ styles.container }>
-            <CustomModal
-                visible={ modalOpen }
-                setVisible={ setModalOpen }
-            >
-                <Box.Center style={ styles.modal }>
-                    <Support
-                        open={ openSuggestionsModal }
-                        setOpen={ setOpenSuggestionsModal }
-                    />
-                    <AppInfo
-                        open={ openAppInfoModal }
-                        setOpen={ setOpenAppInfoModal }
-                    />
-                    <CustomButton
-                        title="SUPORTE"
-                        onPress={ () => setOpenSuggestionsModal(true) }
-                        btnTextColor="white"
-                    />
-                    <CustomButton
-                        title="INFORMAÇÕES"
-                        onPress={ () => setOpenAppInfoModal(true) }
-                        btnTextColor="white"
-                    />
-                    <CustomButton
-                        title="SAIR DA CONTA"
-                        onPress={ () => logoffAction() }
-                        btnTextColor="white"
-                    />
-                    <CustomButton
-                        title="FECHAR"
-                        onPress={ () => setModalOpen(false) }
-                        btnTextColor="white"
-                    />
-                </Box.Center>
-            </CustomModal>
+            <ChangelogModal
+                open={ openChangelogModal }
+                setOpen={ setOpenChangelogModal }
+            />
+            <ConfigModal
+                open={ openConfigModal }
+                setOpen={ setOpenConfigModal }
+            />
             <Box.Row style={ styles.logo }>
-                <Icon name="moon-outline" color="white" size={ 25 } />
+                <IconIon name="moon-outline" color="white" size={ 25 } />
                 <Text style={ styles.logoText }>Morfeus</Text>
             </Box.Row>
-            <Pressable onPress={ () => setModalOpen(true) }>
-                <Icon name="menu" size={ 40 } color="white" />
-            </Pressable>
+            <Box.Row style={ styles.icons }>
+                <Pressable onPress={ () => setOpenChangelogModal(true) }>
+                    <IconIon name="megaphone" size={ 25 } color="white" />
+                </Pressable>
+                <Pressable onPress={ () => {} }>
+                    <IconMaterialCommunityIcons name="bell" size={ 25 } color="white" />
+                </Pressable>
+                <Pressable onPress={ () => setOpenConfigModal(true) }>
+                    <IconIon name="menu" size={ 40 } color="white" />
+                </Pressable>
+            </Box.Row>
         </Box.Row>
     )
 }
@@ -94,10 +67,8 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: "bold",
     },
-    modal: {
-        backgroundColor: "darkblue",
-        padding: 30,
-        borderRadius: 15,
-        gap: 10,
+    icons: {
+        alignItems: "center",
+        gap: 15,
     },
 })

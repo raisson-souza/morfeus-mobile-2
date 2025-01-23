@@ -1,8 +1,8 @@
 import { StyleSheet } from "react-native"
 import Box from "./Box"
 import CustomButton from "../customs/CustomButton"
-import CustomModal from "../customs/CustomModal"
 import IconEntypo from "react-native-vector-icons/Entypo"
+import ModalBox from "./ModalBox"
 import React, { useState } from "react"
 
 type CarouselProps = {
@@ -10,6 +10,7 @@ type CarouselProps = {
     setVisible: React.Dispatch<React.SetStateAction<boolean>>
     components: JSX.Element[]
     limit?: number
+    title?: string
 }
 
 export default function Carousel({
@@ -17,6 +18,7 @@ export default function Carousel({
     setVisible,
     components,
     limit = 5,
+    title,
 }: CarouselProps) {
     const [ page, setPage ] = useState<number>(1)
     const finalPage = Math.ceil(components.length / limit)
@@ -64,34 +66,36 @@ export default function Carousel({
     }
 
     return (
-        <CustomModal
+        <ModalBox
             visible={ visible }
             setVisible={ setVisible }
-        >
-            <Box.Column style={ styles.container }>
-                { renderComponents() as any }
-                { renderRemainingPages() }
-                <Box.Row style={ styles.btns }>
-                    <CustomButton
-                        btnTextColor="white"
-                        title="Anterior"
-                        onPress={ () => onPrevious() }
-                        active={ page != 1 }
-                    />
-                    <CustomButton
-                        btnTextColor="white"
-                        title="Fechar"
-                        onPress={ () => onClose() }
-                    />
-                    <CustomButton
-                        btnTextColor="white"
-                        title="Próximo"
-                        onPress={ () => onNext() }
-                        active={ page != finalPage }
-                    />
-                </Box.Row>
-            </Box.Column>
-        </CustomModal>
+            title={ title }
+            description={
+                <Box.Column style={ styles.container }>
+                    { renderComponents() as any }
+                    { renderRemainingPages() }
+                    <Box.Row style={ styles.btns }>
+                        <CustomButton
+                            btnTextColor="white"
+                            title="Anterior"
+                            onPress={ () => onPrevious() }
+                            active={ page != 1 }
+                        />
+                        <CustomButton
+                            btnTextColor="white"
+                            title="Fechar"
+                            onPress={ () => onClose() }
+                        />
+                        <CustomButton
+                            btnTextColor="white"
+                            title="Próximo"
+                            onPress={ () => onNext() }
+                            active={ page != finalPage }
+                        />
+                    </Box.Row>
+                </Box.Column>
+            }
+        />
     )
 }
 

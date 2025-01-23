@@ -6,7 +6,7 @@ import { DefaultSleepHumor } from "@/types/sleepHumor"
 import { Screen } from "@/components/base/Screen"
 import { StyleSheet } from "react-native"
 import { SyncContextProvider } from "@/contexts/SyncContext"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useNavigation, useRouter } from "expo-router"
 import BiologicalOccurencesInfoModal from "@/components/screens/sleeps/biologicalOccurencesInfoModal"
 import Box from "@/components/base/Box"
@@ -39,16 +39,26 @@ export default function CreateSleepScreen() {
     const [ showWakeUpHumors, setShowWakeUpHumors ] = useState<boolean>(false)
     const [ showBiologicalOccurences, setShowBiologicalOccurences ] = useState<boolean>(false)
     const [ openBiologicalOccurencesInfoModal, setOpenBiologicalOccurencesInfoModal ] = useState<boolean>(false)
+    const [ canCreateSleepCycle, setCanCreateSleepCycle ] = useState<boolean>(false)
+    const sleepCycleCreationActionsRef = useRef<number>(0)
 
     useEffect(() => {
         return navigation.addListener("blur", () => {
+            sleepCycleCreationActionsRef.current = 0
             setSleepCycleModel(defaultSleepCycleModel)
             setShowLayDownHumors(false)
             setShowWakeUpHumors(false)
             setShowBiologicalOccurences(false)
             setOpenBiologicalOccurencesInfoModal(false)
+            setCanCreateSleepCycle(false)
         })
     }, [])
+
+    const increaseSleepCycleCreationActions = () => {
+        sleepCycleCreationActionsRef.current += 1
+        if (sleepCycleCreationActionsRef.current === 2)
+            setCanCreateSleepCycle(true)
+    }
 
     const createSleepCycle = async () => {
         const parsedSleepCycleModel = createSleepCycleValidator.safeParse(sleepCycleModel)
@@ -85,13 +95,37 @@ export default function CreateSleepScreen() {
                 <Box.Row style={ styles.sleepTimeContainer }>
                     <Box.Column style={ styles.sleepTimeIndividualContainer }>
                         <TextBold>Horário de dormir</TextBold>
-                        <DatePickerShow date={ sleepCycleModel.sleepStart } onChange={ (e) => { setSleepCycleModel({ ...sleepCycleModel, sleepStart: e })}} />
-                        <TimePickerShow time={ sleepCycleModel.sleepStart } onChange={ (e) => { setSleepCycleModel({ ...sleepCycleModel, sleepStart: e })}} />
+                        <DatePickerShow
+                            date={ sleepCycleModel.sleepStart }
+                            onChange={ (e) => {
+                                increaseSleepCycleCreationActions()
+                                setSleepCycleModel({ ...sleepCycleModel, sleepStart: e })
+                            }}
+                        />
+                        <TimePickerShow
+                            time={ sleepCycleModel.sleepStart }
+                            onChange={ (e) => {
+                                increaseSleepCycleCreationActions()
+                                setSleepCycleModel({ ...sleepCycleModel, sleepStart: e })
+                            }}
+                        />
                     </Box.Column>
                     <Box.Column style={ styles.sleepTimeIndividualContainer }>
                         <TextBold>Horário de acordar</TextBold>
-                        <DatePickerShow date={ sleepCycleModel.sleepEnd } onChange={ (e) => { setSleepCycleModel({ ...sleepCycleModel, sleepEnd: e })}} />
-                        <TimePickerShow time={ sleepCycleModel.sleepEnd } onChange={ (e) => { setSleepCycleModel({ ...sleepCycleModel, sleepEnd: e })}} />
+                        <DatePickerShow
+                            date={ sleepCycleModel.sleepEnd }
+                            onChange={ (e) => {
+                                increaseSleepCycleCreationActions()
+                                setSleepCycleModel({ ...sleepCycleModel, sleepEnd: e })
+                            }}
+                        />
+                        <TimePickerShow
+                            time={ sleepCycleModel.sleepEnd }
+                            onChange={ (e) => {
+                                increaseSleepCycleCreationActions()
+                                setSleepCycleModel({ ...sleepCycleModel, sleepEnd: e })
+                            }}
+                        />
                     </Box.Column>
                 </Box.Row>
                 <Box.Column>
@@ -369,6 +403,7 @@ export default function CreateSleepScreen() {
                     <CustomButton
                         title="Criar Ciclo de Sono"
                         onPress={ () => createSleepCycle() }
+                        active={ canCreateSleepCycle }
                         important
                     />
                     <CustomButton
