@@ -1,5 +1,5 @@
 import { BACKEND_URL, ORIGINAL_BACKEND_URL } from "@/app/_layout"
-import { StyleSheet } from "react-native"
+import { StyleSheet, Text } from "react-native"
 import Box from "@/components/base/Box"
 import CustomButton from "@/components/customs/CustomButton"
 import CustomInput from "@/components/customs/CustomInput"
@@ -59,13 +59,16 @@ export default function StagingHeader(): JSX.Element {
                                         />
                                     </>
                             }
+                            <Text style={ styles.modalText }>
+                                Isso é um ambiente para testes de novas funcionalidades da aplicação, podem ocorrer erros imprevistos. Não cadastre aqui informações pessoais ou sensíveis.
+                            </Text>
                         </Box.Column>
                     </Box.Column>
                 }
             />
             <Draggable
                 x={ 5 }
-                y={ 80 }
+                y={ 0 }
                 maxY={ 300 }
                 renderColor='red'
                 renderText='?'
