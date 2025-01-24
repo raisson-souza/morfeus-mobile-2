@@ -8,6 +8,7 @@ import { useEffect, useState } from "react"
 import { useLocalSearchParams, useRouter } from "expo-router"
 import BiologicalOccurencesInfoModal from "@/components/screens/sleeps/biologicalOccurencesInfoModal"
 import Box from "@/components/base/Box"
+import ConfirmRecordDeletion from "@/components/screens/general/ConfirmRecordDeletion"
 import CustomButton from "@/components/customs/CustomButton"
 import IconFeather from "react-native-vector-icons/Feather"
 import IconFontisto from "react-native-vector-icons/Fontisto"
@@ -223,6 +224,21 @@ export default function GetSleepScreen() {
                 <BiologicalOccurencesInfoModal
                     visible={ openBiologicalOccurencesInfo }
                     setVisible={ setOpenBiologicalOccurencesInfo }
+                />
+                <ConfirmRecordDeletion
+                    deletionAction={ async () => {
+                        setLoading(true)
+                        await SleepService.DeleteSleep(isOnline, { id: sleep!.id })
+                            .then(response => {
+                                if (response.Success) {
+                                    alert(response.Data)
+                                    router.navigate("/(tabs)/(sleeps)/sleepsList")
+                                    return
+                                }
+                                setLoading(false)
+                                alert(response.ErrorMessage)
+                            })
+                    }}
                 />
                 <CustomButton
                     title="Voltar"

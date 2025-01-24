@@ -6,6 +6,7 @@ import { TagModel } from "@/types/tag"
 import { useEffect, useState } from "react"
 import { useLocalSearchParams, useRouter } from "expo-router"
 import Box from "@/components/base/Box"
+import ConfirmRecordDeletion from "@/components/screens/general/ConfirmRecordDeletion"
 import CustomButton from "@/components/customs/CustomButton"
 import DreamService from "@/services/api/DreamService"
 import IconEntypo from "react-native-vector-icons/Entypo"
@@ -270,6 +271,21 @@ export default function GetDreamScreen() {
                                             <Text style={ styles.boldText }>{ renderDreamOrigin() }</Text>
                                         </Box.Row>
                                     </View>
+                                    <ConfirmRecordDeletion
+                                        deletionAction={ async () => {
+                                            setLoading(true)
+                                            await DreamService.DeleteDream(isOnline, { id: dream.id })
+                                                .then((response) => {
+                                                    if (response.Success) {
+                                                        alert(response.Data)
+                                                        router.navigate("/(tabs)/(dreams)/dreamsList")
+                                                        return
+                                                    }
+                                                    setLoading(false)
+                                                    alert(response.ErrorMessage)
+                                                })
+                                        }}
+                                    />
                                 </Box.Column>
                             )
                             : (
@@ -290,6 +306,7 @@ export default function GetDreamScreen() {
 const styles = StyleSheet.create({
     container: {
         width: '100%',
+        gap: 5,
     },
     dreamContainer: {
         gap: 5,

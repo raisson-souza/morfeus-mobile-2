@@ -1,4 +1,4 @@
-import { CreateSleepCycleRequest, CreateSleepCycleResponse, GetSleepRequest, GetSleepResponse, ListSleepByUserRequest, ListSleepByUserResponse, ListSleepsForDreamCreationRequest, ListSleepsForDreamCreationResponse } from "../../types/sleeps"
+import { CreateSleepCycleRequest, CreateSleepCycleResponse, DeleteSleepRequest, DeleteSleepResponse, GetSleepRequest, GetSleepResponse, ListSleepByUserRequest, ListSleepByUserResponse, ListSleepsForDreamCreationRequest, ListSleepsForDreamCreationResponse } from "../../types/sleeps"
 import Endpoints from "./base/Endpoints"
 
 export default abstract class SleepService extends Endpoints {
@@ -21,8 +21,11 @@ export default abstract class SleepService extends Endpoints {
         })
     }
 
-    static async DeleteSleep() {
-
+    static async DeleteSleep(online: boolean, request: DeleteSleepRequest) {
+        return await this.Delete<DeleteSleepResponse>({
+            url: `/sleeps/${ request.id }`,
+            authorization: await this.GetAuthorization(),
+        })
     }
 
     static async ListByUser(online: boolean, request: ListSleepByUserRequest) {
