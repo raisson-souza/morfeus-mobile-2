@@ -20,14 +20,14 @@ import React from "react"
 import SleepService from "@/services/api/SleepService"
 import TextBold from "@/components/base/TextBold"
 
-type GetDreamParams = {
+type GetSleepCycleParams = {
     id: string
 }
 
 export default function GetSleepScreen() {
     const router = useRouter()
     const { isConnectedRef: { current: isOnline }} = SyncContextProvider()
-    const { id } = useLocalSearchParams<GetDreamParams>()
+    const { id } = useLocalSearchParams<GetSleepCycleParams>()
     const [ sleep, setSleep ] = useState<SleepModel | null>(null)
     const [ loading, setLoading ] = useState<boolean>(true)
     const [ errorMessage, setErrorMessage ] = useState<string>("")
@@ -240,6 +240,12 @@ export default function GetSleepScreen() {
                                 alert(response.ErrorMessage)
                             })
                     }}
+                />
+                <CustomButton
+                    title="Editar"
+                    onPress={ () => router.navigate({ pathname: "/(tabs)/(sleeps)/updateSleep", params: { id: sleep?.id }})}
+                    btnColor="orange"
+                    btnTextColor="orange"
                 />
                 <CustomButton
                     title="Voltar"

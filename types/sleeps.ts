@@ -94,6 +94,10 @@ export type DeleteSleepRequest = {
 
 export type DeleteSleepResponse = string
 
+export type UpdateSleepCycleModel = {
+    id: number
+} & CreateSleepCycleModel
+
 export type UpdateSleepCycleRequest = {
     id: number
     sleep: CreateSleepCycleRequest

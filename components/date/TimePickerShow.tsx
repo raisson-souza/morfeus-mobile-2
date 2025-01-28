@@ -15,7 +15,7 @@ type TimePickerShowProps = {
 export default function TimePickerShow({ time, onChange, textStyle, iconSize = 20, iconColor = "black" }: TimePickerShowProps) {
     const openTimePicker = () => {
         DateTimePickerAndroid.open({
-            value: time,
+            value: DateFormatter.increaseTime(3, time.getTime()),
             onChange: (event, date) => {
                 if (event.type === "set") {
                     if (date) {

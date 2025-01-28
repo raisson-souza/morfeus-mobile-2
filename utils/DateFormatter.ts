@@ -45,4 +45,8 @@ export const DateFormatter = {
             return DateTime.now().setZone("UTC-3") as DateTime<true>
         },
     },
+    persistDateOrTime: (date: Date, time: Date): Date => {
+        const rawDateString = `${ DateFormatter.removeTime(date.toISOString()) }T${ DateFormatter.removeDate(time.toISOString()) }.000-03:00`
+        return DateFormatter.fixUTC(new Date(rawDateString).getTime())
+    },
 }
