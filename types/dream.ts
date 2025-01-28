@@ -125,3 +125,11 @@ export type DeleteDreamRequest = {
 }
 
 export type DeleteDreamResponse = string
+
+export type UpdateDreamModel = {
+	id: number
+} & CreateDreamModel
+
+export type UpdateDreamRequest = UpdateDreamModel
+
+export type UpdateDreamResponse = string

@@ -53,13 +53,13 @@ export default function DefineDreamSleep({ date, setDate, sleepId, setSleepId }:
     const renderSleepExtraction = () => {
         switch (sleepExtractionType) {
             case "sleep":
-                return <SleepExtractionBySleepCycle sleepId={ sleepId } setSleepId={ setSleepId }/>
+                return <SleepExtractionBySleepCycle sleepId={ sleepId } onChange={ (e) => setSleepId(e) } />
             case "date":
                 return <SleepExtractionByDate date={ date } setDate={ setDate } defaultDate={ defaultDate } />
             case "time":
                 return <SleepExtractionByTime date={ date } setDate={ setDate } defaultDate={ defaultDate } />
             default:
-                return <SleepExtractionBySleepCycle sleepId={ sleepId } setSleepId={ setSleepId }/>
+                return <SleepExtractionBySleepCycle sleepId={ sleepId } onChange={ (e) => setSleepId(e) } />
         }
     }
 

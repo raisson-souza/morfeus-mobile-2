@@ -1,4 +1,4 @@
-import { CreateDreamRequest, CreateDreamResponse, DeleteDreamRequest, DeleteDreamResponse, GetDreamRequest, GetDreamResponse, ListDreamByUserResponse, ListDreamsByUserRequest } from "../../types/dream"
+import { CreateDreamRequest, CreateDreamResponse, DeleteDreamRequest, DeleteDreamResponse, GetDreamRequest, GetDreamResponse, ListDreamByUserResponse, ListDreamsByUserRequest, UpdateDreamRequest, UpdateDreamResponse } from "../../types/dream"
 import Endpoints from "./base/Endpoints"
 
 export default abstract class DreamService extends Endpoints {
@@ -18,8 +18,12 @@ export default abstract class DreamService extends Endpoints {
     //     })
     // }
 
-    static async Update() {
-        
+    static async Update(online: boolean, request: UpdateDreamRequest) {
+        return await this.Put<UpdateDreamResponse>({
+            url: "/dreams",
+            authorization: await this.GetAuthorization(),
+            body: request,
+        })
     }
 
     static async GetDream(online: boolean, request: GetDreamRequest) {

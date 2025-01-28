@@ -34,21 +34,22 @@ export default function GetSleepScreen() {
     const [ openBiologicalOccurencesInfo, setOpenBiologicalOccurencesInfo ] = useState<boolean>(false)
     // TODO: Listar os sonhos deste ciclo de sono
 
+    const fetchSleep = async () => {
+        await SleepService.GetSleep(isOnline, { id: Number.parseInt(id) })
+            .then(response => {
+                if (response.Success) {
+                    setSleep(response.Data)
+                    return
+                }
+                setErrorMessage(response.ErrorMessage ?? "")
+            })
+            .finally(() => {
+                setLoading(false)
+            })
+    }
+
     useEffect(() => {
-        const fetchDream = async () => {
-            await SleepService.GetSleep(isOnline, { id: Number.parseInt(id) })
-                .then(response => {
-                    if (response.Success) {
-                        setSleep(response.Data)
-                        return
-                    }
-                    setErrorMessage(response.ErrorMessage ?? "")
-                })
-                .finally(() => {
-                    setLoading(false)
-                })
-        }
-        fetchDream()
+        fetchSleep()
     }, [])
 
     if (loading) {

@@ -107,7 +107,7 @@ export default function CreateDreamScreen() {
                 />
                 <CreateCompleteDream
                     dream={ dreamModel }
-                    setDream={ setDreamModel }
+                    onChange={ (e) => setDreamModel(e) }
                     isLocked={ loading }
                 />
                 <Info
