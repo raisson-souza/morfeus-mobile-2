@@ -63,13 +63,20 @@ export default function SleepExtractionBySleepCycle({
     }, [])
 
     const selectSleepCycle = (sleep: ListedSleepForDreamCreation) => {
+        if (selectedSleep) {
+            if (selectedSleep.id === sleep.id) {
+                onChange(null, null)
+                setSelectedSleep(null)
+                return
+            }
+        }
         onChange(sleep.id, sleep)
         setSelectedSleep(sleep)
     }
 
     const renderDatagrid = (): JSX.Element => {
         if (!sleeps || !pagination) {
-            return <TextBold style={{ color: textColor }}>Nenhum ciclo de sono encontrado</TextBold>
+            return <TextBold style={ styles.centerDefaultMessage }>Nenhum ciclo de sono encontrado</TextBold>
         }
         else {
             const onSelectSleepCycle = (sleep: ListedSleepForDreamCreation) => {
@@ -90,7 +97,7 @@ export default function SleepExtractionBySleepCycle({
                                         ...styles.sleepCycleText, 
                                         color: sleepId === sleep.id
                                             ? "royalblue"
-                                            : textColor,
+                                            : "white",
                                     }}
                                 >
                                     Ciclo de sono
@@ -100,7 +107,7 @@ export default function SleepExtractionBySleepCycle({
                                         ...styles.sleepCycleText,
                                         color: sleepId === sleep.id
                                             ? "royalblue"
-                                            : textColor,
+                                            : "white",
                                     }}
                                 >
                                     { sleep.date }
@@ -111,7 +118,7 @@ export default function SleepExtractionBySleepCycle({
                                     style={{
                                         color: sleepId === sleep.id
                                             ? "royalblue"
-                                            : textColor,
+                                            : "white",
                                     }}
                                 >
                                     { DateFormatter.removeDate(sleep.sleepStart) }
@@ -120,7 +127,7 @@ export default function SleepExtractionBySleepCycle({
                                     style={{
                                         color: sleepId === sleep.id
                                             ? "royalblue"
-                                            : textColor,
+                                            : "white",
                                     }}
                                 >
                                     { DateFormatter.removeDate(sleep.sleepEnd) }
@@ -144,7 +151,7 @@ export default function SleepExtractionBySleepCycle({
                     <CustomButton
                         title="Fechar"
                         onPress={ () => setIsOpen(false) }
-                        btnTextColor={ textColor }
+                        btnTextColor="white"
                     />
                 </Box.Center>
             )
@@ -172,15 +179,15 @@ export default function SleepExtractionBySleepCycle({
                     {
                         showSleep
                             ? selectedSleep
-                                ? <>
+                                ? <Box.Column style={ styles.centerSelectedSleepSycle }>
                                     <Text style={{ color: textColor }}>
                                         Início do sono: { DateFormatter.removeTime(selectedSleep.sleepStart) } { DateFormatter.removeDate(selectedSleep.sleepStart) }
                                     </Text>
                                     <Text style={{ color: textColor }}>
                                         Fim do sono: { DateFormatter.removeTime(selectedSleep.sleepEnd) } { DateFormatter.removeDate(selectedSleep.sleepEnd) }
                                     </Text>
-                                </>
-                                : <TextBold>Nenhum ciclo de sono selecionado.</TextBold>
+                                </Box.Column>
+                                : <TextBold style={{ color: textColor, ...styles.centerDefaultMessage }}>Nenhum ciclo de sono selecionado.</TextBold>
                             : <></>
                     }
                     <CustomButton
@@ -192,7 +199,7 @@ export default function SleepExtractionBySleepCycle({
             )
         }
         else {
-            return <Text style={{ color: textColor }}>Nenhum ciclo de sono encontrado, por favor, utilize outra opção acima.</Text>
+            return <Text style={{ color: textColor, ...styles.centerDefaultMessage }}>Nenhum ciclo de sono encontrado, por favor, utilize outra opção acima.</Text>
         }
     }
     else {
@@ -213,5 +220,13 @@ const styles = StyleSheet.create({
     },
     datagridContainer: {
         gap: 10,
+    },
+    centerDefaultMessage: {
+        alignSelf: "center",
+        paddingBottom: 5,
+    },
+    centerSelectedSleepSycle: {
+        alignItems: "center",
+        paddingBottom: 5,
     },
 })
