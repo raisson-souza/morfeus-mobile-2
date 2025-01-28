@@ -21,11 +21,6 @@ export default function AppInfo({
         description={
             <Box.Column style={ styles.container }>
                 <CustomButton
-                    title="Github do Projeto"
-                    onPress={ () => Linking.openURL("https://github.com/raisson-souza/morfeus-mobile-2") }
-                    btnTextColor={ styles.text.color }
-                />
-                <CustomButton
                     title="FECHAR"
                     onPress={ () => setOpen(false) }
                     btnTextColor={ styles.text.color }
