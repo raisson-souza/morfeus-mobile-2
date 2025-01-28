@@ -79,7 +79,6 @@ export default function UpdateDreamScreen() {
     }
 
     const updateDream = async () => {
-        console.log("tags")
         setLoading(true)
         await DreamService.Update(checkIsConnected(), {
             ...dream!,
