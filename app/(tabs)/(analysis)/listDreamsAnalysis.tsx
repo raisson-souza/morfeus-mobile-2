@@ -198,7 +198,7 @@ export default function ListDreamsAnalysisScreen() {
                 return (
                     <Box.Column style={ styles.groupAnalysisContainer }>
                         <TextBold>Médias:</TextBold>
-                        { renderIndividualAnalysis(eroticDreamsAverage, `Sonhos eróticos: ${ eroticDreamsAverage }`, "18-up-rating", "materialIcons") }
+                        { renderIndividualAnalysis(eroticDreamsAverage, `Sonhos eróticos: ${ eroticDreamsAverage }%`, "18-up-rating", "materialIcons") }
                         { renderIndividualAnalysis(tagPerDreamAverage, `Tags por sonho: ${ tagPerDreamAverage }`, "tag") }
                     </Box.Column>
                 )
