@@ -4,7 +4,7 @@ import { Screen } from "@/components/base/Screen"
 import { SyncContextProvider } from "@/contexts/SyncContext"
 import { TagModel } from "@/types/tag"
 import { useEffect, useState } from "react"
-import { useLocalSearchParams, useNavigation, useRouter } from "expo-router"
+import { useLocalSearchParams, useRouter } from "expo-router"
 import Box from "@/components/base/Box"
 import ConfirmRecordDeletion from "@/components/screens/general/ConfirmRecordDeletion"
 import CustomButton from "@/components/customs/CustomButton"
@@ -135,6 +135,35 @@ export default function GetDreamScreen() {
         }
     }
 
+    const renderDreamUpperInfo = () => {
+        return <Box.Column style={ styles.dreamUpperInfoContainer }>
+            {
+                dream!.hiddenDream
+                    ? <Box.Row style={ styles.iconAndMessageStyle }>
+                        <IconIon name="alert-circle-sharp" color="black" size={ 20 } />
+                        <Text>SONHO OCULTO</Text>
+                    </Box.Row>
+                    : <></>
+            }
+            {
+                dream!.dreamTypeId === 2
+                    ? <Box.Row style={ styles.iconAndMessageStyle }>
+                        <IconIon name="alert-circle-sharp" color="black" size={ 20 } />
+                        <Text>PESADELO</Text>
+                    </Box.Row>
+                    : <></>
+            }
+            {
+                dream!.eroticDream
+                    ? <Box.Row style={ styles.iconAndMessageStyle }>
+                        <IconIon name="alert-circle-sharp" color="black" size={ 20 } />
+                        <Text>SONHO ERÓTICO</Text>
+                    </Box.Row>
+                    : <></>
+            }
+        </Box.Column>
+    }
+
     const tagInfo = tags
         ? tags.length > 0
             ? `Lembra de quando sonhou com ${ tags[0].title }? Selecione essa tag abaixo (ou outra) e visualize os sonhos na qual ela também está presente!`
@@ -150,30 +179,8 @@ export default function GetDreamScreen() {
                         : dream
                             ? (
                                 <Box.Column style={ styles.dreamContainer }>
-                                    {
-                                        dream.hiddenDream
-                                            ? <View>
-                                                <IconIon name="alert-circle-sharp" color="black" size={ 20 } />
-                                                <Text>Esse sonho é oculto</Text>
-                                            </View>
-                                            : <></>
-                                    }
-                                    {
-                                        dream.dreamTypeId === 2
-                                            ? <Text>Pesadelo</Text>
-                                            : <></>
-                                    }
                                     <Box.Column>
-                                        {
-                                            dream.eroticDream
-                                                ? (
-                                                    <Box.Row style={ styles.iconAndMessageStyle }>
-                                                        <IconIon name="alert-circle-sharp" color="black" size={ 20 } />
-                                                        <Text>Sonho erótico</Text>
-                                                    </Box.Row>
-                                                )
-                                                : <></>
-                                        }
+                                        { renderDreamUpperInfo() }
                                         <Box.Row style={ styles.dreamTitleTextContainer }>
                                             <Text style={ styles.dreamTitleText }>{ dream.title }</Text>
                                             <Pressable onPress={ () => router.navigate({ pathname: "/updateDream", params: { id: id, sleepDate: sleepDate } }) }>
@@ -314,6 +321,9 @@ const styles = StyleSheet.create({
     iconAndMessageStyle: {
         gap: 3,
         alignItems: "center",
+    },
+    dreamUpperInfoContainer: {
+        gap: 3,
     },
     dreamTitleText: {
         fontSize: 35,
