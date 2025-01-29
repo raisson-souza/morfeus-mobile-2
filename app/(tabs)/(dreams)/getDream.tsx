@@ -225,7 +225,7 @@ export default function GetDreamScreen() {
                                             }
                                         </Box.Row>
                                     </Box.Column>
-                                    <View>
+                                    <Box.Column style={ styles.dreamCharacteristicsContainer }>
                                         {
                                             dream.personalAnalysis
                                                 ? (
@@ -241,7 +241,7 @@ export default function GetDreamScreen() {
                                         }
                                         <Box.Row style={ styles.iconAndMessageStyle }>
                                             <IconIon name="rainy-sharp" color="black" size={ 20 } />
-                                            <Box.Row>
+                                            <Box.Row style={ styles.dreamClimates }>
                                                 <Text style={ styles.boldText }>Climas: </Text>
                                                 <Text>{ renderClimates() }</Text>
                                             </Box.Row>
@@ -282,7 +282,7 @@ export default function GetDreamScreen() {
                                             <IconIon name="information-circle" color="black" size={ 20 } />
                                             <Text style={ styles.boldText }>{ renderDreamOrigin() }</Text>
                                         </Box.Row>
-                                    </View>
+                                    </Box.Column>
                                     <ConfirmRecordDeletion
                                         deletionAction={ async () => {
                                             setLoading(true)
@@ -332,10 +332,12 @@ const styles = StyleSheet.create({
     },
     dreamTitleText: {
         fontSize: 35,
+        flexWrap: "wrap",
     },
     dreamTitleTextContainer: {
         gap: 15,
         alignItems: "center",
+        flexWrap: "wrap",
     },
     dreamTitleDateText: {
         fontSize: 18,
@@ -381,5 +383,12 @@ const styles = StyleSheet.create({
     },
     errorOnFetchDream: {
         paddingBottom: 15,
+    },
+    dreamCharacteristicsContainer: {
+        gap: 5,
+        flexWrap: "wrap",
+    },
+    dreamClimates: {
+        flexWrap: "wrap",
     },
 })
