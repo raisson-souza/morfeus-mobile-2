@@ -193,11 +193,12 @@ export default function GetSleepScreen() {
                                         <DreamListedByUser
                                             key={ i }
                                             dream={{
-                                                date: "",
+                                                date: sleep!.date,
                                                 id: dream.id,
                                                 tags: dream.tags.map(dreamTag => { return {"id": 0, "title": dreamTag} }),
                                                 title: dream.title,
                                             }}
+                                            sleepId={ sleep!.id }
                                             showDate={ false }
                                             redirectToTag={ false }
                                             titleSize={ 25 }

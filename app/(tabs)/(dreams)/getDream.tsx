@@ -164,6 +164,15 @@ export default function GetDreamScreen() {
         </Box.Column>
     }
 
+    const renderDreamDate = () => {
+        if (sleepDate === "undefined-undefined-undefinedundefined") return <></>
+        return (
+            <Pressable onPress={ () => { router.navigate({ pathname: "/(tabs)/(sleeps)/getSleep", params: { id: dream!.sleepId }}) } }>
+                <Text style={ styles.dreamTitleDateText }>{ sleepDate }</Text>
+            </Pressable>
+        )
+    }
+
     const tagInfo = tags
         ? tags.length > 0
             ? `Lembra de quando sonhou com ${ tags[0].title }? Selecione essa tag abaixo (ou outra) e visualize os sonhos na qual ela também está presente!`
@@ -187,11 +196,7 @@ export default function GetDreamScreen() {
                                                 <IconIon name="pencil-sharp" color="black" size={ 30 } />
                                             </Pressable>
                                         </Box.Row>
-                                        <Pressable
-                                            onPress={ () => { router.navigate({ pathname: "/(tabs)/(sleeps)/getSleep", params: { id: dream.sleepId }}) } }
-                                        >
-                                            <Text style={ styles.dreamTitleDateText }>{ sleepDate }</Text>
-                                        </Pressable>
+                                        { renderDreamDate() }
                                     </Box.Column>
                                     <Text style={ styles.dreamDescription }>{ dream.description }</Text>
                                     <Box.Column style={ styles.tagsContainer }>
