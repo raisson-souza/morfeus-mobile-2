@@ -19,13 +19,13 @@ export default function SleepsListScreen() {
     const [ loading, setLoading ] = useState<boolean>(true)
     const [ sleeps, setSleeps ] = useState<SleepListedByUserType[] | null>(null)
     const [ errorMessage, setErrorMessage ] = useState<string>("")
-    const { isConnectedRef: { current: isOnline }} = SyncContextProvider()
+    const { checkIsConnected } = SyncContextProvider()
     const [ date, setDate ] = useState<Date>(new Date)
 
     const fetchSleeps = async () => {
         setLoading(true)
         setSleeps(null)
-        await SleepService.ListByUser(isOnline, {
+        await SleepService.ListByUser(checkIsConnected(), {
             date: DateFormatter.forBackend.date(date.getTime())
         })
             .then(response => {

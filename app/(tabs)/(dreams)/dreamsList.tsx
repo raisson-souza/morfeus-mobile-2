@@ -20,7 +20,7 @@ export default function DreamsList() {
     const router = useRouter()
     const [ loading, setLoading ] = useState<boolean>(true)
     const [ dreamList, setDreamList ] = useState<DreamListedByUserType[] | null>(null)
-    const { isConnectedRef: { current: isOnline }} = SyncContextProvider()
+    const { checkIsConnected } = SyncContextProvider()
     const [ date, setDate ] = useState<Date>(new Date())
     const [ listDreamsByUserForm, setListDreamsByUserForm ] = useState<ListDreamsByUserRequest>({
         dreamOriginFilter: "all",
@@ -53,7 +53,7 @@ export default function DreamsList() {
     const fetchDreams = async (newDate?: Date) => {
         setLoading(true)
         setDreamList(null)
-        await DreamService.ListByUser(isOnline, {
+        await DreamService.ListByUser(checkIsConnected(), {
             ...listDreamsByUserForm,
             date: newDate
                 ? DateFormatter.forBackend.date(newDate.getTime())

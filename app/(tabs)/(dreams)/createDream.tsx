@@ -45,7 +45,7 @@ const defaultDreamModel: CreateDreamModel = {
 export default function CreateDreamScreen() {
     const router = useRouter()
     const navigation = useNavigation()
-    const { isConnectedRef: { current: isOnline }} = SyncContextProvider()
+    const { checkIsConnected } = SyncContextProvider()
     const [ dreamModel, setDreamModel ] = useState<CreateDreamModel>(defaultDreamModel)
     const [ completeDreamModel, setCompleteDreamModel ] = useState<CreateCompleteDreamModel>({
         dreamNoSleepDateKnown: null,
@@ -67,7 +67,7 @@ export default function CreateDreamScreen() {
 
     const createDream = async () => {
         setLoading(true)
-        await DreamService.Create(isOnline, {
+        await DreamService.Create(checkIsConnected(), {
             ...dreamModel,
             sleepId: sleepId,
             dreamNoSleepDateKnown: completeDreamModel.dreamNoSleepDateKnown

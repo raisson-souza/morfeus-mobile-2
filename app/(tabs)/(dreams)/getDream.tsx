@@ -26,7 +26,7 @@ type GetDreamParams = {
 export default function GetDreamScreen() {
     const router = useRouter()
     const { id, sleepDate } = useLocalSearchParams<GetDreamParams>()
-    const { isConnectedRef: { current: isOnline }} = SyncContextProvider()
+    const { checkIsConnected } = SyncContextProvider()
     const [ dream, setDream ] = useState<DreamModel | null>(null)
     const [ tags, setTags ] = useState<TagModel[] | null>(null)
     const [ loading, setLoading ] = useState<boolean>(true)
@@ -34,7 +34,7 @@ export default function GetDreamScreen() {
 
     useEffect(() => {
         const fetchDream = async () => {
-            await DreamService.GetDream(isOnline, { id: Number.parseInt(id) })
+            await DreamService.GetDream(checkIsConnected(), { id: Number.parseInt(id) })
                 .then(response => {
                     if (response.Success) {
                         setDream(response.Data)
@@ -47,7 +47,7 @@ export default function GetDreamScreen() {
                 })
         }
         const fetchTags = async () => {
-            await TagService.ListByDream(isOnline, { dreamId: Number.parseInt(id) })
+            await TagService.ListByDream(checkIsConnected(), { dreamId: Number.parseInt(id) })
                 .then(response => {
                     if (response.Success) {
                         setTags(response.Data)
@@ -286,7 +286,7 @@ export default function GetDreamScreen() {
                                     <ConfirmRecordDeletion
                                         deletionAction={ async () => {
                                             setLoading(true)
-                                            await DreamService.DeleteDream(isOnline, { id: dream.id })
+                                            await DreamService.DeleteDream(checkIsConnected(), { id: dream.id })
                                                 .then((response) => {
                                                     if (response.Success) {
                                                         alert(response.Data)
