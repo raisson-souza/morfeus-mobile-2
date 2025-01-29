@@ -99,5 +99,6 @@ export default function Info({
 const styles = StyleSheet.create({
     infoContainer: {
         gap: 5,
+        alignItems: 'center',
     },
 })

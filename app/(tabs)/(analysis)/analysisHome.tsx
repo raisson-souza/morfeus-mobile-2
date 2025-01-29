@@ -5,6 +5,8 @@ import { SyncContextProvider } from "@/contexts/SyncContext"
 import { useRouter, useNavigation } from "expo-router"
 import Box from "@/components/base/Box"
 import CustomButton from "@/components/customs/CustomButton"
+import HELPERS from "@/data/helpers"
+import Info from "@/components/base/Info"
 import React, { useEffect, useState } from "react"
 import TextBold from "@/components/base/TextBold"
 
@@ -31,6 +33,12 @@ export default function AnalysisIndexScreen() {
                     isConnected
                         ?
                             <Box.Column style={ styles.btns }>
+                                <Info
+                                    infoDescription={ HELPERS.analysis.infoDescription }
+                                    modalTitle={ HELPERS.analysis.modalTitle }
+                                    modalDescription={ HELPERS.analysis.modalDescription }
+                                    type="question"
+                                />
                                 <CustomButton
                                     title="Análises de Sonhos"
                                     onPress={ () => router.navigate("/(tabs)/(analysis)/listDreamsAnalysis")}

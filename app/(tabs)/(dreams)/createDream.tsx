@@ -10,6 +10,7 @@ import CreateCompleteDream from "@/components/screens/dreams/CreateCompleteDream
 import CustomButton from "@/components/customs/CustomButton"
 import DefineDreamSleep from "@/components/screens/dreams/DefineDreamSleep"
 import DreamService from "@/services/api/DreamService"
+import HELPERS from "@/data/helpers"
 import Info from "@/components/base/Info"
 import Loading from "@/components/base/Loading"
 import TextBold from "@/components/base/TextBold"
@@ -98,6 +99,12 @@ export default function CreateDreamScreen() {
     return (
         <Screen>
             <Box.Column style={ styles.container }>
+                <Info
+                    infoDescription={ HELPERS.createDream.infoDescription }
+                    modalTitle={ HELPERS.createDream.modalTitle }
+                    modalDescription={ HELPERS.createDream.modalDescription }
+                    type="question"
+                />
                 <TextBold style={ styles.dreamDateText }>Defina a data de seu sonho</TextBold>
                 <DefineDreamSleep
                     date={ completeDreamModel }

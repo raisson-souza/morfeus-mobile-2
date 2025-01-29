@@ -12,6 +12,7 @@ import BiologicalOccurencesForm from "@/components/screens/sleeps/BiologicalOccu
 import Box from "@/components/base/Box"
 import CustomButton from "@/components/customs/CustomButton"
 import DreamAppender from "@/components/screens/sleeps/DreamAppender"
+import HELPERS from "@/data/helpers"
 import HumorsForm from "@/components/screens/sleeps/HumorsForm"
 import Info from "@/components/base/Info"
 import React from "react"
@@ -82,6 +83,12 @@ export default function CreateSleepScreen() {
     return (
         <Screen>
             <Box.Column style={ styles.container }>
+                <Info
+                    infoDescription={ HELPERS.createSleepCycle.infoDescription }
+                    modalTitle={ HELPERS.createSleepCycle.modalTitle }
+                    modalDescription={ HELPERS.createSleepCycle.modalDescription }
+                    type="question"
+                />
                 <SleepCycleHoursForm
                     sleepStart={ sleepCycleModel.sleepStart }
                     sleepEnd={ sleepCycleModel.sleepEnd }
