@@ -49,20 +49,21 @@ export default function GetTagScreen() {
                                     <TextBold style={ styles.dreamContainerTitle }>SONHOS:</TextBold>
                                     <Box.Column style={ styles.dreamsContainer }>
                                         {
-                                            dreams.map((dream, i) => {
-                                                return <DreamListedByUser
+                                            dreams.map((dream, i) =>
+                                                <DreamListedByUser
                                                     dream={{
                                                         id: dream.id,
                                                         title: dream.title,
                                                         date: "",
-                                                        tags: []
+                                                        tags: [],
                                                     }}
                                                     showDate={ false }
                                                     titleSize={ 23 }
                                                     sleepId={ dream.sleepId }
+                                                    isHiddenOrErotic={ dream.hiddenDream || dream.eroticDream }
                                                     key={ i }
                                                 />
-                                            })
+                                            )
                                         }
                                     </Box.Column>
                                 </Box.Column>
