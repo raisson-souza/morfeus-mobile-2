@@ -1,4 +1,5 @@
 import { DateFormatter } from "@/utils/DateFormatter"
+import { ListedDreamBySleepCycle } from "@/types/dream"
 import { Screen } from "@/components/base/Screen"
 import { SleepHumorType } from "@/types/sleepHumor"
 import { SleepModel } from "@/types/sleeps"
@@ -8,7 +9,10 @@ import { useEffect, useState } from "react"
 import { useLocalSearchParams, useRouter } from "expo-router"
 import BiologicalOccurencesInfoModal from "@/components/screens/sleeps/biologicalOccurencesInfoModal"
 import Box from "@/components/base/Box"
+import ConfirmRecordDeletion from "@/components/screens/general/ConfirmRecordDeletion"
 import CustomButton from "@/components/customs/CustomButton"
+import DreamListedByUser from "@/components/screens/dreams/DreamListedByUser"
+import DreamService from "@/services/api/DreamService"
 import IconFeather from "react-native-vector-icons/Feather"
 import IconFontisto from "react-native-vector-icons/Fontisto"
 import IconMaterialIcons from "react-native-vector-icons/MaterialIcons"
@@ -19,58 +23,58 @@ import React from "react"
 import SleepService from "@/services/api/SleepService"
 import TextBold from "@/components/base/TextBold"
 
-type GetDreamParams = {
+type GetSleepCycleParams = {
     id: string
 }
 
 export default function GetSleepScreen() {
     const router = useRouter()
-    const { isConnectedRef: { current: isOnline }} = SyncContextProvider()
-    const { id } = useLocalSearchParams<GetDreamParams>()
+    const { checkIsConnected } = SyncContextProvider()
+    const { id } = useLocalSearchParams<GetSleepCycleParams>()
     const [ sleep, setSleep ] = useState<SleepModel | null>(null)
     const [ loading, setLoading ] = useState<boolean>(true)
     const [ errorMessage, setErrorMessage ] = useState<string>("")
     const [ openBiologicalOccurencesInfo, setOpenBiologicalOccurencesInfo ] = useState<boolean>(false)
-    // TODO: Listar os sonhos deste ciclo de sono
+    const [ loadingSleepDreams, setLoadingSleepDreams ] = useState<boolean>(true)
+    const [ sleepDreams, setSleepDreams ] = useState<ListedDreamBySleepCycle[]>([])
+
+    const fetchSleep = async () => {
+        await SleepService.GetSleep(checkIsConnected(), { id: Number.parseInt(id) })
+            .then(response => {
+                if (response.Success) {
+                    setSleep(response.Data)
+                    return
+                }
+                setErrorMessage(response.ErrorMessage ?? "")
+            })
+            .finally(() => setLoading(false))
+    }
+
+    const fetchSleepDreams = async () => {
+        await DreamService.ListBySleep(checkIsConnected(), { sleepId: Number.parseInt(id) })
+            .then(response => {
+                if (response.Success) setSleepDreams(response.Data)
+            })
+            .finally(() => setLoadingSleepDreams(false))
+    }
+
+    const deleteSleepCycleAction = async () => {
+        setLoading(true)
+        await SleepService.DeleteSleep(checkIsConnected(), { id: sleep!.id })
+            .then(response => {
+                if (response.Success) {
+                    alert(response.Data)
+                    router.navigate("/(tabs)/(sleeps)/sleepsList")
+                    return
+                }
+                setLoading(false)
+                alert(response.ErrorMessage)
+            })
+    }
 
     useEffect(() => {
-        const fetchDream = async () => {
-            await SleepService.GetSleep(isOnline, { id: Number.parseInt(id) })
-                .then(response => {
-                    if (response.Success) {
-                        setSleep(response.Data)
-                        return
-                    }
-                    setErrorMessage(response.ErrorMessage ?? "")
-                })
-                .finally(() => {
-                    setLoading(false)
-                })
-        }
-        fetchDream()
+        fetchSleep().then(async () => await fetchSleepDreams())
     }, [])
-
-    if (loading) {
-        return (
-            <Screen>
-                <Loading onlyLoading={ false } text="Buscando Ciclo de Sono..." />
-            </Screen>
-        )
-    }
-
-    if (errorMessage != "" && isNil(sleep)) {
-        return (
-            <Screen>
-                <Box.Column style={ styles.errorOnFetchSleep }>
-                    <Text>{ errorMessage }</Text>
-                    <CustomButton
-                        title="Voltar"
-                        onPress={ () => router.navigate("/(tabs)/(sleeps)/sleepsList") }
-                    />
-                </Box.Column>
-            </Screen>
-        )
-    }
 
     const formatDate = (date: string) => {
         return {
@@ -78,8 +82,6 @@ export default function GetSleepScreen() {
             time: DateFormatter.removeDate(date),
         }
     }
-    const sleepStartFormatted = formatDate(sleep!.sleepStart)
-    const sleepEndFormatted = formatDate(sleep!.sleepEnd)
 
     const renderSleepTime = (): JSX.Element => {
         if (isNil(sleep!.sleepTime) || sleep!.sleepTime == 0)
@@ -120,8 +122,6 @@ export default function GetSleepScreen() {
         if (humor.undefinedHumor) humors.push("indefinido")
         return humors
     }
-    const wakeUpHumors = extractHumors(sleep!.wakeUpHumor)
-    const layDownHumors = extractHumors(sleep!.layDownHumor)
 
     const renderHumors = (isWakeUpHumor: boolean, humors: string[]) => {
         const sleepPeriod = isWakeUpHumor ? "acordar-se" : "deitar-se"
@@ -145,8 +145,6 @@ export default function GetSleepScreen() {
             </Box.Row>
         )
     }
-    const wakeUpHumorsRendered = renderHumors(true, wakeUpHumors)
-    const layDownHumorsRendered = renderHumors(false, layDownHumors)
 
     const renderBiologicalOccurences = () => {
         const biologicalOccurences: string[] = []
@@ -178,52 +176,122 @@ export default function GetSleepScreen() {
             </Box.Row>
     }
 
+    const renderDreams = () => {
+        if (loadingSleepDreams)
+            return <Loading text="Buscando sonhos deste ciclo de sono..." onlyLoading={ false } />
+
+        return (
+            <Box.Column>
+                {
+                    sleepDreams.length === 0
+                        ? <Text style={ styles.dreamsOfSleepCycleText }>Nenhum sonho cadastrado neste ciclo de sono.</Text>
+                        : <>
+                            <TextBold style={ styles.dreamsOfSleepCycleText }>Sonhos deste ciclo de sono:</TextBold>
+                            <Box.Column style={ styles.sleepDreamsContainer }>
+                                {
+                                    sleepDreams.map((dream, i) =>
+                                        <DreamListedByUser
+                                            key={ i }
+                                            dream={{
+                                                date: sleep!.date,
+                                                id: dream.id,
+                                                tags: dream.tags.map(dreamTag => { return {"id": 0, "title": dreamTag} }),
+                                                title: dream.title,
+                                            }}
+                                            sleepId={ sleep!.id }
+                                            showDate={ false }
+                                            redirectToTag={ false }
+                                            titleSize={ 25 }
+                                            isHiddenOrErotic={ dream.isHiddenOrErotic }
+                                        />
+                                    )
+                                }
+                            </Box.Column>
+                        </>
+                }
+            </Box.Column>
+        )
+    }
+
+    const renderSleepCycle = () => {
+        if (loading)
+            return <Loading text="Buscando ciclo de sono..." onlyLoading={ false } />
+
+        if (errorMessage != "")
+            return <Box.Column style={ styles.errorOnFetchSleep }>
+                <Text>{ errorMessage }</Text>
+                <CustomButton
+                    title="Voltar"
+                    onPress={ () => router.navigate("/(tabs)/(sleeps)/sleepsList") }
+                />
+            </Box.Column>
+
+        const sleepStartFormatted = formatDate(sleep!.sleepStart)
+        const sleepEndFormatted = formatDate(sleep!.sleepEnd)
+        const wakeUpHumors = extractHumors(sleep!.wakeUpHumor)
+        const layDownHumors = extractHumors(sleep!.layDownHumor)
+        const wakeUpHumorsRendered = renderHumors(true, wakeUpHumors)
+        const layDownHumorsRendered = renderHumors(false, layDownHumors)
+
+        return <>
+            { renderIsNightSleep() }
+            <Box.Column style={{ ...styles.dateContainer, ...styles.center }}>
+                <Info
+                    infoDescription={ `Data referente ${ sleep!.date }` }
+                    type="question"
+                    modalTitle="Data do Sono"
+                    modalDescription={[
+                        "Se você iniciou seu sono ontem ou hoje até 12hrs, seu ciclo de sono se refere a ontem.",
+                        "Se não, se refere ao dia de hoje.",
+                        "Essa regra foi aplicada ao ciclo de sono visualizado agora.",
+                    ]}
+                    overrideInfoColor="white"
+                    iconSize={ 22 }
+                />
+                { renderSleepTime() }
+            </Box.Column>
+            <Box.Column>
+                <Box.Row style={ styles.gap }>
+                    <TextBold>{ `Início:` }</TextBold>
+                    <TextBold>{ sleepStartFormatted.date }</TextBold>
+                    <TextBold>{ sleepStartFormatted.time }</TextBold>
+                </Box.Row>
+                <Box.Row style={ styles.gap }>
+                    <TextBold>{ `Fim:   ` }</TextBold>
+                    <TextBold>{ sleepEndFormatted.date }</TextBold>
+                    <TextBold>{ sleepEndFormatted.time }</TextBold>
+                </Box.Row>
+            </Box.Column>
+            { layDownHumorsRendered }
+            { wakeUpHumorsRendered }
+            { renderBiologicalOccurences() }
+            <CustomButton
+                title="Mais informações sobre ocorrências biológicas"
+                onPress={ () => setOpenBiologicalOccurencesInfo(true) }
+                titleStyle={{
+                    fontSize: styles.biologicalOccurencesInfoBtn.fontSize,
+                    fontWeight: "light",
+                }}
+            />
+            <BiologicalOccurencesInfoModal
+                visible={ openBiologicalOccurencesInfo }
+                setVisible={ setOpenBiologicalOccurencesInfo }
+            />
+            { renderDreams() }
+            <ConfirmRecordDeletion deletionAction={ async () => await deleteSleepCycleAction() } />
+            <CustomButton
+                title="Editar"
+                onPress={ () => router.navigate({ pathname: "/(tabs)/(sleeps)/updateSleep", params: { id: sleep?.id }})}
+                btnColor="orange"
+                btnTextColor="orange"
+            />
+        </>
+    }
+
     return (
         <Screen>
             <Box.Column style={ styles.container }>
-                { renderIsNightSleep() }
-                <Box.Column style={{ ...styles.dateContainer, ...styles.center }}>
-                    <Info
-                        infoDescription={ `Data referente ${ sleep!.date }` }
-                        type="question"
-                        modalTitle="Data do Sono"
-                        modalDescription={[
-                            "Se você iniciou seu sono ontem ou hoje até 12hrs, seu ciclo de sono se refere a ontem.",
-                            "Se não, se refere ao dia de hoje.",
-                            "Essa regra foi aplicada ao ciclo de sono visualizado agora.",
-                        ]}
-                        overrideInfoColor="white"
-                        iconSize={ 22 }
-                    />
-                    { renderSleepTime() }
-                </Box.Column>
-                <Box.Column>
-                    <Box.Row style={ styles.gap }>
-                        <TextBold>{ `Início:` }</TextBold>
-                        <TextBold>{ sleepStartFormatted.date }</TextBold>
-                        <TextBold>{ sleepStartFormatted.time }</TextBold>
-                    </Box.Row>
-                    <Box.Row style={ styles.gap }>
-                        <TextBold>{ `Fim:   ` }</TextBold>
-                        <TextBold>{ sleepEndFormatted.date }</TextBold>
-                        <TextBold>{ sleepEndFormatted.time }</TextBold>
-                    </Box.Row>
-                </Box.Column>
-                { layDownHumorsRendered }
-                { wakeUpHumorsRendered }
-                { renderBiologicalOccurences() }
-                <CustomButton
-                    title="Mais informações sobre ocorrências biológicas"
-                    onPress={ () => setOpenBiologicalOccurencesInfo(true) }
-                    titleStyle={{
-                        fontSize: styles.biologicalOccurencesInfoBtn.fontSize,
-                        fontWeight: "light",
-                    }}
-                />
-                <BiologicalOccurencesInfoModal
-                    visible={ openBiologicalOccurencesInfo }
-                    setVisible={ setOpenBiologicalOccurencesInfo }
-                />
+                { renderSleepCycle() }
                 <CustomButton
                     title="Voltar"
                     onPress={ () => router.navigate("/(tabs)/(sleeps)/sleepsList") }
@@ -261,5 +329,14 @@ const styles = StyleSheet.create({
     },
     errorOnFetchSleep: {
         gap: 15,
+    },
+    dreamsOfSleepCycleText: {
+        alignSelf: "center",
+        textAlign: "center",
+        fontSize: 20,
+    },
+    sleepDreamsContainer: {
+        paddingTop: 5,
+        gap: 5,
     },
 })

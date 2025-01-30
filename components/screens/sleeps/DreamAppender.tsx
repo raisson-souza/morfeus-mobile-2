@@ -15,7 +15,7 @@ export type DreamInSleepCycleModelListed = {
 } & DreamInSleepCycleModel
 
 type DreamAppenderProps = {
-    onChange: (dreams: DreamInSleepCycleModelListed[]) => void
+    onChange: (dreams: DreamInSleepCycleModelListed[], isCreatingDream: boolean) => void
 }
 
 export default function DreamAppender({
@@ -47,13 +47,14 @@ export default function DreamAppender({
     const cancelDreamCreation = () => {
         setCreatingDream(false)
         setNewDream(null)
+        onChange(dreams, false)
     }
 
     const saveDream = () => {
         setCreatingDream(false)
         const newDreamList = [ ...dreams, newDream! ]
         setDreams(newDreamList)
-        onChange(newDreamList)
+        onChange(newDreamList, false)
         setNewDream(null)
     }
 
@@ -66,7 +67,7 @@ export default function DreamAppender({
         newDreamList.splice(i, 1)
         setDreams(newDreamList)
         setNewDream(null)
-        onChange(newDreamList)
+        onChange(newDreamList, creatingDream)
     }
 
     const addNewDream = () => {
@@ -81,7 +82,7 @@ export default function DreamAppender({
         })
         dreamList[i].open = !dreamList[i].open
         setDreams(dreamList)
-        onChange(dreamList)
+        onChange(dreamList, creatingDream)
     }
 
     const updateDream = (dream: DreamInSleepCycleModelListed) => {
@@ -90,7 +91,7 @@ export default function DreamAppender({
         newDreamList[i] = dream
         setDreams(newDreamList)
         setNewDream(dream)
-        onChange(newDreamList)
+        onChange(newDreamList, creatingDream)
     }
 
     if (dreams.length === 0 && !creatingDream) {

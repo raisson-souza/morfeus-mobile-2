@@ -119,3 +119,30 @@ export type CreateDreamRequest = {
 } & CreateDreamModel
 
 export type CreateDreamResponse = string
+
+export type DeleteDreamRequest = {
+	id: number
+}
+
+export type DeleteDreamResponse = string
+
+export type UpdateDreamModel = {
+	id: number
+} & CreateDreamModel
+
+export type UpdateDreamRequest = UpdateDreamModel
+
+export type UpdateDreamResponse = string
+
+export type ListedDreamBySleepCycle = {
+	id: number
+	title: string
+	tags: string[]
+	isHiddenOrErotic: boolean
+}
+
+export type ListDreamsBySleepCycleRequest = {
+	sleepId: number
+}
+
+export type ListDreamsBySleepCycleResponse = ListedDreamBySleepCycle[]

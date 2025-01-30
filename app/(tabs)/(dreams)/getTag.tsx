@@ -19,13 +19,13 @@ type GetTagParams = {
 export default function GetTagScreen() {
     const router = useRouter()
     const { id, title } = useLocalSearchParams<GetTagParams>()
-    const { isConnectedRef: { current: isOnline }} = SyncContextProvider()
+    const { checkIsConnected } = SyncContextProvider()
     const [ dreams, setDreams ] = useState<DreamModel[] | null>(null)
     const [ errorMessage, setErrorMessage ] = useState<string | null>(null)
 
     useEffect(() => {
         const fetchTag = async () => {
-            await TagService.ListDreamsByTag(isOnline, { tagId: Number.parseInt(id) })
+            await TagService.ListDreamsByTag(checkIsConnected(), { tagId: Number.parseInt(id) })
                 .then(response => {
                     if (response.Success) {
                         setDreams(response.Data)
@@ -49,20 +49,21 @@ export default function GetTagScreen() {
                                     <TextBold style={ styles.dreamContainerTitle }>SONHOS:</TextBold>
                                     <Box.Column style={ styles.dreamsContainer }>
                                         {
-                                            dreams.map((dream, i) => {
-                                                return <DreamListedByUser
+                                            dreams.map((dream, i) =>
+                                                <DreamListedByUser
                                                     dream={{
                                                         id: dream.id,
                                                         title: dream.title,
                                                         date: "",
-                                                        tags: []
+                                                        tags: [],
                                                     }}
                                                     showDate={ false }
                                                     titleSize={ 23 }
                                                     sleepId={ dream.sleepId }
+                                                    isHiddenOrErotic={ dream.hiddenDream || dream.eroticDream }
                                                     key={ i }
                                                 />
-                                            })
+                                            )
                                         }
                                     </Box.Column>
                                 </Box.Column>

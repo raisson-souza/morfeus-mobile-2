@@ -3,6 +3,7 @@ import { DateFormatter } from "@/utils/DateFormatter"
 import { Screen } from "@/components/base/Screen"
 import { StyleSheet } from "react-native"
 import { SyncContextProvider } from "@/contexts/SyncContext"
+import { useCustomBackHandler } from "@/hooks/useHardwareBackPress"
 import { useEffect, useState } from "react"
 import { useNavigation, useRouter } from "expo-router"
 import Box from "@/components/base/Box"
@@ -10,6 +11,7 @@ import CreateCompleteDream from "@/components/screens/dreams/CreateCompleteDream
 import CustomButton from "@/components/customs/CustomButton"
 import DefineDreamSleep from "@/components/screens/dreams/DefineDreamSleep"
 import DreamService from "@/services/api/DreamService"
+import HELPERS from "@/data/helpers"
 import Info from "@/components/base/Info"
 import Loading from "@/components/base/Loading"
 import TextBold from "@/components/base/TextBold"
@@ -45,7 +47,7 @@ const defaultDreamModel: CreateDreamModel = {
 export default function CreateDreamScreen() {
     const router = useRouter()
     const navigation = useNavigation()
-    const { isConnectedRef: { current: isOnline }} = SyncContextProvider()
+    const { checkIsConnected } = SyncContextProvider()
     const [ dreamModel, setDreamModel ] = useState<CreateDreamModel>(defaultDreamModel)
     const [ completeDreamModel, setCompleteDreamModel ] = useState<CreateCompleteDreamModel>({
         dreamNoSleepDateKnown: null,
@@ -53,6 +55,7 @@ export default function CreateDreamScreen() {
     })
     const [ sleepId, setSleepId ] = useState<number | null>(null)
     const [ loading, setLoading ] = useState<boolean>(false)
+    const [ canExit, setCanExit] = useState<boolean>(true)
 
     useEffect(() => {
         return navigation.addListener("blur", () => {
@@ -62,12 +65,17 @@ export default function CreateDreamScreen() {
                 dreamNoSleepTimeKnown: null,
             })
             setSleepId(null)
+            setCanExit(true)
         })
     }, [])
 
+    useCustomBackHandler({
+        canExit: canExit,
+    })
+
     const createDream = async () => {
         setLoading(true)
-        await DreamService.Create(isOnline, {
+        await DreamService.Create(checkIsConnected(), {
             ...dreamModel,
             sleepId: sleepId,
             dreamNoSleepDateKnown: completeDreamModel.dreamNoSleepDateKnown
@@ -98,6 +106,12 @@ export default function CreateDreamScreen() {
     return (
         <Screen>
             <Box.Column style={ styles.container }>
+                <Info
+                    infoDescription={ HELPERS.createDream.infoDescription }
+                    modalTitle={ HELPERS.createDream.modalTitle }
+                    modalDescription={ HELPERS.createDream.modalDescription }
+                    type="question"
+                />
                 <TextBold style={ styles.dreamDateText }>Defina a data de seu sonho</TextBold>
                 <DefineDreamSleep
                     date={ completeDreamModel }
@@ -107,7 +121,10 @@ export default function CreateDreamScreen() {
                 />
                 <CreateCompleteDream
                     dream={ dreamModel }
-                    setDream={ setDreamModel }
+                    onChange={ (e) => {
+                        setDreamModel(e)
+                        setCanExit(false)
+                    }}
                     isLocked={ loading }
                 />
                 <Info
@@ -130,13 +147,10 @@ export default function CreateDreamScreen() {
                         />
                 }
                 <CustomButton
-                    title="Voltar"
-                    onPress={ () => {
-                        if (router.canGoBack())
-                            router.back()
-                        else
-                            router.navigate("/")
-                    }}
+                    title={ canExit ? "Voltar" : "Cancelar Sonho" }
+                    onPress={ () => router.back() }
+                    btnColor={ !canExit ? "red" : undefined }
+                    btnTextColor={ !canExit ? "red" : undefined }
                     active={ !loading }
                 />
             </Box.Column>

@@ -116,8 +116,9 @@ export default function SimpleSleep({}: SimpleSleepProps) {
                 infoDescription="O que é isso?"
                 modalTitle="Sono Simples"
                 modalDescription={[
+                    'A área com fundo cinza claro é o "sono simples".',
                     'Se você deseja cadastrar de forma rápida a última vez que dormiu, utilize este formulário, se precisar cadastrar um sono completo, utilize a aba "ciclos de sono"!',
-                    "Caso encontre problemas nesta funcionalidade, por favor, reporte! Se não conseguir cadastrar seu sono, exclua ou edite o errado na listagem de ciclos de sono."
+                    "Caso encontre problemas nesta funcionalidade, por favor, reporte! Se não conseguir cadastrar seu sono, exclua ou edite o errado na listagem de ciclos de sono.",
                 ]}
                 type="question"
             />
@@ -197,6 +198,9 @@ const styles = StyleSheet.create({
     container: {
         marginBottom: 20,
         gap: 5,
+        backgroundColor: "lightgray",
+        padding: 10,
+        borderRadius: 15,
     },
     timePickerContainer: {
         gap: 5,

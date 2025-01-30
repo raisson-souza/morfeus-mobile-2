@@ -1,4 +1,4 @@
-import { CreateDreamRequest, CreateDreamResponse, GetDreamRequest, GetDreamResponse, ListDreamByUserResponse, ListDreamsByUserRequest } from "../../types/dream"
+import { CreateDreamRequest, CreateDreamResponse, DeleteDreamRequest, DeleteDreamResponse, GetDreamRequest, GetDreamResponse, ListDreamByUserResponse, ListDreamsBySleepCycleRequest, ListDreamsBySleepCycleResponse, ListDreamsByUserRequest, UpdateDreamRequest, UpdateDreamResponse } from "../../types/dream"
 import Endpoints from "./base/Endpoints"
 
 export default abstract class DreamService extends Endpoints {
@@ -18,8 +18,12 @@ export default abstract class DreamService extends Endpoints {
     //     })
     // }
 
-    static async Update() {
-        
+    static async Update(online: boolean, request: UpdateDreamRequest) {
+        return await this.Put<UpdateDreamResponse>({
+            url: "/dreams",
+            authorization: await this.GetAuthorization(),
+            body: request,
+        })
     }
 
     static async GetDream(online: boolean, request: GetDreamRequest) {
@@ -29,8 +33,11 @@ export default abstract class DreamService extends Endpoints {
         })
     }
 
-    static async DeleteDream() {
-        
+    static async DeleteDream(online: boolean, request: DeleteDreamRequest) {
+        return await this.Delete<DeleteDreamResponse>({
+            url: `/dreams/${ request.id }`,
+            authorization: await this.GetAuthorization(),
+        })
     }
 
     static async ListByUser(online: boolean, body: ListDreamsByUserRequest) {
@@ -41,7 +48,10 @@ export default abstract class DreamService extends Endpoints {
         })
     }
 
-    static async ListBySleep() {
-        
+    static async ListBySleep(online: boolean, request: ListDreamsBySleepCycleRequest) {
+        return await this.Get<ListDreamsBySleepCycleResponse>({
+            url: `/dreams/listBySleep?sleep_id=${ request.sleepId }`,
+            authorization: await this.GetAuthorization()
+        })
     }
 }

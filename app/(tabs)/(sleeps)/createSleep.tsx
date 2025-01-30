@@ -6,19 +6,19 @@ import { DefaultSleepHumor } from "@/types/sleepHumor"
 import { Screen } from "@/components/base/Screen"
 import { StyleSheet } from "react-native"
 import { SyncContextProvider } from "@/contexts/SyncContext"
+import { useCustomBackHandler } from "@/hooks/useHardwareBackPress"
 import { useEffect, useRef, useState } from "react"
 import { useNavigation, useRouter } from "expo-router"
-import BiologicalOccurencesInfoModal from "@/components/screens/sleeps/biologicalOccurencesInfoModal"
+import BiologicalOccurencesForm from "@/components/screens/sleeps/BiologicalOccurencesForm"
 import Box from "@/components/base/Box"
 import CustomButton from "@/components/customs/CustomButton"
-import CustomSwitch from "@/components/customs/CustomSwitch"
-import DatePickerShow from "@/components/date/DatePickerShow"
 import DreamAppender from "@/components/screens/sleeps/DreamAppender"
+import HELPERS from "@/data/helpers"
+import HumorsForm from "@/components/screens/sleeps/HumorsForm"
 import Info from "@/components/base/Info"
 import React from "react"
+import SleepCycleHoursForm from "@/components/screens/sleeps/SleepCycleHoursForm"
 import SleepService from "@/services/api/SleepService"
-import TextBold from "@/components/base/TextBold"
-import TimePickerShow from "@/components/date/TimePickerShow"
 import validatorErrorParser from "@/validators/base/validatorErrorParser"
 
 const defaultSleepCycleModel: CreateSleepCycleModel = {
@@ -35,29 +35,30 @@ export default function CreateSleepScreen() {
     const navigation = useNavigation()
     const { checkIsConnected } = SyncContextProvider()
     const [ sleepCycleModel, setSleepCycleModel ] = useState<CreateSleepCycleModel>(defaultSleepCycleModel)
-    const [ showLayDownHumors, setShowLayDownHumors ] = useState<boolean>(false)
-    const [ showWakeUpHumors, setShowWakeUpHumors ] = useState<boolean>(false)
-    const [ showBiologicalOccurences, setShowBiologicalOccurences ] = useState<boolean>(false)
-    const [ openBiologicalOccurencesInfoModal, setOpenBiologicalOccurencesInfoModal ] = useState<boolean>(false)
-    const [ canCreateSleepCycle, setCanCreateSleepCycle ] = useState<boolean>(false)
+    const [ isHoursPending, setIsHoursPending ] = useState<boolean>(true)
+    const [ canCreateSleepCycle, setCanCreateSleepCycle ] = useState<boolean>(true)
     const sleepCycleCreationActionsRef = useRef<number>(0)
+    const [ canExit, setCanExit ] = useState<boolean>(true)
 
     useEffect(() => {
         return navigation.addListener("blur", () => {
             sleepCycleCreationActionsRef.current = 0
             setSleepCycleModel(defaultSleepCycleModel)
-            setShowLayDownHumors(false)
-            setShowWakeUpHumors(false)
-            setShowBiologicalOccurences(false)
-            setOpenBiologicalOccurencesInfoModal(false)
-            setCanCreateSleepCycle(false)
+            setCanCreateSleepCycle(true)
+            setCanExit(true)
         })
     }, [])
 
+    useCustomBackHandler({
+        canExit: canExit,
+    })
+
     const increaseSleepCycleCreationActions = () => {
         sleepCycleCreationActionsRef.current += 1
-        if (sleepCycleCreationActionsRef.current === 2)
-            setCanCreateSleepCycle(true)
+        if (sleepCycleCreationActionsRef.current === 2) {
+            setIsHoursPending(false)
+            setCanExit(false)
+        }
     }
 
     const createSleepCycle = async () => {
@@ -92,299 +93,56 @@ export default function CreateSleepScreen() {
     return (
         <Screen>
             <Box.Column style={ styles.container }>
-                <Box.Row style={ styles.sleepTimeContainer }>
-                    <Box.Column style={ styles.sleepTimeIndividualContainer }>
-                        <TextBold>Horário de dormir</TextBold>
-                        <DatePickerShow
-                            date={ sleepCycleModel.sleepStart }
-                            onChange={ (e) => {
-                                increaseSleepCycleCreationActions()
-                                setSleepCycleModel({ ...sleepCycleModel, sleepStart: e })
-                            }}
-                        />
-                        <TimePickerShow
-                            time={ sleepCycleModel.sleepStart }
-                            onChange={ (e) => {
-                                increaseSleepCycleCreationActions()
-                                setSleepCycleModel({ ...sleepCycleModel, sleepStart: e })
-                            }}
-                        />
-                    </Box.Column>
-                    <Box.Column style={ styles.sleepTimeIndividualContainer }>
-                        <TextBold>Horário de acordar</TextBold>
-                        <DatePickerShow
-                            date={ sleepCycleModel.sleepEnd }
-                            onChange={ (e) => {
-                                increaseSleepCycleCreationActions()
-                                setSleepCycleModel({ ...sleepCycleModel, sleepEnd: e })
-                            }}
-                        />
-                        <TimePickerShow
-                            time={ sleepCycleModel.sleepEnd }
-                            onChange={ (e) => {
-                                increaseSleepCycleCreationActions()
-                                setSleepCycleModel({ ...sleepCycleModel, sleepEnd: e })
-                            }}
-                        />
-                    </Box.Column>
-                </Box.Row>
-                <Box.Column>
-                    <Box.Row style={ styles.centerShowSwitches }>
-                        <CustomSwitch
-                            value={ showLayDownHumors }
-                            label=""
-                            onChange={ (e) => setShowLayDownHumors(e) }
-                        />
-                        <TextBold>Humores ao dormir</TextBold>
-                    </Box.Row>
-                    {
-                        showLayDownHumors
-                            ? <>
-                                <Box.Column style={ styles.switches }>
-                                    <CustomSwitch
-                                        value={ sleepCycleModel.layDownHumor.calm }
-                                        label="Calma"
-                                        onChange={ (e) => setSleepCycleModel({ ...sleepCycleModel, layDownHumor: { ...sleepCycleModel.layDownHumor, undefinedHumor: false, calm: e }})}
-                                    />
-                                    <CustomSwitch
-                                        value={ sleepCycleModel.layDownHumor.drowsiness }
-                                        label="Preguiça"
-                                        onChange={ (e) => setSleepCycleModel({ ...sleepCycleModel, layDownHumor: { ...sleepCycleModel.layDownHumor, undefinedHumor: false, drowsiness: e }})}
-                                    />
-                                    <CustomSwitch
-                                        value={ sleepCycleModel.layDownHumor.tiredness }
-                                        label="Cansaço"
-                                        onChange={ (e) => setSleepCycleModel({ ...sleepCycleModel, layDownHumor: { ...sleepCycleModel.layDownHumor, undefinedHumor: false, tiredness: e }})}
-                                    />
-                                    <CustomSwitch
-                                        value={ sleepCycleModel.layDownHumor.anxiety }
-                                        label="Ansiedade"
-                                        onChange={ (e) => setSleepCycleModel({ ...sleepCycleModel, layDownHumor: { ...sleepCycleModel.layDownHumor, undefinedHumor: false, anxiety: e }})}
-                                    />
-                                    <CustomSwitch
-                                        value={ sleepCycleModel.layDownHumor.happiness }
-                                        label="Felicidade"
-                                        onChange={ (e) => setSleepCycleModel({ ...sleepCycleModel, layDownHumor: { ...sleepCycleModel.layDownHumor, undefinedHumor: false, happiness: e }})}
-                                    />
-                                    <CustomSwitch
-                                        value={ sleepCycleModel.layDownHumor.fear }
-                                        label="Medo"
-                                        onChange={ (e) => setSleepCycleModel({ ...sleepCycleModel, layDownHumor: { ...sleepCycleModel.layDownHumor, undefinedHumor: false, fear: e }})}
-                                    />
-                                    <CustomSwitch
-                                        value={ sleepCycleModel.layDownHumor.sadness }
-                                        label="Tristeza"
-                                        onChange={ (e) => setSleepCycleModel({ ...sleepCycleModel, layDownHumor: { ...sleepCycleModel.layDownHumor, undefinedHumor: false, sadness: e }})}
-                                    />
-                                    <CustomSwitch
-                                        value={ sleepCycleModel.layDownHumor.other }
-                                        label="Outro"
-                                        onChange={ (e) => setSleepCycleModel({ ...sleepCycleModel, layDownHumor: { ...sleepCycleModel.layDownHumor, undefinedHumor: false, other: e }})}
-                                    />
-                                    <CustomSwitch
-                                        value={ sleepCycleModel.layDownHumor.undefinedHumor }
-                                        label="Indefinido"
-                                        onChange={ (e) =>
-                                            setSleepCycleModel({
-                                                ...sleepCycleModel,
-                                                layDownHumor: {
-                                                    calm: false,
-                                                    drowsiness: false,
-                                                    tiredness: false,
-                                                    anxiety: false,
-                                                    happiness: false,
-                                                    fear: false,
-                                                    sadness: false,
-                                                    other: false,
-                                                    undefinedHumor: e
-                                                }
-                                            })
-                                        }
-                                    />
-                                </Box.Column>
-                            </>
-                            : <></>
-                    }
-                </Box.Column>
-                <Box.Column>
-                    <Box.Row style={ styles.centerShowSwitches }>
-                        <CustomSwitch
-                            value={ showWakeUpHumors }
-                            label=""
-                            onChange={ (e) => setShowWakeUpHumors(e) }
-                        />
-                        <TextBold>Humores ao acordar</TextBold>
-                    </Box.Row>
-                    {
-                        showWakeUpHumors
-                            ? <>
-                                <Box.Column style={ styles.switches }>
-                                    <CustomSwitch
-                                        value={ sleepCycleModel.wakeUpHumor.calm }
-                                        label="Calma"
-                                        onChange={ (e) => setSleepCycleModel({ ...sleepCycleModel, wakeUpHumor: { ...sleepCycleModel.wakeUpHumor, undefinedHumor: false, calm: e }})}
-                                    />
-                                    <CustomSwitch
-                                        value={ sleepCycleModel.wakeUpHumor.drowsiness }
-                                        label="Preguiça"
-                                        onChange={ (e) => setSleepCycleModel({ ...sleepCycleModel, wakeUpHumor: { ...sleepCycleModel.wakeUpHumor, undefinedHumor: false, drowsiness: e }})}
-                                    />
-                                    <CustomSwitch
-                                        value={ sleepCycleModel.wakeUpHumor.tiredness }
-                                        label="Cansaço"
-                                        onChange={ (e) => setSleepCycleModel({ ...sleepCycleModel, wakeUpHumor: { ...sleepCycleModel.wakeUpHumor, undefinedHumor: false, tiredness: e }})}
-                                    />
-                                    <CustomSwitch
-                                        value={ sleepCycleModel.wakeUpHumor.anxiety }
-                                        label="Ansiedade"
-                                        onChange={ (e) => setSleepCycleModel({ ...sleepCycleModel, wakeUpHumor: { ...sleepCycleModel.wakeUpHumor, undefinedHumor: false, anxiety: e }})}
-                                    />
-                                    <CustomSwitch
-                                        value={ sleepCycleModel.wakeUpHumor.happiness }
-                                        label="Felicidade"
-                                        onChange={ (e) => setSleepCycleModel({ ...sleepCycleModel, wakeUpHumor: { ...sleepCycleModel.wakeUpHumor, undefinedHumor: false, happiness: e }})}
-                                    />
-                                    <CustomSwitch
-                                        value={ sleepCycleModel.wakeUpHumor.fear }
-                                        label="Medo"
-                                        onChange={ (e) => setSleepCycleModel({ ...sleepCycleModel, wakeUpHumor: { ...sleepCycleModel.wakeUpHumor, undefinedHumor: false, fear: e }})}
-                                    />
-                                    <CustomSwitch
-                                        value={ sleepCycleModel.wakeUpHumor.sadness }
-                                        label="Tristeza"
-                                        onChange={ (e) => setSleepCycleModel({ ...sleepCycleModel, wakeUpHumor: { ...sleepCycleModel.wakeUpHumor, undefinedHumor: false, sadness: e }})}
-                                    />
-                                    <CustomSwitch
-                                        value={ sleepCycleModel.wakeUpHumor.other }
-                                        label="Outro"
-                                        onChange={ (e) => setSleepCycleModel({ ...sleepCycleModel, wakeUpHumor: { ...sleepCycleModel.wakeUpHumor, undefinedHumor: false, other: e }})}
-                                    />
-                                    <CustomSwitch
-                                        value={ sleepCycleModel.wakeUpHumor.undefinedHumor }
-                                        label="Indefinido"
-                                        onChange={ (e) =>
-                                            setSleepCycleModel({
-                                                ...sleepCycleModel,
-                                                wakeUpHumor: {
-                                                    calm: false,
-                                                    drowsiness: false,
-                                                    tiredness: false,
-                                                    anxiety: false,
-                                                    happiness: false,
-                                                    fear: false,
-                                                    sadness: false,
-                                                    other: false,
-                                                    undefinedHumor: e
-                                                }
-                                            })
-                                        }
-                                    />
-                                </Box.Column>
-                            </>
-                            : <></>
-                    }
-                </Box.Column>
-                <Box.Column>
-                    <Box.Row style={ styles.centerShowSwitches }>
-                        <CustomSwitch
-                            value={ showBiologicalOccurences }
-                            label=""
-                            onChange={ (e) => setShowBiologicalOccurences(e) }
-                        />
-                        <TextBold>Ocorrências biológicas durante o sono</TextBold>
-                    </Box.Row>
-                    {
-                        showBiologicalOccurences
-                            ? <>
-                                <CustomButton
-                                    title="Informações sobre ocorrências biológicas"
-                                    onPress={ () => setOpenBiologicalOccurencesInfoModal(true) }
-                                />
-                                <BiologicalOccurencesInfoModal
-                                    visible={ openBiologicalOccurencesInfoModal }
-                                    setVisible={ setOpenBiologicalOccurencesInfoModal }
-                                />
-                                <Box.Column style={ styles.switches }>
-                                    <CustomSwitch
-                                        value={ sleepCycleModel.biologicalOccurences.sudorese }
-                                        label="Sudorese"
-                                        onChange={ (e) => setSleepCycleModel({ ...sleepCycleModel, biologicalOccurences: { ...sleepCycleModel.biologicalOccurences, sudorese: e }})}
-                                    />
-                                    <CustomSwitch
-                                        value={ sleepCycleModel.biologicalOccurences.bruxismo }
-                                        label="Bruxismo"
-                                        onChange={ (e) => setSleepCycleModel({ ...sleepCycleModel, biologicalOccurences: { ...sleepCycleModel.biologicalOccurences, bruxismo: e }})}
-                                    />
-                                    <CustomSwitch
-                                        value={ sleepCycleModel.biologicalOccurences.apneiaDoSono }
-                                        label="Apnéia do Sono"
-                                        onChange={ (e) => setSleepCycleModel({ ...sleepCycleModel, biologicalOccurences: { ...sleepCycleModel.biologicalOccurences, apneiaDoSono: e }})}
-                                    />
-                                    <CustomSwitch
-                                        value={ sleepCycleModel.biologicalOccurences.ronco }
-                                        label="Ronco"
-                                        onChange={ (e) => setSleepCycleModel({ ...sleepCycleModel, biologicalOccurences: { ...sleepCycleModel.biologicalOccurences, ronco: e }})}
-                                    />
-                                    <CustomSwitch
-                                        value={ sleepCycleModel.biologicalOccurences.movimentosPeriodicosDosMembros }
-                                        label="Movimentos Periódicos dos Membros"
-                                        onChange={ (e) => setSleepCycleModel({ ...sleepCycleModel, biologicalOccurences: { ...sleepCycleModel.biologicalOccurences, movimentosPeriodicosDosMembros: e }})}
-                                    />
-                                    <CustomSwitch
-                                        value={ sleepCycleModel.biologicalOccurences.despertaresParciais }
-                                        label="Despertares Parciais"
-                                        onChange={ (e) => setSleepCycleModel({ ...sleepCycleModel, biologicalOccurences: { ...sleepCycleModel.biologicalOccurences, despertaresParciais: e }})}
-                                    />
-                                    <CustomSwitch
-                                        value={ sleepCycleModel.biologicalOccurences.refluxoGastroesofagico }
-                                        label="Refluxo Gastroesofágico"
-                                        onChange={ (e) => setSleepCycleModel({ ...sleepCycleModel, biologicalOccurences: { ...sleepCycleModel.biologicalOccurences, refluxoGastroesofagico: e }})}
-                                    />
-                                    <CustomSwitch
-                                        value={ sleepCycleModel.biologicalOccurences.sialorreia }
-                                        label="Sialorréia"
-                                        onChange={ (e) => setSleepCycleModel({ ...sleepCycleModel, biologicalOccurences: { ...sleepCycleModel.biologicalOccurences, sialorreia: e }})}
-                                    />
-                                    <CustomSwitch
-                                        value={ sleepCycleModel.biologicalOccurences.arritmias }
-                                        label="Arritmias"
-                                        onChange={ (e) => setSleepCycleModel({ ...sleepCycleModel, biologicalOccurences: { ...sleepCycleModel.biologicalOccurences, arritmias: e }})}
-                                    />
-                                    <CustomSwitch
-                                        value={ sleepCycleModel.biologicalOccurences.mioclonia }
-                                        label="Mioclonia"
-                                        onChange={ (e) => setSleepCycleModel({ ...sleepCycleModel, biologicalOccurences: { ...sleepCycleModel.biologicalOccurences, mioclonia: e }})}
-                                    />
-                                    <CustomSwitch
-                                        value={ sleepCycleModel.biologicalOccurences.parassonia }
-                                        label="Parassonia"
-                                        onChange={ (e) => setSleepCycleModel({ ...sleepCycleModel, biologicalOccurences: { ...sleepCycleModel.biologicalOccurences, parassonia: e }})}
-                                    />
-                                    <CustomSwitch
-                                        value={ sleepCycleModel.biologicalOccurences.epistaxe }
-                                        label="Epistaxe"
-                                        onChange={ (e) => setSleepCycleModel({ ...sleepCycleModel, biologicalOccurences: { ...sleepCycleModel.biologicalOccurences, epistaxe: e }})}
-                                    />
-                                    <CustomSwitch
-                                        value={ sleepCycleModel.biologicalOccurences.miccaoInvoluntaria }
-                                        label="Micção Involuntária"
-                                        onChange={ (e) => setSleepCycleModel({ ...sleepCycleModel, biologicalOccurences: { ...sleepCycleModel.biologicalOccurences, miccaoInvoluntaria: e }})}
-                                    />
-                                    <CustomSwitch
-                                        value={ sleepCycleModel.biologicalOccurences.evacuacaoInvoluntaria }
-                                        label="Evacuação Involuntária"
-                                        onChange={ (e) => setSleepCycleModel({ ...sleepCycleModel, biologicalOccurences: { ...sleepCycleModel.biologicalOccurences, evacuacaoInvoluntaria: e }})}
-                                    />
-                                    <CustomSwitch
-                                        value={ sleepCycleModel.biologicalOccurences.polucao }
-                                        label="Polução Noturna"
-                                        onChange={ (e) => setSleepCycleModel({ ...sleepCycleModel, biologicalOccurences: { ...sleepCycleModel.biologicalOccurences, polucao: e }})}
-                                    />
-                                </Box.Column>
-                            </>
-                            : <></>
-                    }
-                </Box.Column>
+                <Info
+                    infoDescription={ HELPERS.createSleepCycle.infoDescription }
+                    modalTitle={ HELPERS.createSleepCycle.modalTitle }
+                    modalDescription={ HELPERS.createSleepCycle.modalDescription }
+                    type="question"
+                />
+                <SleepCycleHoursForm
+                    sleepStart={ sleepCycleModel.sleepStart }
+                    sleepEnd={ sleepCycleModel.sleepEnd }
+                    onChange={ (type, e) => {
+                        setSleepCycleModel({
+                            ...sleepCycleModel,
+                            sleepStart: type === "start" ? e : sleepCycleModel.sleepStart,
+                            sleepEnd: type === "end" ? e : sleepCycleModel.sleepEnd,
+                        })
+                        increaseSleepCycleCreationActions()
+                    }}
+                />
+                <HumorsForm
+                    title="Humores ao dormir"
+                    value={ sleepCycleModel.layDownHumor }
+                    onChange={ (e) => {
+                        setSleepCycleModel({
+                            ...sleepCycleModel,
+                            layDownHumor: e,
+                        })
+                        setCanExit(false)
+                    }}
+                />
+                <HumorsForm
+                    title="Humores ao acordar"
+                    value={ sleepCycleModel.wakeUpHumor }
+                    onChange={ (e) => {
+                        setSleepCycleModel({
+                            ...sleepCycleModel,
+                            wakeUpHumor: e,
+                        })
+                        setCanExit(false)
+                    }}
+                />
+                <BiologicalOccurencesForm
+                    value={ sleepCycleModel.biologicalOccurences }
+                    onChange={ (e) => {
+                        setSleepCycleModel({
+                            ...sleepCycleModel,
+                            biologicalOccurences: e,
+                        })
+                        setCanExit(false)
+                    }}
+                />
                 <Box.Column>
                     <Info
                         infoDescription="Cadastro de sonhos"
@@ -396,19 +154,25 @@ export default function CreateSleepScreen() {
                         ]}
                     />
                     <DreamAppender
-                        onChange={ (e) => setSleepCycleModel({ ...sleepCycleModel, dreams: e }) }
+                        onChange={ (e, isCreatingDream) => {
+                            setCanCreateSleepCycle(!isCreatingDream)
+                            setSleepCycleModel({ ...sleepCycleModel, dreams: e })
+                            setCanExit(false)
+                        }}
                     />
                 </Box.Column>
                 <Box.Column style={ styles.btns }>
                     <CustomButton
                         title="Criar Ciclo de Sono"
                         onPress={ () => createSleepCycle() }
-                        active={ canCreateSleepCycle }
+                        active={ canCreateSleepCycle && !isHoursPending }
                         important
                     />
                     <CustomButton
-                        title="Voltar"
-                        onPress={ () => router.navigate("/(tabs)/(sleeps)/sleepsList") }
+                        title={ canExit ? "Voltar" : "Cancelar Ciclo de Sono" }
+                        onPress={ () => router.back() }
+                        btnColor={ !canExit ? "red" : undefined }
+                        btnTextColor={ !canExit ? "red" : undefined }
                     />
                 </Box.Column>
             </Box.Column>
@@ -420,18 +184,6 @@ const styles = StyleSheet.create({
     container: {
         width: '100%',
         gap: 5,
-    },
-    sleepTimeContainer: {
-        justifyContent: "space-evenly",
-    },
-    sleepTimeIndividualContainer: {
-        alignItems: "center",
-    },
-    centerShowSwitches: {
-        alignItems: "center",
-    },
-    switches: {
-        paddingLeft: 20,
     },
     btns: {
         gap: 5,

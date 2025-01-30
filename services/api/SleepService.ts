@@ -1,4 +1,4 @@
-import { CreateSleepCycleRequest, CreateSleepCycleResponse, GetSleepRequest, GetSleepResponse, ListSleepByUserRequest, ListSleepByUserResponse, ListSleepsForDreamCreationRequest, ListSleepsForDreamCreationResponse } from "../../types/sleeps"
+import { CreateSleepCycleRequest, CreateSleepCycleResponse, DeleteSleepRequest, DeleteSleepResponse, GetSleepRequest, GetSleepResponse, ListSleepByUserRequest, ListSleepByUserResponse, ListSleepsForDreamCreationRequest, ListSleepsForDreamCreationResponse, UpdateSleepCycleRequest, UpdateSleepCycleResponse } from "../../types/sleeps"
 import Endpoints from "./base/Endpoints"
 
 export default abstract class SleepService extends Endpoints {
@@ -10,8 +10,12 @@ export default abstract class SleepService extends Endpoints {
         })
     }
 
-    static async Update() {
-
+    static async Update(online: boolean, request: UpdateSleepCycleRequest) {
+        return await this.Put<UpdateSleepCycleResponse>({
+            url: "/sleeps",
+            authorization: await this.GetAuthorization(),
+            body: { id: request.id, ...request.sleep },
+        })
     }
 
     static async GetSleep(online: boolean, request: GetSleepRequest) {
@@ -21,8 +25,11 @@ export default abstract class SleepService extends Endpoints {
         })
     }
 
-    static async DeleteSleep() {
-
+    static async DeleteSleep(online: boolean, request: DeleteSleepRequest) {
+        return await this.Delete<DeleteSleepResponse>({
+            url: `/sleeps/${ request.id }`,
+            authorization: await this.GetAuthorization(),
+        })
     }
 
     static async ListByUser(online: boolean, request: ListSleepByUserRequest) {

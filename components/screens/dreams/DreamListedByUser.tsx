@@ -3,7 +3,8 @@ import { DreamListedByUserType } from "@/types/dream"
 import { Text, Pressable, StyleSheet, StyleProp, ViewStyle } from "react-native"
 import { useRouter } from "expo-router"
 import Box from "@/components/base/Box"
-import React from "react"
+import IconEntypo from "react-native-vector-icons/Entypo"
+import React, { useState } from "react"
 
 type DreamListedByUserProps = {
     dream: DreamListedByUserType
@@ -11,6 +12,8 @@ type DreamListedByUserProps = {
     titleSize?: number
     containerStyle?: StyleProp<ViewStyle>
     sleepId?: number
+    redirectToTag?: boolean
+    isHiddenOrErotic?: boolean
 }
 
 export default function DreamListedByUser({
@@ -19,7 +22,10 @@ export default function DreamListedByUser({
     titleSize = 30,
     containerStyle = {},
     sleepId = undefined,
+    redirectToTag = true,
+    isHiddenOrErotic = false,
 }: DreamListedByUserProps) {
+    const [ showDream, setShowDream ] = useState<boolean>(!isHiddenOrErotic)
     const router = useRouter()
 
     const treatDate = () => {
@@ -29,9 +35,25 @@ export default function DreamListedByUser({
     const treatedDate = treatDate()
 
     const onDreamDatePress = () => {
-        if (sleepId) {
+        if (sleepId)
             router.navigate({ pathname: "/(tabs)/(sleeps)/getSleep", params: { id: sleepId }})
-        }
+    }
+
+    const onDreamTagPress = (title: string, id: number) => {
+        if (redirectToTag)
+            router.navigate({ pathname: "/getTag", params: { title: title, id: id } })
+    }
+
+    if (!showDream) {
+        return (
+            <Box.Row
+                style={ styles.hiddenOrEroticDreamContainer}
+                onPress={ () => setShowDream(true) }
+            >
+                <IconEntypo name="eye-with-line" size={ 20 } />
+                <Text>( sonho oculto ou erótico )</Text>
+            </Box.Row>
+        )
     }
 
     return (
@@ -54,7 +76,7 @@ export default function DreamListedByUser({
                 {
                     dream.tags.map((tag, i) => (
                         <Pressable
-                            onPress={ () => router.navigate({ pathname: "/getTag", params: { title: tag.title, id: tag.id } }) }
+                            onPress={ () => onDreamTagPress(tag.title, tag.id) }
                             key={ i }
                         >
                             <Text>{ tag.title }</Text>
@@ -78,5 +100,8 @@ const styles = StyleSheet.create({
     },
     tags: {
         gap: 10,
+    },
+    hiddenOrEroticDreamContainer: {
+        gap: 3,
     },
 })

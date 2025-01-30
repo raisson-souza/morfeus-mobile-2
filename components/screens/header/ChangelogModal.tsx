@@ -49,7 +49,7 @@ export default function ChangelogModal({
     ))
 
     return <Carousel
-        limit={ 2 }
+        limit={ 1 }
         components={ logs }
         visible={ open }
         setVisible={ setOpen }

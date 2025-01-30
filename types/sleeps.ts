@@ -87,3 +87,20 @@ export type CreateSleepCycleRequest = {
 }
 
 export type CreateSleepCycleResponse = string
+
+export type DeleteSleepRequest = {
+    id: number
+}
+
+export type DeleteSleepResponse = string
+
+export type UpdateSleepCycleModel = {
+    id: number
+} & CreateSleepCycleModel
+
+export type UpdateSleepCycleRequest = {
+    id: number
+    sleep: CreateSleepCycleRequest
+}
+
+export type UpdateSleepCycleResponse = string

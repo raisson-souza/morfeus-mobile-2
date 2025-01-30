@@ -6,6 +6,7 @@ import { TagModel } from "@/types/tag"
 import { useEffect, useState } from "react"
 import { useLocalSearchParams, useRouter } from "expo-router"
 import Box from "@/components/base/Box"
+import ConfirmRecordDeletion from "@/components/screens/general/ConfirmRecordDeletion"
 import CustomButton from "@/components/customs/CustomButton"
 import DreamService from "@/services/api/DreamService"
 import IconEntypo from "react-native-vector-icons/Entypo"
@@ -25,7 +26,7 @@ type GetDreamParams = {
 export default function GetDreamScreen() {
     const router = useRouter()
     const { id, sleepDate } = useLocalSearchParams<GetDreamParams>()
-    const { isConnectedRef: { current: isOnline }} = SyncContextProvider()
+    const { checkIsConnected } = SyncContextProvider()
     const [ dream, setDream ] = useState<DreamModel | null>(null)
     const [ tags, setTags ] = useState<TagModel[] | null>(null)
     const [ loading, setLoading ] = useState<boolean>(true)
@@ -33,7 +34,7 @@ export default function GetDreamScreen() {
 
     useEffect(() => {
         const fetchDream = async () => {
-            await DreamService.GetDream(isOnline, { id: Number.parseInt(id) })
+            await DreamService.GetDream(checkIsConnected(), { id: Number.parseInt(id) })
                 .then(response => {
                     if (response.Success) {
                         setDream(response.Data)
@@ -46,7 +47,7 @@ export default function GetDreamScreen() {
                 })
         }
         const fetchTags = async () => {
-            await TagService.ListByDream(isOnline, { dreamId: Number.parseInt(id) })
+            await TagService.ListByDream(checkIsConnected(), { dreamId: Number.parseInt(id) })
                 .then(response => {
                     if (response.Success) {
                         setTags(response.Data)
@@ -134,6 +135,44 @@ export default function GetDreamScreen() {
         }
     }
 
+    const renderDreamUpperInfo = () => {
+        return <Box.Column style={ styles.dreamUpperInfoContainer }>
+            {
+                dream!.hiddenDream
+                    ? <Box.Row style={ styles.iconAndMessageStyle }>
+                        <IconIon name="alert-circle-sharp" color="black" size={ 20 } />
+                        <Text>SONHO OCULTO</Text>
+                    </Box.Row>
+                    : <></>
+            }
+            {
+                dream!.dreamTypeId === 2
+                    ? <Box.Row style={ styles.iconAndMessageStyle }>
+                        <IconIon name="alert-circle-sharp" color="black" size={ 20 } />
+                        <Text>PESADELO</Text>
+                    </Box.Row>
+                    : <></>
+            }
+            {
+                dream!.eroticDream
+                    ? <Box.Row style={ styles.iconAndMessageStyle }>
+                        <IconIon name="alert-circle-sharp" color="black" size={ 20 } />
+                        <Text>SONHO ERÓTICO</Text>
+                    </Box.Row>
+                    : <></>
+            }
+        </Box.Column>
+    }
+
+    const renderDreamDate = () => {
+        if (sleepDate === "undefined-undefined-undefinedundefined") return <></>
+        return (
+            <Pressable onPress={ () => { router.navigate({ pathname: "/(tabs)/(sleeps)/getSleep", params: { id: dream!.sleepId }}) } }>
+                <Text style={ styles.dreamTitleDateText }>{ sleepDate }</Text>
+            </Pressable>
+        )
+    }
+
     const tagInfo = tags
         ? tags.length > 0
             ? `Lembra de quando sonhou com ${ tags[0].title }? Selecione essa tag abaixo (ou outra) e visualize os sonhos na qual ela também está presente!`
@@ -149,41 +188,15 @@ export default function GetDreamScreen() {
                         : dream
                             ? (
                                 <Box.Column style={ styles.dreamContainer }>
-                                    {
-                                        dream.hiddenDream
-                                            ? <View>
-                                                <IconIon name="alert-circle-sharp" color="black" size={ 20 } />
-                                                <Text>Esse sonho é oculto</Text>
-                                            </View>
-                                            : <></>
-                                    }
-                                    {
-                                        dream.dreamTypeId === 2
-                                            ? <Text>Pesadelo</Text>
-                                            : <></>
-                                    }
                                     <Box.Column>
-                                        {
-                                            dream.eroticDream
-                                                ? (
-                                                    <Box.Row style={ styles.iconAndMessageStyle }>
-                                                        <IconIon name="alert-circle-sharp" color="black" size={ 20 } />
-                                                        <Text>Sonho erótico</Text>
-                                                    </Box.Row>
-                                                )
-                                                : <></>
-                                        }
+                                        { renderDreamUpperInfo() }
                                         <Box.Row style={ styles.dreamTitleTextContainer }>
                                             <Text style={ styles.dreamTitleText }>{ dream.title }</Text>
                                             <Pressable onPress={ () => router.navigate({ pathname: "/updateDream", params: { id: id, sleepDate: sleepDate } }) }>
                                                 <IconIon name="pencil-sharp" color="black" size={ 30 } />
                                             </Pressable>
                                         </Box.Row>
-                                        <Pressable
-                                            onPress={ () => { router.navigate({ pathname: "/(tabs)/(sleeps)/getSleep", params: { id: dream.sleepId }}) } }
-                                        >
-                                            <Text style={ styles.dreamTitleDateText }>{ sleepDate }</Text>
-                                        </Pressable>
+                                        { renderDreamDate() }
                                     </Box.Column>
                                     <Text style={ styles.dreamDescription }>{ dream.description }</Text>
                                     <Box.Column style={ styles.tagsContainer }>
@@ -212,7 +225,7 @@ export default function GetDreamScreen() {
                                             }
                                         </Box.Row>
                                     </Box.Column>
-                                    <View>
+                                    <Box.Column style={ styles.dreamCharacteristicsContainer }>
                                         {
                                             dream.personalAnalysis
                                                 ? (
@@ -228,7 +241,7 @@ export default function GetDreamScreen() {
                                         }
                                         <Box.Row style={ styles.iconAndMessageStyle }>
                                             <IconIon name="rainy-sharp" color="black" size={ 20 } />
-                                            <Box.Row>
+                                            <Box.Row style={ styles.dreamClimates }>
                                                 <Text style={ styles.boldText }>Climas: </Text>
                                                 <Text>{ renderClimates() }</Text>
                                             </Box.Row>
@@ -269,7 +282,22 @@ export default function GetDreamScreen() {
                                             <IconIon name="information-circle" color="black" size={ 20 } />
                                             <Text style={ styles.boldText }>{ renderDreamOrigin() }</Text>
                                         </Box.Row>
-                                    </View>
+                                    </Box.Column>
+                                    <ConfirmRecordDeletion
+                                        deletionAction={ async () => {
+                                            setLoading(true)
+                                            await DreamService.DeleteDream(checkIsConnected(), { id: dream.id })
+                                                .then((response) => {
+                                                    if (response.Success) {
+                                                        alert(response.Data)
+                                                        router.navigate("/(tabs)/(dreams)/dreamsList")
+                                                        return
+                                                    }
+                                                    setLoading(false)
+                                                    alert(response.ErrorMessage)
+                                                })
+                                        }}
+                                    />
                                 </Box.Column>
                             )
                             : (
@@ -290,6 +318,7 @@ export default function GetDreamScreen() {
 const styles = StyleSheet.create({
     container: {
         width: '100%',
+        gap: 5,
     },
     dreamContainer: {
         gap: 5,
@@ -298,12 +327,17 @@ const styles = StyleSheet.create({
         gap: 3,
         alignItems: "center",
     },
+    dreamUpperInfoContainer: {
+        gap: 3,
+    },
     dreamTitleText: {
         fontSize: 35,
+        flexWrap: "wrap",
     },
     dreamTitleTextContainer: {
         gap: 15,
         alignItems: "center",
+        flexWrap: "wrap",
     },
     dreamTitleDateText: {
         fontSize: 18,
@@ -349,5 +383,12 @@ const styles = StyleSheet.create({
     },
     errorOnFetchDream: {
         paddingBottom: 15,
+    },
+    dreamCharacteristicsContainer: {
+        gap: 5,
+        flexWrap: "wrap",
+    },
+    dreamClimates: {
+        flexWrap: "wrap",
     },
 })

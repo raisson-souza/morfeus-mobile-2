@@ -12,7 +12,7 @@ type TimePickerProps = {
 export default function TimePicker({ onChange, time, buttonProps }: TimePickerProps) {
     const openTimePicker = () => {
         DateTimePickerAndroid.open({
-            value: time,
+            value: DateFormatter.increaseTime(3, time.getTime()),
             onChange: (event, date) => {
                 if (event.type === "set") {
                     if (date) {
