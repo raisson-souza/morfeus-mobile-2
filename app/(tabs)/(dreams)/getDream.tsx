@@ -225,20 +225,20 @@ export default function GetDreamScreen() {
                                             }
                                         </Box.Row>
                                     </Box.Column>
+                                    {
+                                        dream.personalAnalysis
+                                            ? (
+                                                <Box.Column style={ styles.personalAnalysisContainer }>
+                                                    <Box.Row style={ styles.iconAndMessageStyle }>
+                                                        <IconIon name="person-outline" color="black" size={ 20 } />
+                                                        <Text style={ styles.personalAnalysisText }>Análise pessoal:</Text>
+                                                    </Box.Row>
+                                                    <Text style={ styles.personalAnalysisText }>{ dream.personalAnalysis }</Text>
+                                                </Box.Column>
+                                            )
+                                            : <></>
+                                    }
                                     <Box.Column style={ styles.dreamCharacteristicsContainer }>
-                                        {
-                                            dream.personalAnalysis
-                                                ? (
-                                                    <Box.Column style={ styles.personalAnalysisContainer }>
-                                                        <Box.Row style={ styles.iconAndMessageStyle }>
-                                                            <IconIon name="person-outline" color="black" size={ 20 } />
-                                                            <Text style={ styles.personalAnalysisText }>Análise pessoal:</Text>
-                                                        </Box.Row>
-                                                        <Text style={ styles.personalAnalysisText }>{ dream.personalAnalysis }</Text>
-                                                    </Box.Column>
-                                                )
-                                                : <></>
-                                        }
                                         <Box.Row style={ styles.iconAndMessageStyle }>
                                             <IconIon name="rainy-sharp" color="black" size={ 20 } />
                                             <Box.Row style={ styles.dreamClimates }>
@@ -386,7 +386,6 @@ const styles = StyleSheet.create({
     },
     dreamCharacteristicsContainer: {
         gap: 5,
-        flexWrap: "wrap",
     },
     dreamClimates: {
         flexWrap: "wrap",
