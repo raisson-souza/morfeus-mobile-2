@@ -8,11 +8,12 @@ type Update = {
 const CHANGELOG: Update[] = [
     {
         version: "1.2.0",
-        date: "29/01/2025",
+        date: "30/01/2025",
         title: "Exclusão e Edição de Registros",
         description: [
             "Implementada exclusão e edição de registros",
             "Listagem de sonhos ao visualizar um ciclo de sono",
+            "Melhorias de interface e comportamento",
         ],
     },
     {
