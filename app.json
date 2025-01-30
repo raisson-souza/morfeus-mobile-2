@@ -2,7 +2,7 @@
   "expo": {
     "name": "Morfeus",
     "slug": "morfeus",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "description": "Uma aplicação que realiza o controle do ciclo do sono e gerenciamento de sonhos.",
     "orientation": "portrait",
     "icon": "./assets/images/morfeus_logo.png",
@@ -15,7 +15,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/morfeus_logo.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.raissonrai.morfeus"
@@ -30,7 +30,7 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
+          "image": "./assets/images/morfeus_logo.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
