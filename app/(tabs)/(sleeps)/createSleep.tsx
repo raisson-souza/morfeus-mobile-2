@@ -6,6 +6,7 @@ import { DefaultSleepHumor } from "@/types/sleepHumor"
 import { Screen } from "@/components/base/Screen"
 import { StyleSheet } from "react-native"
 import { SyncContextProvider } from "@/contexts/SyncContext"
+import { useCustomBackHandler } from "@/hooks/useHardwareBackPress"
 import { useEffect, useRef, useState } from "react"
 import { useNavigation, useRouter } from "expo-router"
 import BiologicalOccurencesForm from "@/components/screens/sleeps/BiologicalOccurencesForm"
@@ -34,21 +35,30 @@ export default function CreateSleepScreen() {
     const navigation = useNavigation()
     const { checkIsConnected } = SyncContextProvider()
     const [ sleepCycleModel, setSleepCycleModel ] = useState<CreateSleepCycleModel>(defaultSleepCycleModel)
-    const [ canCreateSleepCycle, setCanCreateSleepCycle ] = useState<boolean>(false)
+    const [ isHoursPending, setIsHoursPending ] = useState<boolean>(true)
+    const [ canCreateSleepCycle, setCanCreateSleepCycle ] = useState<boolean>(true)
     const sleepCycleCreationActionsRef = useRef<number>(0)
+    const [ canExit, setCanExit ] = useState<boolean>(true)
 
     useEffect(() => {
         return navigation.addListener("blur", () => {
             sleepCycleCreationActionsRef.current = 0
             setSleepCycleModel(defaultSleepCycleModel)
-            setCanCreateSleepCycle(false)
+            setCanCreateSleepCycle(true)
+            setCanExit(true)
         })
     }, [])
 
+    useCustomBackHandler({
+        canExit: canExit,
+    })
+
     const increaseSleepCycleCreationActions = () => {
         sleepCycleCreationActionsRef.current += 1
-        if (sleepCycleCreationActionsRef.current === 2)
-            setCanCreateSleepCycle(true)
+        if (sleepCycleCreationActionsRef.current === 2) {
+            setIsHoursPending(false)
+            setCanExit(false)
+        }
     }
 
     const createSleepCycle = async () => {
@@ -104,25 +114,34 @@ export default function CreateSleepScreen() {
                 <HumorsForm
                     title="Humores ao dormir"
                     value={ sleepCycleModel.layDownHumor }
-                    onChange={ (e) => setSleepCycleModel({
-                        ...sleepCycleModel,
-                        layDownHumor: e,
-                    })}
+                    onChange={ (e) => {
+                        setSleepCycleModel({
+                            ...sleepCycleModel,
+                            layDownHumor: e,
+                        })
+                        setCanExit(false)
+                    }}
                 />
                 <HumorsForm
                     title="Humores ao acordar"
                     value={ sleepCycleModel.wakeUpHumor }
-                    onChange={ (e) => setSleepCycleModel({
-                        ...sleepCycleModel,
-                        wakeUpHumor: e,
-                    })}
+                    onChange={ (e) => {
+                        setSleepCycleModel({
+                            ...sleepCycleModel,
+                            wakeUpHumor: e,
+                        })
+                        setCanExit(false)
+                    }}
                 />
                 <BiologicalOccurencesForm
                     value={ sleepCycleModel.biologicalOccurences }
-                    onChange={ (e) => setSleepCycleModel({
-                        ...sleepCycleModel,
-                        biologicalOccurences: e,
-                    })}
+                    onChange={ (e) => {
+                        setSleepCycleModel({
+                            ...sleepCycleModel,
+                            biologicalOccurences: e,
+                        })
+                        setCanExit(false)
+                    }}
                 />
                 <Box.Column>
                     <Info
@@ -135,19 +154,25 @@ export default function CreateSleepScreen() {
                         ]}
                     />
                     <DreamAppender
-                        onChange={ (e) => setSleepCycleModel({ ...sleepCycleModel, dreams: e }) }
+                        onChange={ (e, isCreatingDream) => {
+                            setCanCreateSleepCycle(!isCreatingDream)
+                            setSleepCycleModel({ ...sleepCycleModel, dreams: e })
+                            setCanExit(false)
+                        }}
                     />
                 </Box.Column>
                 <Box.Column style={ styles.btns }>
                     <CustomButton
                         title="Criar Ciclo de Sono"
                         onPress={ () => createSleepCycle() }
-                        active={ canCreateSleepCycle }
+                        active={ canCreateSleepCycle && !isHoursPending }
                         important
                     />
                     <CustomButton
-                        title="Voltar"
-                        onPress={ () => router.navigate("/(tabs)/(sleeps)/sleepsList") }
+                        title={ canExit ? "Voltar" : "Cancelar Ciclo de Sono" }
+                        onPress={ () => router.back() }
+                        btnColor={ !canExit ? "red" : undefined }
+                        btnTextColor={ !canExit ? "red" : undefined }
                     />
                 </Box.Column>
             </Box.Column>

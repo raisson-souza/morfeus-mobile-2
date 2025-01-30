@@ -3,6 +3,7 @@ import { DateFormatter } from "@/utils/DateFormatter"
 import { Screen } from "@/components/base/Screen"
 import { StyleSheet } from "react-native"
 import { SyncContextProvider } from "@/contexts/SyncContext"
+import { useCustomBackHandler } from "@/hooks/useHardwareBackPress"
 import { useEffect, useState } from "react"
 import { useNavigation, useRouter } from "expo-router"
 import Box from "@/components/base/Box"
@@ -54,6 +55,7 @@ export default function CreateDreamScreen() {
     })
     const [ sleepId, setSleepId ] = useState<number | null>(null)
     const [ loading, setLoading ] = useState<boolean>(false)
+    const [ canExit, setCanExit] = useState<boolean>(true)
 
     useEffect(() => {
         return navigation.addListener("blur", () => {
@@ -63,8 +65,13 @@ export default function CreateDreamScreen() {
                 dreamNoSleepTimeKnown: null,
             })
             setSleepId(null)
+            setCanExit(true)
         })
     }, [])
+
+    useCustomBackHandler({
+        canExit: canExit,
+    })
 
     const createDream = async () => {
         setLoading(true)
@@ -114,7 +121,10 @@ export default function CreateDreamScreen() {
                 />
                 <CreateCompleteDream
                     dream={ dreamModel }
-                    onChange={ (e) => setDreamModel(e) }
+                    onChange={ (e) => {
+                        setDreamModel(e)
+                        setCanExit(false)
+                    }}
                     isLocked={ loading }
                 />
                 <Info
@@ -137,13 +147,10 @@ export default function CreateDreamScreen() {
                         />
                 }
                 <CustomButton
-                    title="Voltar"
-                    onPress={ () => {
-                        if (router.canGoBack())
-                            router.back()
-                        else
-                            router.navigate("/")
-                    }}
+                    title={ canExit ? "Voltar" : "Cancelar Sonho" }
+                    onPress={ () => router.back() }
+                    btnColor={ !canExit ? "red" : undefined }
+                    btnTextColor={ !canExit ? "red" : undefined }
                     active={ !loading }
                 />
             </Box.Column>
