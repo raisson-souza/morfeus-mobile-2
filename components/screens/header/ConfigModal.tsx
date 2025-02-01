@@ -7,6 +7,7 @@ import Box from "@/components/base/Box"
 import CustomButton from "@/components/customs/CustomButton"
 import CustomModal from "@/components/customs/CustomModal"
 import Support from "./Support"
+import TutorialModal from "../general/TutorialModal"
 
 type ConfigModalProps = {
     open: boolean
@@ -21,6 +22,7 @@ export default function ConfigModal({
     const { logoff } = AuthContextProvider()
     const [ openSuggestionsModal, setOpenSuggestionsModal ] = useState<boolean>(false)
     const [ openAppInfoModal, setOpenAppInfoModal ] = useState<boolean>(false)
+    const [ tutorialModalOpen, setTutorialModalOpen ] = useState<boolean>(false)
 
     const logoffAction = async () => {
         await logoff()
@@ -33,6 +35,12 @@ export default function ConfigModal({
             setVisible={ setOpen }
         >
             <Box.Center style={ styles.modal }>
+                <TutorialModal 
+                    open={ tutorialModalOpen }
+                    setOpen={ setTutorialModalOpen }
+                    dbRecord={ false }
+                    canOutsideClick={ true }
+                />
                 <Support
                     open={ openSuggestionsModal }
                     setOpen={ setOpenSuggestionsModal }
@@ -49,6 +57,11 @@ export default function ConfigModal({
                 <CustomButton
                     title="INFORMAÇÕES"
                     onPress={ () => setOpenAppInfoModal(true) }
+                    btnTextColor="white"
+                />
+                <CustomButton
+                    title="TUTORIAL"
+                    onPress={ () => setTutorialModalOpen(true) }
                     btnTextColor="white"
                 />
                 <CustomButton
