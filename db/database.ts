@@ -23,20 +23,24 @@ export default async function SqliteDbManager(db: SQLiteDatabase): Promise<void>
 
         // O banco está devidamente atualizado
         if (userVersion >= DATABASE_VERSION) {
-            // console.log(`BANCO DE DADOS JÁ ATUALIZADO v${ DATABASE_VERSION }`)
             return
         }
 
-        // console.log(`BANCO DE DADOS ${ userVersion } / ${ DATABASE_VERSION }.`)
         let newUserVersion = userVersion
 
         if (newUserVersion === 0) {
-            // POPULAR BANCO DE DADOS COM TABELAS DA VERSÃO 1 (utilizar transaction)
-            // newUserVersion = 1
+            db.execAsync(`
+                CREATE TABLE PARAMS (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    tutorial_read BOOLEAN NOT NULL DEFAULT 0
+                );
+                INSERT INTO params (tutorial_read) VALUES (0);
+            `)
+            newUserVersion = 1
         }
 
         if (newUserVersion === 1) {
-            // POPULAR BANCO DE DADOS COM TABELAS DA VERSÃO 2 (utilizar transaction)
+            /// ...
             // newUserVersion = 2
         }
 
