@@ -116,15 +116,19 @@ export default function DreamsList() {
         <Screen>
             <Box.Center style={ styles.container }>
                 <MonthExtractorHeader
-                    monthExtractorProps={{
-                        initialDate: date,
-                        onChange: async (e) => { await changeMonth(e) },
-                    }}
-                    firstCustomActionBtnTitle="Criar Sonho"
-                    firstCustomActionBtnAction={ () => router.navigate('/(tabs)/(dreams)/createDream') }
+                    defaultDate={ date }
+                    onChange={ async (e) => await changeMonth(e) }
                     routerBtnRouterAction={ () => router.navigate('/(tabs)/(dreams)/dreamsHome') }
-                    secondCustomActionBtnTitle="Atualizar"
-                    secondCustomActionBtnAction={ async () => await fetchDreams() }
+                    firstCustomBtn={{
+                        title: "Criar Sonho",
+                        action: () => router.navigate('/(tabs)/(dreams)/createDream'),
+                        active: true,
+                    }}
+                    secondCustomBtn={{
+                        title: "Atualizar",
+                        action: async () => await fetchDreams(),
+                        active: true,
+                    }}
                 />
                 {
                     dreamList

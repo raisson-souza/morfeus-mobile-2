@@ -247,14 +247,14 @@ export default function ListDreamsAnalysisScreen() {
         <Screen>
             <Box.Column style={ styles.container }>
                 <MonthExtractorHeader
-                    monthExtractorProps={{
-                        initialDate: date,
-                        onChange: async (e) => await updateDate(e),
-                    }}
-                    firstCustomActionBtnTitle="Atualizar"
-                    firstCustomActionBtnAction={ async () => await refreshAnalysis() }
-                    isFirstCustomActionBtnActive={ !disableFetchActions.get || !disableFetchActions.create }
+                    defaultDate={ date }
+                    onChange={ async (e) => await updateDate(e) }
                     routerBtnRouterAction={ () => router.navigate("/(tabs)/(analysis)/analysisHome") }
+                    firstCustomBtn={{
+                        title: "Atualizar",
+                        action: async () => await refreshAnalysis(),
+                        active: !disableFetchActions.get || !disableFetchActions.create,
+                    }}
                 />
                 {
                     loading

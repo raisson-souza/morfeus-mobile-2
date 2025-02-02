@@ -9,6 +9,7 @@ export type MonthExtractorProps = {
     onChange: (date: Date) => void
 }
 
+/** **DEPRECATED** */
 export default function MonthExtractor({
     initialDate,
     onChange,
