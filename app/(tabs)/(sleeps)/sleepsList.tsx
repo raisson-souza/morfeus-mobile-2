@@ -79,11 +79,9 @@ export default function SleepsListScreen() {
         <Screen>
             <Box.Column style={ styles.container }>
                 <MonthExtractorHeader
-                    monthExtractorProps={{
-                        initialDate: date,
-                        onChange: (e) => { setDate(e) },
-                    }}
-                    firstCustomActionBtnTitle="Criar Ciclo de Sono"
+                    defaultDate={ date }
+                    onChange={ (e) => setDate(e) }
+                    firstCustomActionBtnTitle="Criar Sono"
                     firstCustomActionBtnAction={ () => router.navigate('/(tabs)/(sleeps)/createSleep') }
                     routerBtnRouterAction={ () => router.navigate('/(tabs)/(sleeps)/sleepsHome') }
                     secondCustomActionBtnTitle="Atualizar"

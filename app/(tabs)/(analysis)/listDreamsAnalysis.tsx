@@ -247,10 +247,8 @@ export default function ListDreamsAnalysisScreen() {
         <Screen>
             <Box.Column style={ styles.container }>
                 <MonthExtractorHeader
-                    monthExtractorProps={{
-                        initialDate: date,
-                        onChange: async (e) => await updateDate(e),
-                    }}
+                    defaultDate={ date }
+                    onChange={ async (e) => await updateDate(e) }
                     firstCustomActionBtnTitle="Atualizar"
                     firstCustomActionBtnAction={ async () => await refreshAnalysis() }
                     isFirstCustomActionBtnActive={ !disableFetchActions.get || !disableFetchActions.create }

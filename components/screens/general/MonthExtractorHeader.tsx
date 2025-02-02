@@ -1,11 +1,14 @@
 import { StyleSheet } from "react-native"
 import Box from "@/components/base/Box"
 import CustomButton from "@/components/customs/CustomButton"
-import MonthExtractor, { MonthExtractorProps } from "./MonthExtractor"
-import React from "react"
+import MonthParser from "@/utils/MonthParser"
+import MonthYearExtractor from "@/components/customs/MonthYearExtractor"
+import React, { useState } from "react"
+import TextBold from "@/components/base/TextBold"
 
 type MonthExtractorHeaderProps = {
-    monthExtractorProps: MonthExtractorProps
+    onChange: (e: Date) => void
+    defaultDate: Date
     routerBtnRouterAction: () => void
     firstCustomActionBtnTitle: string
     firstCustomActionBtnAction: () => void
@@ -16,18 +19,36 @@ type MonthExtractorHeaderProps = {
 }
 
 export default function MonthExtractorHeader({
-    monthExtractorProps,
+    onChange,
+    defaultDate,
     routerBtnRouterAction,
     firstCustomActionBtnTitle,
     firstCustomActionBtnAction,
     isFirstCustomActionBtnActive = true,
     secondCustomActionBtnTitle,
     secondCustomActionBtnAction = () => {},
-    isSecondCustomActionBtnActive = true
+    isSecondCustomActionBtnActive = true,
 }: MonthExtractorHeaderProps) {
+    const [ open, setOpen ] = useState<boolean>(false)
+
     return (
         <Box.Row style={ styles.container }>
-            <MonthExtractor { ...monthExtractorProps } />
+            <MonthYearExtractor
+                open={ open }
+                setOpen={ setOpen }
+                defaultMonth={ defaultDate.getMonth() + 1 }
+                defaultYear={ defaultDate.getFullYear()} 
+                onChange={ (e) => onChange(e) }
+            />
+            <Box.Column style={ styles.dateContainer }>
+                <TextBold style={ styles.dateText }>
+                    { `${ MonthParser(defaultDate.getMonth() + 1) } ${ defaultDate.getFullYear() }` }
+                </TextBold>
+                <CustomButton
+                    title="Selecionar Mês"
+                    onPress={ () => setOpen(true) }
+                />
+            </Box.Column>
             <Box.Column style={ styles.btns }>
                 <CustomButton
                     title="Ver Mais"
@@ -56,10 +77,17 @@ export default function MonthExtractorHeader({
 const styles = StyleSheet.create({
     container: {
         width: "100%",
-        justifyContent: 'space-between',
+        justifyContent: 'space-around',
         alignItems: "center",
     },
     btns: {
         gap: 5,
+        width: "45%",
+    },
+    dateContainer: {
+        gap: 5,
+    },
+    dateText: {
+        fontSize: 20,
     },
 })
