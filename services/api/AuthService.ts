@@ -15,5 +15,11 @@ export default abstract class AuthService extends Endpoints {
             url: "/users/login",
             body: body,
         })
+            .then(response => {
+                if (response.ErrorMessage === "Acesso não autorizado. Por favor, reinicie a aplicação e faça login novamente.") {
+                    response.ErrorMessage = "Credenciais inválidas."
+                }
+                return response
+            })
     }
 }
