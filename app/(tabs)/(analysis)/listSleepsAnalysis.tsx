@@ -266,10 +266,12 @@ export default function ListSleepsAnalysisScreen() {
                 <MonthExtractorHeader
                     defaultDate={ date }
                     onChange={ async (e) => await updateDate(e) }
-                    firstCustomActionBtnTitle="Atualizar"
-                    firstCustomActionBtnAction={ async () => await refreshAnalysis() }
-                    isFirstCustomActionBtnActive={ !disableFetchActions.get || !disableFetchActions.create }
                     routerBtnRouterAction={ () => router.navigate("/(tabs)/(analysis)/analysisHome") }
+                    firstCustomBtn={{
+                        title: "Atualizar",
+                        action: async () => await refreshAnalysis(),
+                        active: !disableFetchActions.get || !disableFetchActions.create,
+                    }}
                 />
                 {
                     loading

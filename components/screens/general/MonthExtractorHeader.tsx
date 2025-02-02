@@ -6,28 +6,26 @@ import MonthYearExtractor from "@/components/customs/MonthYearExtractor"
 import React, { useState } from "react"
 import TextBold from "@/components/base/TextBold"
 
+type CustomBtn = {
+    title: string
+    active: boolean
+    action: () => void
+}
+
 type MonthExtractorHeaderProps = {
     onChange: (e: Date) => void
     defaultDate: Date
     routerBtnRouterAction: () => void
-    firstCustomActionBtnTitle: string
-    firstCustomActionBtnAction: () => void
-    isFirstCustomActionBtnActive?: boolean
-    secondCustomActionBtnTitle?: string
-    secondCustomActionBtnAction?: () => void
-    isSecondCustomActionBtnActive?: boolean
+    firstCustomBtn: CustomBtn
+    secondCustomBtn?: CustomBtn
 }
 
 export default function MonthExtractorHeader({
     onChange,
     defaultDate,
     routerBtnRouterAction,
-    firstCustomActionBtnTitle,
-    firstCustomActionBtnAction,
-    isFirstCustomActionBtnActive = true,
-    secondCustomActionBtnTitle,
-    secondCustomActionBtnAction = () => {},
-    isSecondCustomActionBtnActive = true,
+    firstCustomBtn,
+    secondCustomBtn,
 }: MonthExtractorHeaderProps) {
     const [ open, setOpen ] = useState<boolean>(false)
 
@@ -55,18 +53,18 @@ export default function MonthExtractorHeader({
                     onPress={ () => routerBtnRouterAction() }
                 />
                 {
-                    secondCustomActionBtnTitle
+                    secondCustomBtn
                         ? <CustomButton
-                            title={ secondCustomActionBtnTitle }
-                            onPress={ () => secondCustomActionBtnAction() }
-                            active={ isSecondCustomActionBtnActive }
+                            title={ secondCustomBtn.title }
+                            onPress={ () => secondCustomBtn.action() }
+                            active={ secondCustomBtn.active }
                         />
                         : <></>
                 }
                 <CustomButton
-                    title={ firstCustomActionBtnTitle }
-                    onPress={ () => firstCustomActionBtnAction() }
-                    active={ isFirstCustomActionBtnActive }
+                    title={ firstCustomBtn.title }
+                    onPress={ () => firstCustomBtn.action() }
+                    active={ firstCustomBtn.active }
                     important
                 />
             </Box.Column>
