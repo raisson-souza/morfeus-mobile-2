@@ -6,17 +6,17 @@ import CustomSwitch from "@/components/customs/CustomSwitch"
 import CustomText from "@/components/customs/CustomText"
 
 export default function StyleSwitcher() {
-    const { style, switchStyle } = StyleContextProvider()
-    const [ styleName, setStyle ] = useState<"dark" | "light">(style.styleName === "default"
+    const { systemStyle, switchSystemStyle } = StyleContextProvider()
+    const [ styleName, setStyle ] = useState<"dark" | "light">(systemStyle.styleName === "default"
         ? "light"
-        : style.styleName === "light"
+        : systemStyle.styleName === "light"
             ? "light"
             : "dark"
     )
 
     const switchStyleAction = async (e: boolean) => {
         setStyle(e ? "dark" : "light")
-        await switchStyle(e ? "dark" : "light")
+        await switchSystemStyle(e ? "dark" : "light")
     }
 
     return (
@@ -43,7 +43,7 @@ export default function StyleSwitcher() {
                     isOpposite
                     size="s"
                     weight="thin"
-                    _style={{ paddingLeft: 15 }}
+                    style={{ paddingLeft: 15 }}
                 >Escuro</CustomText>
             </Box.Row>
         </Box.Column>
@@ -56,5 +56,5 @@ const styles = StyleSheet.create({
     },
     switch: {
         alignItems: "center",
-    }
+    },
 })

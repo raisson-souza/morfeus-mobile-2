@@ -9,8 +9,8 @@ type StyleContextProps = {
 }
 
 type StyleContext = {
-    style: Style
-    switchStyle: (style: "dark" | "light") => Promise<void>
+    systemStyle: Style
+    switchSystemStyle: (style: "dark" | "light") => Promise<void>
 }
 
 const StyleContext = createContext<StyleContext | null>(null)
@@ -19,13 +19,13 @@ const StyleContext = createContext<StyleContext | null>(null)
 export default function StyleContextComponent({ children }: StyleContextProps) {
     const db = useSQLiteContext()
     const [ loading, setLoading ] = useState<boolean>(true)
-    const [ style, setStyle ] = useState<Style>(DarkStyle)
+    const [ systemStyle, setSystemStyle ] = useState<Style>(DarkStyle)
 
     const fetchStyle = async () => {
         await db.getFirstAsync<{ is_dark_style: number }>('SELECT is_dark_style FROM PARAMS')
             .then(result => {
                 if (result) {
-                    switchStyle(result.is_dark_style ? "dark" : "light")
+                    switchSystemStyle(result.is_dark_style ? "dark" : "light")
                     setLoading(false)
                 }
             })
@@ -35,17 +35,17 @@ export default function StyleContextComponent({ children }: StyleContextProps) {
         fetchStyle()
     }, [])
 
-    const switchStyle = async (_style: "dark" | "light") => {
+    const switchSystemStyle = async (_style: "dark" | "light") => {
         await db.runAsync(`UPDATE PARAMS SET is_dark_style = ${ _style === "dark" ? "1" : "0" }`)
-        setStyle(_style === "dark" ? DarkStyle : LightStyle)
+        setSystemStyle(_style === "dark" ? DarkStyle : LightStyle)
     }
 
     if (loading) return <DefaultLoadingScreen />
 
     return (
         <StyleContext.Provider value={{
-            style,
-            switchStyle,
+            systemStyle,
+            switchSystemStyle,
         }}>
             { children }
         </StyleContext.Provider>

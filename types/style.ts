@@ -15,7 +15,7 @@ export type Style = {
     textColor: string
     oppositeTextColor: string
 
-    iconsColor: string
+    iconColor: string
     oppositeIconColor: string
 
     btnOutlineColor: string
