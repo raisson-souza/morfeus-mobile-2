@@ -1,9 +1,9 @@
+import { GetStackStyle } from "@/data/layout"
 import { SQLiteProvider } from "expo-sqlite"
 import { Stack } from "expo-router"
 import { StatusBar } from 'expo-status-bar'
 import AuthContextComponent from "@/contexts/AuthContext"
 import InitialContextComponent from "@/contexts/InitialContext"
-import LayoutStyles from "@/styles/layouts"
 import React from "react"
 import SqliteDbManager from "@/db/database"
 import StyleContextComponent from "@/contexts/StyleContext"
@@ -25,7 +25,7 @@ export default function RootLayout() {
             <SyncContextComponent>
               <Stack
                 initialRouteName='index'
-                screenOptions={ LayoutStyles.stack }
+                screenOptions={ GetStackStyle() }
               >
                 <Stack.Screen
                   name='index'

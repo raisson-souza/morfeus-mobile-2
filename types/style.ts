@@ -4,6 +4,7 @@ export type Style = {
     backgroundColor: string
 
     headerBackgroundColor: string
+    headerTextColor: string
     headerTextSize: number
 
     footerBackgroundColor: string

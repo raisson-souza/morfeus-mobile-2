@@ -1,18 +1,14 @@
+import { GetTabStyle } from "@/data/layout"
 import { Tabs } from "expo-router"
 import AuthRoute from "@/components/auth/Auth"
-import Header from "@/components/base/Header"
 import IconIonicons from "react-native-vector-icons/Ionicons"
-import LayoutStyles from "@/styles/layouts"
 
 export default function RootLayout() {
     return (
         <AuthRoute>
             <Tabs
                 initialRouteName='home'
-                screenOptions={{
-                    ...LayoutStyles.tabs,
-                    header: () => { return <Header /> },
-                }}
+                screenOptions={ GetTabStyle() }
             >
                 <Tabs.Screen
                     name='home'
