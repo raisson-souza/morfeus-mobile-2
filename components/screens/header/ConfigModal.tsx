@@ -6,6 +6,7 @@ import AppInfo from "./AppInfo"
 import Box from "@/components/base/Box"
 import CustomButton from "@/components/customs/CustomButton"
 import CustomModal from "@/components/customs/CustomModal"
+import StyleSwitcher from "./StyleSwitcher"
 import Support from "./Support"
 import TutorialModal from "../general/TutorialModal"
 
@@ -74,6 +75,7 @@ export default function ConfigModal({
                     onPress={ () => setOpen(false) }
                     btnTextColor="white"
                 />
+                <StyleSwitcher />
             </Box.Center>
         </CustomModal>
     )

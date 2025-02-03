@@ -20,14 +20,14 @@ const defaultStyle: Style = {
     terciary: "#fff",
     headerTextSize: 23,
     footerTextSize: 23,
-    smallTextFontSize: 15,
-    normalTextFontSize: 17,
-    largeTextFontSize: 19,
+    smallTextSize: 16,
+    normalTextSize: 18,
+    largeTextSize: 20,
+    extraLargeTextSize: 22,
     extraLargeIconSize: 21,
     smallIconSize: 16,
     normalIconSize: 18,
     largeIconSize: 20,
-    extraLargeTextFontSize: 22,
 }
 
 const DarkStyle: Style = {

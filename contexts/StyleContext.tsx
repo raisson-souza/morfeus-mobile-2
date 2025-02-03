@@ -10,7 +10,7 @@ type StyleContextProps = {
 
 type StyleContext = {
     style: Style
-    switchStyle: (style: "dark" | "light") => void
+    switchStyle: (style: "dark" | "light") => Promise<void>
 }
 
 const StyleContext = createContext<StyleContext | null>(null)

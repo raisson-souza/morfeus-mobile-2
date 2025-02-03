@@ -1,5 +1,5 @@
 export type Style = {
-    styleName: string
+    styleName: "default" | "dark" | "light"
 
     backgroundColor: string
 
@@ -26,10 +26,10 @@ export type Style = {
     secondary: string
     terciary: string
 
-    smallTextFontSize: number
-    normalTextFontSize: number
-    largeTextFontSize: number
-    extraLargeTextFontSize: number
+    smallTextSize: number
+    normalTextSize: number
+    largeTextSize: number
+    extraLargeTextSize: number
 
     smallIconSize: number
     normalIconSize: number
