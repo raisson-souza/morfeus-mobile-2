@@ -6,6 +6,7 @@ import InitialContextComponent from "@/contexts/InitialContext"
 import LayoutStyles from "@/styles/layouts"
 import React from "react"
 import SqliteDbManager from "@/db/database"
+import StyleContextComponent from "@/contexts/StyleContext"
 import SyncContextComponent from "@/contexts/SyncContext"
 
 export default function RootLayout() {
@@ -14,37 +15,39 @@ export default function RootLayout() {
       databaseName="database.db"
       onInit={ SqliteDbManager }
     >
-      <InitialContextComponent>
+      <StyleContextComponent>
+        <InitialContextComponent>
         <StatusBar
           backgroundColor="darkblue"
           translucent={ false }
         />
-        <AuthContextComponent>
-          <SyncContextComponent>
-            <Stack
-              initialRouteName='index'
-              screenOptions={ LayoutStyles.stack }
-            >
-              <Stack.Screen
-                name='index'
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen
-                name='(tabs)'
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen
-                name='login'
-                options={{ title: "Login" }}
-              />
-              <Stack.Screen
-                name='registry'
-                options={{ title: "Registre-se" }}
-              />
-            </Stack>
-          </SyncContextComponent>
-        </AuthContextComponent>
-      </InitialContextComponent>
+          <AuthContextComponent>
+            <SyncContextComponent>
+              <Stack
+                initialRouteName='index'
+                screenOptions={ LayoutStyles.stack }
+              >
+                <Stack.Screen
+                  name='index'
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name='(tabs)'
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name='login'
+                  options={{ title: "Login" }}
+                />
+                <Stack.Screen
+                  name='registry'
+                  options={{ title: "Registre-se" }}
+                />
+              </Stack>
+            </SyncContextComponent>
+          </AuthContextComponent>
+        </InitialContextComponent>
+      </StyleContextComponent>
     </SQLiteProvider>
   )
 }
