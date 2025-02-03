@@ -1,10 +1,7 @@
-import { CustomImage } from "@/components/customs/CustomImage"
 import { DarkStyle, LightStyle } from "@/data/style"
-import { Screen } from "../components/base/Screen"
 import { Style } from "@/types/style"
-import { StyleSheet } from "react-native"
 import { useSQLiteContext } from "expo-sqlite"
-import { View } from "react-native"
+import DefaultLoadingScreen from "@/components/screens/general/DefaultLoadingScreen"
 import React, { createContext, useContext, useEffect, useState } from "react"
 
 type StyleContextProps = {
@@ -43,15 +40,7 @@ export default function StyleContextComponent({ children }: StyleContextProps) {
         setStyle(_style === "dark" ? DarkStyle : LightStyle)
     }
 
-    if (loading) {
-        return (
-            <Screen flex>
-                <View style={ styles.logo }>
-                    <CustomImage.Local filePathByRequire={ require('../assets/images/morfeus_logo.png') } />
-                </View>
-            </Screen>
-        )
-    }
+    if (loading) return <DefaultLoadingScreen />
 
     return (
         <StyleContext.Provider value={{
@@ -68,13 +57,3 @@ export function StyleContextProvider() {
     if (!context) throw new Error("StyleContext chamado fora do provider.")
     return context
 }
-
-const styles = StyleSheet.create({
-    logo: {
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "center",
-        alignItems: "center",
-        gap: 5,
-    },
-})

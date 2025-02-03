@@ -1,7 +1,4 @@
-import { CustomImage } from "@/components/customs/CustomImage"
-import { Screen } from "../components/base/Screen"
-import { StyleSheet } from "react-native"
-import { View } from "react-native"
+import DefaultLoadingScreen from "@/components/screens/general/DefaultLoadingScreen"
 import React, { createContext, useContext, useEffect, useRef, useState } from "react"
 
 type InitialContextProps = {
@@ -25,15 +22,7 @@ export default function InitialContextComponent({ children }: InitialContextProp
         initialLoadIntervalRef.current = interval
     }, [])
 
-    if (loading) {
-        return (
-            <Screen flex>
-                <View style={ styles.logo }>
-                    <CustomImage.Local filePathByRequire={ require('../assets/images/morfeus_logo.png') } />
-                </View>
-            </Screen>
-        )
-    }
+    if (loading) return <DefaultLoadingScreen />
 
     return (
         <InitialContext.Provider value={{}}>
@@ -47,13 +36,3 @@ export function InitialContextProvider() {
     if (!context) throw new Error("InitialContext chamado fora do provider.")
     return context
 }
-
-const styles = StyleSheet.create({
-    logo: {
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "center",
-        alignItems: "center",
-        gap: 5,
-    },
-})
