@@ -2,13 +2,15 @@ import {
     DimensionValue,
     Pressable,
     PressableProps,
-    Text,
     TextStyle,
     TouchableHighlight,
     TouchableHighlightProps,
     TouchableOpacity,
     TouchableOpacityProps,
+    View,
 } from "react-native"
+import { StyleContextProvider } from "@/contexts/StyleContext"
+import CustomText from "./CustomText"
 
 export type CustomButtonProps = {
     /** Título do botão */
@@ -50,22 +52,32 @@ export default function CustomButton({
     onPress,
     btnAnimation = "opacity",
     active = true,
-    btnColor = "#38B4E1",
-    btnTextColor = "black",
+    btnColor,
+    btnTextColor,
     btnWidth = "auto",
     btnHeight = "auto",
-    titleStyle = {
-        fontWeight: "light",
-        fontSize: 16,
-    },
+    titleStyle,
     innerProps = {},
     important = false,
-    importantOverride = {
-        color: "darkblue",
-        textColor: "white",
-        textColorInactive: "gray",
-    },
+    importantOverride,
 }: CustomButtonProps) {
+    const { systemStyle } = StyleContextProvider()
+    btnColor = btnColor ? btnColor : systemStyle.btnOutlineColor
+    btnTextColor = btnTextColor ? btnTextColor : systemStyle.textColor
+    titleStyle = titleStyle
+        ? titleStyle
+        : {
+            fontSize: systemStyle.normalTextSize,
+            fontWeight: "400",
+        }
+    importantOverride = importantOverride
+        ? importantOverride
+        : {
+            color: systemStyle.primary,
+            textColor: systemStyle.oppositeTextColor,
+            textColorInactive: systemStyle.inactiveTextColor,
+        }
+
     const btnStyle: any = {
         width: btnWidth,
         height: btnHeight,
@@ -75,7 +87,7 @@ export default function CustomButton({
             ? important
                 ? importantOverride.color
                 : btnColor
-            : "gray",
+            : systemStyle.inactiveIconColor,
         borderStyle: "solid",
         justifyContent: "center",
         alignItems: "center",
@@ -84,22 +96,22 @@ export default function CustomButton({
 
     if (important) btnStyle["backgroundColor"] = importantOverride.color
 
-    const btnText = (
-            <Text
-                style={{
-                    color: important
-                        ? active
-                            ? importantOverride.textColor
-                            : importantOverride.textColorInactive
-                        : btnTextColor,
-                    fontWeight: titleStyle.fontWeight,
-                    fontSize: titleStyle.fontSize,
-                    padding: 5,
-                }}
-            >
-                { title }
-            </Text>
-        )
+    const btnText = <View pointerEvents="none">
+        <CustomText
+            style={{
+                color: important
+                    ? active
+                        ? importantOverride.textColor
+                        : importantOverride.textColorInactive
+                    : btnTextColor,
+                fontWeight: titleStyle.fontWeight,
+                fontSize: titleStyle.fontSize,
+                padding: 5,
+            }}
+        >
+            { title }
+        </CustomText>
+    </View>
 
     if (btnAnimation === "highlight") {
         return (

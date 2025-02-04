@@ -40,11 +40,21 @@ export default function CustomModal({
             <TouchableOpacity
                 style={{ flex: 1 }}
                 activeOpacity={ 1 }
-                onPressOut={() => { if (canOutsideClickClose) setVisible(false) }}
+                onPressOut={ () => { if (canOutsideClickClose) setVisible(false) } }
             >
-                <View style={{ ...styles.modalBackground, backgroundColor: blurBackground ? 'rgba(0, 0, 0, 0.5)' : 'auto' }}>
+                <View
+                    style={{
+                        ...styles.modalBackground,
+                        backgroundColor: blurBackground
+                            ? 'rgba(0, 0, 0, 0.5)'
+                            : 'auto',
+                    }}
+                >
                     <TouchableWithoutFeedback>
-                        <View style={ styles.modal } pointerEvents="box-none">
+                        <View
+                            style={ styles.modal }
+                            pointerEvents="box-none"
+                        >
                             { children }
                         </View>
                     </TouchableWithoutFeedback>

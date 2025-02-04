@@ -1,5 +1,7 @@
-import { KeyboardTypeOptions, TextInput, View, TextInputProps, StyleSheet, Text, StyleProp, TextStyle, DimensionValue } from "react-native"
+import { KeyboardTypeOptions, TextInput, View, TextInputProps, StyleSheet, StyleProp, TextStyle, DimensionValue } from "react-native"
+import { StyleContextProvider } from "@/contexts/StyleContext"
 import { useState } from "react"
+import CustomText from "./CustomText"
 
 type CustomInputProps = {
     /** Label do campo */
@@ -17,9 +19,6 @@ type CustomInputProps = {
     width?: DimensionValue
     /** Pinta a label e a borda do input quando em foco */
     animationOnFocus?: boolean
-    animationOnFocusStyle?: {
-        color: string
-    }
 }
 
 /** Componente customizado para input */
@@ -35,10 +34,8 @@ export default function CustomInput({
     onChange = (_: string) => {},
     width = 150,
     animationOnFocus = true,
-    animationOnFocusStyle = {
-        color: "darkblue",
-    },
 }: CustomInputProps): JSX.Element {
+    const { systemStyle } = StyleContextProvider()
     const [ onFocus, setOnFocus ] = useState<boolean>(false)
 
     const input = <TextInput
@@ -46,34 +43,42 @@ export default function CustomInput({
             editable={ active }
             multiline
             keyboardType={ keyboardType }
-            onChangeText={ (e) => { onChange(e) } }
+            onChangeText={ (e) => onChange(e) }
             placeholder={ placeHolder }
             style={{
                 borderWidth: 1,
                 borderRadius: 30,
                 width: width,
                 borderColor: animationOnFocus
-                    ? onFocus ? animationOnFocusStyle.color : '#38B4E1'
-                    : '#38B4E1',
+                    ? onFocus
+                        ? systemStyle.primary
+                        : systemStyle.btnOutlineColor
+                    : systemStyle.btnOutlineColor,
                 paddingVertical: 3,
                 paddingHorizontal: 8,
                 ...inputStyle as any,
             }}
-            onFocus={ () => { setOnFocus(true) } }
-            onBlur={ () => { setOnFocus(false) } }
+            onFocus={ () => setOnFocus(true) }
+            onBlur={ () => setOnFocus(false) }
             { ...innerProps }
         />
 
     if (label) {
         return (
             <View style={ styles.container }>
-                <Text style={{
-                    fontSize: 14,
-                    color: animationOnFocus
-                        ? onFocus ? animationOnFocusStyle.color : 'black'
-                        : 'black',
-                    ...labelStyle as any
-                }}>{ label }</Text>
+                <CustomText
+                    style={{
+                        fontSize: 14,
+                        color: animationOnFocus
+                            ? onFocus
+                                ? systemStyle.primary
+                                : systemStyle.textColor
+                            : systemStyle.textColor,
+                        ...labelStyle as any
+                    }}
+                >
+                    { label }
+                </CustomText>
                 { input }
             </View>
         )

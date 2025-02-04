@@ -44,12 +44,10 @@ export default function SwitchNull({
             {
                 isNull
                     ? <></>
-                    : (
-                        <Switch
-                            value={ switchValue! }
-                            onValueChange={ (e) => setSwitchValue(e) }
-                        />
-                    )
+                    : <Switch
+                        value={ switchValue! }
+                        onValueChange={ (e) => setSwitchValue(e) }
+                    />
             }
         </Box.Column>
     )

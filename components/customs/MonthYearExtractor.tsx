@@ -1,12 +1,13 @@
 import { DateTime } from "luxon"
 import { Pressable, StyleSheet } from "react-native"
+import { StyleContextProvider } from "@/contexts/StyleContext"
 import { useState } from "react"
 import AntDesignIcons from "react-native-vector-icons/AntDesign"
 import Box from "../base/Box"
 import CustomButton from "./CustomButton"
 import CustomModal from "./CustomModal"
+import CustomText from "./CustomText"
 import MonthParser from "@/utils/MonthParser"
-import TextBold from "../base/TextBold"
 
 type MonthYearExtractorProps = {
     open: boolean
@@ -37,6 +38,7 @@ export default function MonthYearExtractor({
     minYear = 1900,
     maxYear,
 }: MonthYearExtractorProps) {
+    const { systemStyle } = StyleContextProvider()
     const parseDate = (month: number, year: number) => DateTime.now().set({ year: year, month: month, day: 10 }).toJSDate()
 
     const [ date, setDate ] = useState<MonthYearExtractorDateType>({
@@ -61,13 +63,21 @@ export default function MonthYearExtractor({
                     }}
                     style={{
                         ...styles.month,
-                        backgroundColor: isAllowedMonth ? styles.month.backgroundColor : "gray",
+                        backgroundColor: isAllowedMonth ? systemStyle.secondary : "gray",
                         borderWidth: isChosenMonth ? 1 : 0,
-                        borderColor: isChosenMonth ? "white" : "black",
+                        borderColor: isChosenMonth ? systemStyle.oppositeIconColor : systemStyle.iconColor,
                         margin: isChosenMonth ? 0 : 1,
                     }}
                 >
-                    <TextBold style={ styles.monthText }>{ MonthParser(i) }</TextBold>
+                    <CustomText
+                        weight="bold"
+                        isOpposite
+                        onPress={ () => {
+                            if (isAllowedMonth) setDate({ ...date, month: i, date: parseDate(i, date.year) })
+                        }}
+                    >
+                        { MonthParser(i) }
+                    </CustomText>
                 </Pressable>
             )
         }
@@ -95,28 +105,35 @@ export default function MonthYearExtractor({
         setVisible={ setOpen }
         canOutsideClickClose={ false }
     >
-        <Box.Column style={ styles.container }>
+        <Box.Column style={{
+            ...styles.container,
+            backgroundColor: systemStyle.primary
+        }}>
             <Box.Row style={ styles.monthContainer }>
-                    { renderMonths() }
+                { renderMonths() }
             </Box.Row>
             <Box.Row style={ styles.yearContainer }>
                 <AntDesignIcons
                     name="left"
-                    size={ 50 }
+                    size={ systemStyle.extraLargeIconSize }
                     color={ date.year === minYear ? "gray" : "white" }
                     onPress={ () => retreatYear(date.year - 1)}
                 />
-                <TextBold style={ styles.yearText }>
+                <CustomText
+                    weight="bold"
+                    isOpposite
+                >
                     { date.year }
-                </TextBold>
+                </CustomText>
                 <AntDesignIcons
                     name="right"
-                    size={ 50 }
+                    size={ systemStyle.extraLargeIconSize }
                     color={ 
                         maxYear
                             ? date.year === maxYear
-                                ? "gray" : "white"
-                            : "white"
+                                ? systemStyle.inactiveIconColor
+                                : systemStyle.oppositeIconColor
+                            : systemStyle.oppositeIconColor
                     }
                     onPress={ () => advanceYear(date.year + 1)}
                 />
@@ -125,7 +142,12 @@ export default function MonthYearExtractor({
                 <CustomButton
                     title="CANCELAR"
                     onPress={ () => setOpen(false) }
-                    btnTextColor="white"
+                    btnWidth={ 120 }
+                    btnTextColor={ systemStyle.oppositeTextColor }
+                    titleStyle={{
+                        fontWeight: "300",
+                        fontSize: systemStyle.normalTextSize,
+                    }}
                 />
                 <CustomButton
                     title="OK"
@@ -133,8 +155,12 @@ export default function MonthYearExtractor({
                         onChange(date.date, date.month, date.year)
                         setOpen(false)
                     }}
-                    btnTextColor="white"
-                    btnWidth={ 100 }
+                    btnWidth={ 120 }
+                    btnTextColor={ systemStyle.oppositeTextColor }
+                    titleStyle={{
+                        fontWeight: "300",
+                        fontSize: systemStyle.normalTextSize,
+                    }}
                 />
             </Box.Row>
         </Box.Column>
@@ -143,7 +169,6 @@ export default function MonthYearExtractor({
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: "darkblue",
         width: "80%",
         padding: 10,
         borderRadius: 15,
@@ -160,16 +185,7 @@ const styles = StyleSheet.create({
         gap: 10,
         width: "100%",
     },
-    yearText: {
-        fontSize: 20,
-        color: "white",
-    },
-    monthText: {
-        fontSize: 18,
-        color: "white",
-    },
     month: {
-        backgroundColor: "blue",
         padding: 5,
         borderRadius: 10,
         width: 120,
