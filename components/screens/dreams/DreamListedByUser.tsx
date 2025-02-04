@@ -1,8 +1,10 @@
 import { DateFormatter } from "@/utils/DateFormatter"
 import { DreamListedByUserType } from "@/types/dream"
-import { Text, Pressable, StyleSheet, StyleProp, ViewStyle } from "react-native"
+import { StyleContextProvider } from "@/contexts/StyleContext"
+import { Text, StyleSheet, StyleProp, ViewStyle } from "react-native"
 import { useRouter } from "expo-router"
 import Box from "@/components/base/Box"
+import CustomText from "@/components/customs/CustomText"
 import IconEntypo from "react-native-vector-icons/Entypo"
 import React, { useState } from "react"
 
@@ -19,12 +21,15 @@ type DreamListedByUserProps = {
 export default function DreamListedByUser({
     dream,
     showDate = true,
-    titleSize = 30,
+    titleSize,
     containerStyle = {},
     sleepId = undefined,
     redirectToTag = true,
     isHiddenOrErotic = false,
 }: DreamListedByUserProps) {
+    const { systemStyle } = StyleContextProvider()
+    titleSize = titleSize ? titleSize : systemStyle.largeTextSize
+
     const [ showDream, setShowDream ] = useState<boolean>(!isHiddenOrErotic)
     const router = useRouter()
 
@@ -57,30 +62,33 @@ export default function DreamListedByUser({
     }
 
     return (
-        <Box.Column style={{ ...styles.container, ...containerStyle as any }}>
-            <Pressable onPress={ () => router.navigate({ pathname: "/getDream", params: { id: dream.id, sleepDate: treatedDate } }) }>
-                <Text style={{
-                    ...styles.title,
-                    fontSize: titleSize
-                }}>{ dream.title }</Text>
-            </Pressable>
+        <Box.Column style={{ ...containerStyle as any }}>
+            <CustomText
+                onPress={ () => router.navigate({ pathname: "/getDream", params: { id: dream.id, sleepDate: treatedDate } }) }
+                size="xl"
+                weight="bold"
+            >
+                { dream.title }
+            </CustomText>
             {
                 showDate
-                    ?
-                        <Pressable onPress={ () => onDreamDatePress() }>
-                            <Text style={ styles.dateText }>{ treatedDate }</Text>
-                        </Pressable>
+                    ? <CustomText
+                        onPress={ () => onDreamDatePress() }
+                        weight="thin"
+                    >
+                        { treatedDate }
+                    </CustomText>
                     : <></>
             }
             <Box.Row style={ styles.tags }>
                 {
                     dream.tags.map((tag, i) => (
-                        <Pressable
+                        <CustomText
                             onPress={ () => onDreamTagPress(tag.title, tag.id) }
                             key={ i }
                         >
-                            <Text>{ tag.title }</Text>
-                        </Pressable>
+                            { tag.title }
+                        </CustomText>
                     ))
                 }
             </Box.Row>
@@ -89,15 +97,6 @@ export default function DreamListedByUser({
 }
 
 const styles = StyleSheet.create({
-    container: {
-    },
-    title: {
-        fontWeight: "bold",
-    },
-    dateText: {
-        fontSize: 20,
-        fontWeight: "100",
-    },
     tags: {
         gap: 10,
     },

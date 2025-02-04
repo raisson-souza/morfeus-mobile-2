@@ -1,7 +1,8 @@
 import { ListDreamsByUserRequest } from "@/types/dream"
 import { Picker } from "@react-native-picker/picker"
-import { StyleSheet, Switch, Text } from "react-native"
+import { StyleSheet, Switch } from "react-native"
 import Box from "@/components/base/Box"
+import CustomText from "@/components/customs/CustomText"
 import React from "react"
 import SwitchNull from "@/components/customs/CustomSwitchNull"
 
@@ -17,7 +18,7 @@ export default function DreamsListEspecificFilters({
     return (
         <Box.Column style={ styles.container }>
             <Box.Row style={ styles.filterNoEspecificyContainer }>
-                <Text>Sem Especificidades</Text>
+                <CustomText size="s">Sem Especificidades</CustomText>
                 <Switch
                     value={ listDreamsByUserForm.dreamEspecificCaracteristicsFilter.noEspecificy }
                     onValueChange={ (e) => setListDreamsByUserForm({

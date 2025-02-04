@@ -1,12 +1,13 @@
 import { CreateCompleteDreamModel } from "@/types/dream"
 import { DateFormatter } from "@/utils/DateFormatter"
 import { DateTime } from "luxon"
+import { StyleContextProvider } from "@/contexts/StyleContext"
 import { StyleSheet } from "react-native"
 import { useEffect, useState } from "react"
 import Box from "@/components/base/Box"
 import CustomSwitch from "@/components/customs/CustomSwitch"
+import CustomText from "@/components/customs/CustomText"
 import DatePickerShow from "@/components/date/DatePickerShow"
-import TextBold from "@/components/base/TextBold"
 import TimePickerShow from "@/components/date/TimePickerShow"
 
 type SleepExtractionByTimeProps = {
@@ -15,7 +16,12 @@ type SleepExtractionByTimeProps = {
     defaultDate: DateTime<true>
 }
 
-export default function SleepExtractionByTime({ date, setDate, defaultDate }: SleepExtractionByTimeProps) {
+export default function SleepExtractionByTime({
+    date,
+    setDate,
+    defaultDate,
+}: SleepExtractionByTimeProps) {
+    const { systemStyle } = StyleContextProvider()
     const [ isSleepStartYesterday, setIsSleepStartYesterday ] = useState<boolean>(false)
     const parsedDefaultDate = DateFormatter.fixUTC(defaultDate.toMillis())
 
@@ -36,7 +42,7 @@ export default function SleepExtractionByTime({ date, setDate, defaultDate }: Sl
 
     return (
         <Box.Column style={ styles.container }>
-            <TextBold style={ styles.text }>Data referente ao ciclo de sono</TextBold>
+            <CustomText isOpposite>Data referente ao ciclo de sono</CustomText>
             <DatePickerShow
                 date={ sleepDate }
                 onChange={ (e) => {
@@ -45,20 +51,22 @@ export default function SleepExtractionByTime({ date, setDate, defaultDate }: Sl
                         dreamNoSleepTimeKnown: {
                             date: e,
                             sleepStart: sleepStart,
-                            sleepEnd: sleepEnd
+                            sleepEnd: sleepEnd,
                         }
                     })
                 }}
-                textStyle={ styles.text }
-                iconColor="white"
+                textStyle={{
+                    color: systemStyle.oppositeTextColor,
+                }}
+                iconColor={ systemStyle.oppositeIconColor }
             />
             <Box.Column>
-                <TextBold style={ styles.text }>Horário de dormir</TextBold>
+                <CustomText isOpposite>Horário de dormir</CustomText>
                 <CustomSwitch
                     label="Dormiu no dia anterior?"
-                    onChange={ (e) => { setIsSleepStartYesterday(e) }}
+                    onChange={ (e) => setIsSleepStartYesterday(e) }
                     value={ isSleepStartYesterday }
-                    labelStyle={{ color: "white" }}
+                    labelStyle={{ color: systemStyle.oppositeIconColor }}
                 />
             </Box.Column>
             <TimePickerShow
@@ -73,14 +81,16 @@ export default function SleepExtractionByTime({ date, setDate, defaultDate }: Sl
                         dreamNoSleepTimeKnown: {
                             date: sleepDate,
                             sleepStart: newSleepStart.toJSDate(),
-                            sleepEnd: sleepEnd
+                            sleepEnd: sleepEnd,
                         }
                     })
                 }}
-                textStyle={ styles.text }
-                iconColor="white"
+                textStyle={{
+                    color: systemStyle.oppositeTextColor
+                }}
+                iconColor={ systemStyle.oppositeIconColor }
             />
-            <TextBold style={ styles.text }>Horário de acordar</TextBold>
+            <CustomText isOpposite>Horário de acordar</CustomText>
             <TimePickerShow
                 time={ sleepEnd }
                 onChange={ (e) => {
@@ -91,12 +101,14 @@ export default function SleepExtractionByTime({ date, setDate, defaultDate }: Sl
                         dreamNoSleepTimeKnown: {
                             date: sleepDate,
                             sleepStart: sleepStart,
-                            sleepEnd: newSleepEnd.toJSDate()
+                            sleepEnd: newSleepEnd.toJSDate(),
                         }
                     })
                 }}
-                textStyle={ styles.text }
-                iconColor="white"
+                textStyle={{
+                    color: systemStyle.oppositeTextColor,
+                }}
+                iconColor={ systemStyle.oppositeIconColor }
             />
         </Box.Column>
     )
@@ -105,9 +117,5 @@ export default function SleepExtractionByTime({ date, setDate, defaultDate }: Sl
 const styles = StyleSheet.create({
     container: {
         gap: 10,
-    },
-    text: {
-        color: "white",
-        fontSize: 18,
     },
 })

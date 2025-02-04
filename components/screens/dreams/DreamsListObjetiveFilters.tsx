@@ -20,7 +20,6 @@ export default function DreamsListObjectiveFilters({
                     ...listDreamsByUserForm,
                     dreamCaracteristicsFilter: e,
                 })}
-                style={ styles.picker }
             >
                 <Picker.Item label="Todos os Sonhos" value="all" />
                 <Picker.Item label="Todos os Sonhos (menos os ocultos)" value="allNotHidden" />
@@ -35,7 +34,6 @@ export default function DreamsListObjectiveFilters({
                     ...listDreamsByUserForm,
                     dreamOriginFilter: e,
                 })}
-                style={ styles.picker }
             >
                 <Picker.Item label="Todas as Origens" value="all" />
                 <Picker.Item label="Sonhos Completos" value="completeDreams" />
@@ -49,7 +47,5 @@ export default function DreamsListObjectiveFilters({
 const styles = StyleSheet.create({
     container: {
         width: "100%",
-    },
-    picker: {
     },
 })

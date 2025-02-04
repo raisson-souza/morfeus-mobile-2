@@ -1,5 +1,6 @@
 import { CreateCompleteDreamModel } from "@/types/dream"
 import { DateFormatter } from "@/utils/DateFormatter"
+import { StyleContextProvider } from "@/contexts/StyleContext"
 import { StyleSheet } from "react-native"
 import { useEffect, useState } from "react"
 import { useNavigation } from "expo-router"
@@ -17,7 +18,13 @@ type DefineDreamSleepProps = {
     setSleepId: React.Dispatch<React.SetStateAction<number | null>>
 }
 
-export default function DefineDreamSleep({ date, setDate, sleepId, setSleepId }: DefineDreamSleepProps) {
+export default function DefineDreamSleep({
+    date,
+    setDate,
+    sleepId,
+    setSleepId,
+}: DefineDreamSleepProps) {
+    const { systemStyle } = StyleContextProvider()
     const navigation = useNavigation()
     const [ sleepExtractionType, setSleepExtractionType ] = useState<"sleep" | "date" | "time">("sleep")
     const defaultDate = DateFormatter.luxon.now().set({ hour: 0, second: 0, minute: 0, millisecond: 0 })
@@ -64,7 +71,12 @@ export default function DefineDreamSleep({ date, setDate, sleepId, setSleepId }:
     }
 
     return (
-        <Box.Column style={ styles.container }>
+        <Box.Column
+            style={{
+                ...styles.container,
+                backgroundColor: systemStyle.secondary,
+            }}
+        >
             <Box.Row style={ styles.sleepCycleExtractionQuestionContainer }>
                 <Info
                     modalTitle="Data do Sonho"
@@ -74,9 +86,8 @@ export default function DefineDreamSleep({ date, setDate, sleepId, setSleepId }:
                         "B) Determine uma data e período do ciclo de sono na qual o sonho ocorreu;",
                         "C) Determine uma data e horários do ciclo de sono na qual o sonho ocorreu;",
                     ]}
-                    overrideInfoColor="white"
+                    overrideInfoColor={ systemStyle.oppositeIconColor }
                     type="question"
-                    iconSize={ 30 }
                 />
                 <CustomButton
                     title={
@@ -86,7 +97,7 @@ export default function DefineDreamSleep({ date, setDate, sleepId, setSleepId }:
                                 ? "Eu sei em qual data meu sonho ocorreu"
                                 : "Eu sei em qual horário meu sonho ocorreu"
                     }
-                    btnTextColor="white"
+                    btnTextColor={ systemStyle.oppositeTextColor }
                     onPress={ () => switchSleepExtraction() }
                 />
             </Box.Row>
@@ -99,7 +110,6 @@ export default function DefineDreamSleep({ date, setDate, sleepId, setSleepId }:
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: "royalblue",
         padding: 10,
         gap: 10,
         borderRadius: 15,
