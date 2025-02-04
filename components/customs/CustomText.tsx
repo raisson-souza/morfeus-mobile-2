@@ -2,11 +2,12 @@ import { StyleContextProvider } from "@/contexts/StyleContext"
 import { StyleProp, Text, TextStyle } from "react-native"
 
 interface CustomTextProps {
-    children: string
+    children: string | number
     style?: StyleProp<TextStyle>
     size?: "s" | "m" | "l" | "xl"
     isOpposite?: boolean
     weight?: "thin" | "normal" | "bold"
+    onPress?: () => void
 }
 
 const CustomText: React.FC<CustomTextProps> = ({
@@ -15,6 +16,7 @@ const CustomText: React.FC<CustomTextProps> = ({
     size = "m",
     isOpposite = false,
     weight = "normal",
+    onPress,
 }) => {
     const { systemStyle } = StyleContextProvider()
 
@@ -23,7 +25,7 @@ const CustomText: React.FC<CustomTextProps> = ({
             case "s": return systemStyle.smallTextSize
             case "m": return systemStyle.normalTextSize
             case "l": return systemStyle.largeTextSize
-            case "xl": return systemStyle.smallTextSize
+            case "xl": return systemStyle.extraLargeTextSize
         }
     }
 
@@ -36,12 +38,15 @@ const CustomText: React.FC<CustomTextProps> = ({
     }
 
     return (
-        <Text style={{
-            ...style as any,
-            color: isOpposite ? systemStyle.oppositeTextColor : systemStyle.textColor,
-            fontSize: defineTextSize(),
-            fontWeight: defineTextWeight(),
-        }}>
+        <Text
+            style={{
+                color: isOpposite ? systemStyle.oppositeTextColor : systemStyle.textColor,
+                fontSize: defineTextSize(),
+                fontWeight: defineTextWeight(),
+                ...style as any,
+            }}
+            onPress={ () => onPress ? onPress() : {} }
+        >
             { children }
         </Text>
     )

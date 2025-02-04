@@ -1,5 +1,5 @@
 import { AuthContextProvider } from "../../contexts/AuthContext"
-import { Text, StyleSheet, Pressable } from "react-native"
+import { StyleSheet, Pressable } from "react-native"
 import { useState } from "react"
 import Box from "./Box"
 import ChangelogModal from "../screens/header/ChangelogModal"
@@ -7,11 +7,13 @@ import ConfigModal from "../screens/header/ConfigModal"
 import IconIon from "react-native-vector-icons/Ionicons"
 import IconMaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
 import React from "react"
+import { StyleContextProvider } from "@/contexts/StyleContext"
+import CustomText from "../customs/CustomText"
 
-type HeaderProps = {
-}
+type HeaderProps = { }
 
 export default function Header({}: HeaderProps): JSX.Element {
+    const { systemStyle } = StyleContextProvider()
     const { isLogged } = AuthContextProvider()
     const [ openChangelogModal, setOpenChangelogModal ] = useState<boolean>(false)
     // const [ openNotificationsModal, setOpenNotificationsModal ] = useState<boolean>(false)
@@ -21,7 +23,10 @@ export default function Header({}: HeaderProps): JSX.Element {
         return <></>
 
     return (
-        <Box.Row style={ styles.container }>
+        <Box.Row style={{
+            ...styles.container,
+            backgroundColor: systemStyle.headerBackgroundColor,
+        }}>
             <ChangelogModal
                 open={ openChangelogModal }
                 setOpen={ setOpenChangelogModal }
@@ -31,18 +36,40 @@ export default function Header({}: HeaderProps): JSX.Element {
                 setOpen={ setOpenConfigModal }
             />
             <Box.Row style={ styles.logo }>
-                <IconIon name="moon-outline" color="white" size={ 25 } />
-                <Text style={ styles.logoText }>Morfeus</Text>
+                <IconIon
+                    name="moon-outline"
+                    color={ systemStyle.oppositeIconColor }
+                    size={ systemStyle.normalIconSize }
+                />
+                <CustomText
+                    isOpposite
+                    weight="bold"
+                    size="l"
+                >
+                    Morfeus
+                </CustomText>
             </Box.Row>
             <Box.Row style={ styles.icons }>
                 <Pressable onPress={ () => setOpenChangelogModal(true) }>
-                    <IconIon name="megaphone" size={ 25 } color="white" />
+                    <IconIon
+                        name="megaphone"
+                        size={ systemStyle.normalIconSize }
+                        color={ systemStyle.oppositeIconColor }
+                    />
                 </Pressable>
                 <Pressable onPress={ () => {} }>
-                    <IconMaterialCommunityIcons name="bell" size={ 25 } color="white" />
+                    <IconMaterialCommunityIcons
+                        name="bell"
+                        size={ systemStyle.normalIconSize }
+                        color={ systemStyle.oppositeIconColor }
+                    />
                 </Pressable>
                 <Pressable onPress={ () => setOpenConfigModal(true) }>
-                    <IconIon name="menu" size={ 40 } color="white" />
+                    <IconIon
+                        name="menu"
+                        size={ systemStyle.largeIconSize }
+                        color={ systemStyle.oppositeIconColor }
+                    />
                 </Pressable>
             </Box.Row>
         </Box.Row>
@@ -52,20 +79,13 @@ export default function Header({}: HeaderProps): JSX.Element {
 const styles = StyleSheet.create({
     container: {
         justifyContent: "space-between",
-        backgroundColor: "darkblue",
-        paddingBottom: 3,
+        paddingVertical: 3,
         paddingHorizontal: 10,
-        borderBottomColor: "black",
     },
     logo: {
         justifyContent: "center",
         alignItems: "center",
         gap: 5,
-    },
-    logoText: {
-        color: "white",
-        fontSize: 20,
-        fontWeight: "bold",
     },
     icons: {
         alignItems: "center",

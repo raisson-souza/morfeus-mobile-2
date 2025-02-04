@@ -4,6 +4,7 @@ import CustomButton from "../customs/CustomButton"
 import IconEntypo from "react-native-vector-icons/Entypo"
 import ModalBox from "./ModalBox"
 import React, { useState } from "react"
+import { StyleContextProvider } from "@/contexts/StyleContext"
 
 type CarouselProps = {
     visible: boolean
@@ -20,6 +21,7 @@ export default function Carousel({
     limit = 5,
     title,
 }: CarouselProps) {
+    const { systemStyle } = StyleContextProvider()
     const [ page, setPage ] = useState<number>(1)
     const finalPage = Math.ceil(components.length / limit)
 
@@ -52,8 +54,12 @@ export default function Carousel({
             dots.push(
                 <IconEntypo
                     name="dot-single"
-                    size={ page === (i + 1) ? 35 : 20 }
-                    color="white"
+                    size={
+                        page === (i + 1)
+                            ? systemStyle.extraLargeIconSize
+                            : systemStyle.smallIconSize
+                    }
+                    color={ systemStyle.oppositeIconColor }
                     key={ i }
                 />
             )
@@ -71,23 +77,27 @@ export default function Carousel({
             setVisible={ setVisible }
             title={ title }
             description={
-                <Box.Column style={ styles.container }>
+                <Box.Column
+                    style={{
+                        backgroundColor: systemStyle.primary,
+                    }}
+                >
                     { renderComponents() as any }
                     { renderRemainingPages() }
                     <Box.Row style={ styles.btns }>
                         <CustomButton
-                            btnTextColor="white"
+                            btnTextColor={ systemStyle.oppositeTextColor }
                             title="Anterior"
                             onPress={ () => onPrevious() }
                             active={ page != 1 }
                         />
                         <CustomButton
-                            btnTextColor="white"
+                            btnTextColor={ systemStyle.oppositeTextColor }
                             title="Fechar"
                             onPress={ () => onClose() }
                         />
                         <CustomButton
-                            btnTextColor="white"
+                            btnTextColor={ systemStyle.oppositeTextColor }
                             title="Próximo"
                             onPress={ () => onNext() }
                             active={ page != finalPage }
@@ -101,7 +111,6 @@ export default function Carousel({
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: "darkblue",
         width: "80%",
         gap: 10,
         padding: 10,

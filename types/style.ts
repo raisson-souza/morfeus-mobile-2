@@ -14,9 +14,11 @@ export type Style = {
     footerTextSize: number
 
     textColor: string
+    inactiveTextColor: string
     oppositeTextColor: string
 
     iconColor: string
+    inactiveIconColor: string
     oppositeIconColor: string
 
     btnOutlineColor: string
@@ -32,6 +34,7 @@ export type Style = {
     largeTextSize: number
     extraLargeTextSize: number
 
+    extraSmallIconSize: number
     smallIconSize: number
     normalIconSize: number
     largeIconSize: number

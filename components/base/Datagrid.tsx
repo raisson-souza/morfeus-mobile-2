@@ -6,6 +6,8 @@ import Box from "./Box"
 import CustomInput from "../customs/CustomInput"
 import React from "react"
 import TextBold from "./TextBold"
+import { StyleContextProvider } from "@/contexts/StyleContext"
+import CustomText from "../customs/CustomText"
 
 type DatagridProps = {
     rows: JSX.Element[]
@@ -24,6 +26,7 @@ export default function Datagrid({
     pagination,
     onChange,
 }: DatagridProps) {
+    const { systemStyle } = StyleContextProvider()
     const renderPage = () => {
         const canAdvancePage = pagination.meta
             ? !(pagination.meta.lastPage === pagination.page)
@@ -34,19 +37,30 @@ export default function Datagrid({
             <Box.Row style={ styles.page }>
                 <AntDesignIcons
                     name="left"
-                    size={ 30 }
-                    color={ canRewindPage ? styles.text.color : "gray" }
+                    size={ systemStyle.extraLargeIconSize }
+                    color={
+                        canRewindPage
+                            ? systemStyle.textColor
+                            : systemStyle.inactiveTextColor
+                    }
                     onPress={ () => canRewindPage ? handlePage(pagination.page - 1) : {} }
                 />
-                <TextBold
-                    style={{ ...styles.text, ...styles.pageText }}
+                <CustomText
+                    isOpposite
+                    weight="bold"
+                    size="xl"
+                    style={ styles.pageText }
                 >
                     { pagination.page }
-                </TextBold>
+                </CustomText>
                 <AntDesignIcons
                     name="right"
-                    size={ 30 }
-                    color={ canAdvancePage ? styles.text.color : "gray" }
+                    size={ systemStyle.extraLargeIconSize }
+                    color={
+                        canRewindPage
+                            ? systemStyle.textColor
+                            : systemStyle.inactiveTextColor
+                    }
                     onPress={ () => canAdvancePage ? handlePage(pagination.page + 1) : {} }
                 />
             </Box.Row>
@@ -92,18 +106,26 @@ export default function Datagrid({
             {
                 showLimit || showOrderBy || showOrderByDirection
                     ? (
-                        <Box.Column style={ styles.paginationContainer }>
+                        <Box.Column
+                            style={{
+                                ...styles.paginationContainer,
+                                borderBottomColor: systemStyle.oppositeTextColor,
+                            }}
+                        >
                             {
                                 showLimit
                                     ? (
                                         <>
-                                            <Text style={ styles.text }>Itens por página</Text>
+                                            <CustomText>
+                                                Itens por página
+                                            </CustomText>
                                             <Picker
                                                 selectedValue={ pagination.limit }
-                                                onValueChange={ (e) => {
-                                                    handleLimit(e as 5 | 10 | 20 | 50 | 100)
+                                                onValueChange={ (e) => handleLimit(e as 5 | 10 | 20 | 50 | 100) }
+                                                style={{
+                                                    color: systemStyle.oppositeTextColor,
+                                                    width: 150,
                                                 }}
-                                                style={{ color:"white", width: 150 }}
                                             >
                                                 <Picker.Item label="5" value="5" />
                                                 <Picker.Item label="10" value="10" />
@@ -120,13 +142,11 @@ export default function Datagrid({
                                     ? (
                                         <CustomInput
                                             label="Ordenar por"
-                                            labelStyle={ styles.text }
-                                            inputStyle={ styles.text }
+                                            inputStyle={{ color: systemStyle.oppositeTextColor }}
+                                            labelStyle={{ color: systemStyle.oppositeTextColor }}
                                             keyboardType="ascii-capable"
                                             defaultValue={ pagination.orderBy }
-                                            onChange={ (e) =>
-                                                handleOrderBy(e)
-                                            }
+                                            onChange={ (e) => handleOrderBy(e) }
                                         />
                                     )
                                     : <></>
@@ -135,13 +155,14 @@ export default function Datagrid({
                                 showOrderByDirection
                                     ? (
                                         <>
-                                            <Text style={ styles.text }>Direção da ordenação</Text>
+                                            <Text>Direção da ordenação</Text>
                                             <Picker
                                                 selectedValue={ pagination.orderByDirection === "asc" ? 1 : 2 }
-                                                onValueChange={ (e) => {
-                                                    handleOrderByDirection(e === 1 ? "asc" : "desc")
+                                                onValueChange={ (e) => handleOrderByDirection(e === 1 ? "asc" : "desc") }
+                                                style={{
+                                                    color:systemStyle.oppositeTextColor,
+                                                    width: 150,
                                                 }}
-                                                style={{ color:"white", width: 150 }}
                                             >
                                                 <Picker.Item label="asc" value={ 1 } />
                                                 <Picker.Item label="desc" value={ 2 } />
@@ -169,10 +190,6 @@ const styles = StyleSheet.create({
     paginationContainer: {
         gap: 10,
         borderBottomWidth: 1,
-        borderBottomColor: "white",
-    },
-    text: {
-        color: "white"
     },
     rowsContainer: {
         gap: 10,

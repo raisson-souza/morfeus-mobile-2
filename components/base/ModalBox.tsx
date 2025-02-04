@@ -1,16 +1,25 @@
-import { StyleSheet, Text } from "react-native"
+import { StyleSheet } from "react-native"
 import Box from "./Box"
 import CustomModal, { CustomModalProps } from "../customs/CustomModal"
 import React from "react"
+import CustomText from "../customs/CustomText"
+import { StyleContextProvider } from "@/contexts/StyleContext"
 
-type ModalBoxProps = Omit<CustomModalProps, "children">  & {
+type ModalBoxProps = Omit<CustomModalProps, "children"> & {
     title?: string
     description: string[] | JSX.Element[] | JSX.Element
     children?: JSX.Element
     alignDescriptionInCenter?: boolean
 }
 
-export default function ModalBox({ title, description, children, alignDescriptionInCenter = true, ...customModalProps }: ModalBoxProps) {
+export default function ModalBox({
+    title,
+    description,
+    children,
+    alignDescriptionInCenter = true,
+    ...customModalProps
+}: ModalBoxProps) {
+    const { systemStyle } = StyleContextProvider()
     const renderModalContent = (): JSX.Element => {
         if (description instanceof Array) {
             if (description.length === 0)
@@ -19,10 +28,7 @@ export default function ModalBox({ title, description, children, alignDescriptio
                 return (
                     <Box.Column style={ styles.contentContainer }>
                         {
-                            (description as string[])
-                                .map((text, i) => (
-                                    <Text style={ styles.contentText } key={ i }>{ text }</Text>
-                                ))
+                            (description as string[]).map((text, i) => <CustomText key={ i } isOpposite>{ text }</CustomText>)
                         }
                     </Box.Column>
                 )
@@ -50,12 +56,19 @@ export default function ModalBox({ title, description, children, alignDescriptio
                 <Box.Column style={{
                     ...styles.container,
                     alignItems: alignDescriptionInCenter ? "center" : "flex-start",
+                    backgroundColor: systemStyle.primary,
                 }}>
                     {
                         title
                             ? <>
-                                <Box.Row style={ styles.titleContainer }>
-                                    <Text style={ styles.titleText }>{ title }</Text>
+                                <Box.Row style={{
+                                    ...styles.titleContainer,
+                                    borderBottomColor: systemStyle.oppositeTextColor,
+                                }}>
+                                    <CustomText
+                                        style={ styles.titleText }
+                                        isOpposite
+                                    >{ title }</CustomText>
                                 </Box.Row>
                                 { renderModalContent() }
                             </>
@@ -69,8 +82,6 @@ export default function ModalBox({ title, description, children, alignDescriptio
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: "darkblue",
-        // alignItems: "center",
         width: "80%",
         gap: 10,
         padding: 10,
@@ -79,18 +90,11 @@ const styles = StyleSheet.create({
     titleContainer: {
         paddingBottom: 5,
         borderBottomWidth: 1,
-        borderBottomColor: "white",
     },
     contentContainer: {
         gap: 5,
     },
     titleText: {
-        color: "white",
-        fontSize: 22,
         width: "100%",
-    },
-    contentText: {
-        color: "white",
-        fontSize: 18,
     },
 })

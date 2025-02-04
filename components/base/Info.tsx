@@ -5,6 +5,8 @@ import IconEvilIcons from "react-native-vector-icons/EvilIcons"
 import IconFeather from "react-native-vector-icons/Feather"
 import ModalBox from "./ModalBox"
 import React from "react"
+import { StyleContextProvider } from "@/contexts/StyleContext"
+import CustomText from "../customs/CustomText"
 
 type InfoProps = {
     type?: "error" | "warn" | "success" | "info" | "question"
@@ -12,7 +14,6 @@ type InfoProps = {
     modalTitle: string
     modalDescription: string[] | JSX.Element[]
     overrideInfoColor?: string
-    iconSize?: number
 }
 
 export default function Info({
@@ -21,8 +22,8 @@ export default function Info({
     modalTitle,
     modalDescription,
     overrideInfoColor,
-    iconSize = 20,
 }: InfoProps) {
+    const { systemStyle } = StyleContextProvider()
     const [ open, setOpen ] = useState<boolean>(false)
 
     const renderColor = () => {
@@ -52,7 +53,7 @@ export default function Info({
                         ? (
                             <IconEvilIcons
                                 name="question"
-                                size={ iconSize }
+                                size={ systemStyle.largeIconSize }
                                 color={
                                     overrideInfoColor
                                         ? overrideInfoColor
@@ -64,7 +65,7 @@ export default function Info({
                         : (
                             <IconFeather
                                 name="info"
-                                size={ iconSize }
+                                size={ systemStyle.normalIconSize }
                                 color={
                                     overrideInfoColor
                                         ? overrideInfoColor
@@ -77,7 +78,7 @@ export default function Info({
                 {
                     infoDescription
                         ? (
-                            <Text
+                            <CustomText
                                 style={{
                                     color: overrideInfoColor
                                         ? overrideInfoColor
@@ -86,7 +87,7 @@ export default function Info({
                                 onPress={ () => setOpen(true) }
                             >
                                 { infoDescription }
-                            </Text>
+                            </CustomText>
                         )
                         : <></>
                 }

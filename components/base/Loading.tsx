@@ -1,3 +1,4 @@
+import React from "react"
 import { ActivityIndicator, Text, View } from "react-native"
 
 type LoadingProps = {
@@ -5,6 +6,8 @@ type LoadingProps = {
     text?: string
     textColor?: string
 }
+
+// ESSE COMPONENTE NÃO PUXA O ESTILO GLOBAL DEVIDO A SUA ORDEM DE RENDERIZAÇÃO
 
 /** Componente de loading padrão para a aplicação */
 export default function Loading({

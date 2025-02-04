@@ -1,5 +1,4 @@
 import { StyleContextProvider } from "@/contexts/StyleContext"
-import Header from "@/components/base/Header"
 
 export function GetTabStyle() {
     try {
@@ -23,7 +22,6 @@ export function GetTabStyle() {
                 /** Cor do texto das tabs */
                 color: "white",
             },
-            header: () => Header({}),
         }
     }
     catch { return {} }
