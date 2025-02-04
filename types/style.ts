@@ -28,6 +28,7 @@ export type Style = {
     primary: string
     secondary: string
     terciary: string
+    quaternary: string
 
     smallTextSize: number
     normalTextSize: number

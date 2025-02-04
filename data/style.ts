@@ -21,6 +21,7 @@ const defaultStyle: Style = {
     primary: "#fff",
     secondary: "#fff",
     terciary: "#fff",
+    quaternary: "#fff",
     headerTextSize: 23,
     footerTextSize: 23,
     smallTextSize: 16,
@@ -56,6 +57,7 @@ const DarkStyle: Style = {
     primary: "#00008B",
     secondary: "#4169E1",
     terciary: "#12518E",
+    quaternary: "#d3d3d3",
 }
 
 const LightStyle: Style = {
@@ -80,6 +82,7 @@ const LightStyle: Style = {
     primary: "#00008B",
     secondary: "#4169E1",
     terciary: "#12518E",
+    quaternary: "#d3d3d3",
 }
 
 export { LightStyle, DarkStyle }

@@ -1,4 +1,5 @@
 import { Pressable, StyleSheet } from "react-native"
+import { StyleContextProvider } from "@/contexts/StyleContext"
 import { useState } from "react"
 import Box from "@/components/base/Box"
 import CustomButton from "@/components/customs/CustomButton"
@@ -14,7 +15,13 @@ type SimpleSleepStatusProps = {
     setLoading: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export default function SimpleSleepStatus({ isOk, resetSimpleSleep, fetchSimpleSleep, setLoading }: SimpleSleepStatusProps) {
+export default function SimpleSleepStatus({
+    isOk,
+    resetSimpleSleep,
+    fetchSimpleSleep,
+    setLoading,
+}: SimpleSleepStatusProps) {
+    const { systemStyle } = StyleContextProvider()
     const [ isActionModalOpen, setIsActionModalOpen ] = useState<boolean>(false)
     const [ isInfoModalOpen, setIsInfoModalOpen ] = useState<boolean>(false)
 
@@ -41,7 +48,7 @@ export default function SimpleSleepStatus({ isOk, resetSimpleSleep, fetchSimpleS
                                 "Seu sono simples ainda não foi salvo!",
                                 "Se está criando-o pela primeira vez, troque as datas.",
                                 "Se já trocou alguma data e o aviso persiste, seu sono pode estar em conflito com outro, troque novamente.",
-                                "Não se preocupe com esse aviso, você não precisa criar outro sono simples se não quiser!"
+                                "Não se preocupe com esse aviso, você não precisa criar outro sono simples se não quiser!",
                             ]
                 }
             />
@@ -54,20 +61,39 @@ export default function SimpleSleepStatus({ isOk, resetSimpleSleep, fetchSimpleS
                 setIsOpen={ setIsActionModalOpen }
                 onChange={ (e) => handleResetConfirmation(e) }
             />
-            <Box.Row style={ styles.infoSimpleSleep }>
+            <Box.Column style={ styles.infoSimpleSleep }>
                 {
                     isOk
-                        ? <>
-                            <CustomButton title="Cadastrar novo sono simples" onPress={ () => setIsActionModalOpen(true) } />
-                            <Pressable onPress={ () => setIsInfoModalOpen(true) }><IconAntDesign name="checkcircle" color="green" size={ 25 } /></Pressable>
-                        </>
-                        : <>
-                            <CustomButton title="Não cadastrar novo sono simples" onPress={ async () => { await fetchSimpleSleep() } } />
-                            <Pressable onPress={ () => setIsInfoModalOpen(true) }><IconAntDesign name="closecircle" color="red" size={ 25 } /></Pressable>
-                        </>
+                        ? <CustomButton title="Cadastrar novo sono simples" onPress={ () => setIsActionModalOpen(true) } />
+                        : <CustomButton title="Não cadastrar novo sono simples" onPress={ async () => { await fetchSimpleSleep() } } />
                 }
-                <Pressable onPress={ async () => { await refreshSimpleSleep() } }><IconAntDesign name="reload1" color="black" size={ 25 } /></Pressable>
-            </Box.Row>
+                <Box.Row style={ styles.infoSimpleSleepStatusContainer }>
+                    {
+                        isOk
+                            ? <Pressable onPress={ () => setIsInfoModalOpen(true) }>
+                                <IconAntDesign
+                                    name="checkcircle"
+                                    color="green"
+                                    size={ systemStyle.normalIconSize }
+                                />
+                            </Pressable>
+                            : <Pressable onPress={ () => setIsInfoModalOpen(true) }>
+                                <IconAntDesign
+                                    name="closecircle"
+                                    color="red"
+                                    size={ systemStyle.normalIconSize }
+                                />
+                            </Pressable>
+                    }
+                    <Pressable onPress={ async () => { await refreshSimpleSleep() } }>
+                        <IconAntDesign
+                            name="reload1"
+                            color={ systemStyle.iconColor }
+                            size={ systemStyle.normalIconSize }
+                        />
+                    </Pressable>
+                </Box.Row>
+            </Box.Column>
         </>
     )
 }
@@ -86,7 +112,10 @@ const styles = StyleSheet.create({
     infoSimpleSleep: {
         alignItems: "center",
         justifyContent: "center",
-        gap: 20,
+        gap: 10,
         paddingTop: 5,
+    },
+    infoSimpleSleepStatusContainer: {
+        gap: 10,
     },
 })

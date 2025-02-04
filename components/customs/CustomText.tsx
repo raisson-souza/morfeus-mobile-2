@@ -33,7 +33,7 @@ const CustomText: React.FC<CustomTextProps> = ({
         switch (weight) {
             case "thin": return 300
             case "normal": return 400
-            case "bold": return 500
+            case "bold": return 700
         }
     }
 
