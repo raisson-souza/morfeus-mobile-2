@@ -1,14 +1,14 @@
 import { DreamInSleepCycleModelListed } from "./DreamAppender"
 import { Picker } from "@react-native-picker/picker"
-import { StyleSheet, Pressable } from "react-native"
+import { StyleSheet } from "react-native"
 import { useState } from "react"
 import Box from "@/components/base/Box"
 import CustomButton from "@/components/customs/CustomButton"
 import CustomInput from "@/components/customs/CustomInput"
 import CustomSwitch from "@/components/customs/CustomSwitch"
+import CustomText from "@/components/customs/CustomText"
 import Info from "@/components/base/Info"
 import React from "react"
-import TextBold from "@/components/base/TextBold"
 
 type AppendDreamProps = {
     dream: DreamInSleepCycleModelListed
@@ -249,7 +249,7 @@ export default function AppendDream({
                 infoDescription="Horário de um sonho?"
                 modalTitle="HORÁRIOS DE UM SONHO"
                 modalDescription={[
-                    "Seu sonho se passou de manhã? Defina o horário dele aqui."
+                    "Seu sonho se passou de manhã? Defina o horário dele aqui.",
                 ]}
                 type="question"
             />
@@ -257,7 +257,7 @@ export default function AppendDream({
                 selectedValue={ dream.dreamHourId }
                 onValueChange={ (e) => onChange({
                     ...dream,
-                    dreamHourId: e
+                    dreamHourId: e,
                 })}
                 style={ styles.picker }
             >
@@ -272,7 +272,7 @@ export default function AppendDream({
                 infoDescription="Duração de um sonho?"
                 modalTitle="DURAÇÃO DE UM SONHO"
                 modalDescription={[
-                    "Seu sonho pareceu tão longo quanto um episódio de uma série ou foi curto como um flash? Defina a duração dele aqui."
+                    "Seu sonho pareceu tão longo quanto um episódio de uma série ou foi curto como um flash? Defina a duração dele aqui.",
                 ]}
                 type="question"
             />
@@ -293,7 +293,7 @@ export default function AppendDream({
                 infoDescription="Nível de lucidez de um sonho?"
                 modalTitle="LUCIDEZ DE UM SONHO"
                 modalDescription={[
-                    "Você tinha noção de que estava em um sonho ou ao menos sabia quem eram as pessoas em seu sonho? Defina o seu nível de lucidez no sonho aqui."
+                    "Você tinha noção de que estava em um sonho ou ao menos sabia quem eram as pessoas em seu sonho? Defina o seu nível de lucidez no sonho aqui.",
                 ]}
                 type="question"
             />
@@ -301,7 +301,7 @@ export default function AppendDream({
                 selectedValue={ dream.dreamLucidityLevelId }
                 onValueChange={ (e) => onChange({
                     ...dream,
-                    dreamLucidityLevelId: e
+                    dreamLucidityLevelId: e,
                 })}
                 style={ styles.picker }
             >
@@ -314,7 +314,7 @@ export default function AppendDream({
                 infoDescription="Tipo de sonho?"
                 modalTitle="TIPO DE SONHO"
                 modalDescription={[
-                    "Seu sonho foi assustador ou não? Define se teve um sonho ou um pesadelo."
+                    "Seu sonho foi assustador ou não? Define se teve um sonho ou um pesadelo.",
                 ]}
                 type="question"
             />
@@ -322,7 +322,7 @@ export default function AppendDream({
                 selectedValue={ dream.dreamTypeId }
                 onValueChange={ (e) => onChange({
                     ...dream,
-                    dreamTypeId: e
+                    dreamTypeId: e,
                 })}
                 style={ styles.picker }
             >
@@ -334,7 +334,7 @@ export default function AppendDream({
                 infoDescription="Nível de realidade de um sonho?"
                 modalTitle="REALIDADE DE UM SONHO"
                 modalDescription={[
-                    "Voou mais alto que um avião? Defina aqui o nível de realidade de seu sonho."
+                    "Voou mais alto que um avião? Defina aqui o nível de realidade de seu sonho.",
                 ]}
                 type="question"
             />
@@ -342,7 +342,7 @@ export default function AppendDream({
                 selectedValue={ dream.dreamRealityLevelId }
                 onValueChange={ (e) => onChange({
                     ...dream,
-                    dreamRealityLevelId: e
+                    dreamRealityLevelId: e,
                 })}
                 style={ styles.picker }
             >
@@ -354,7 +354,7 @@ export default function AppendDream({
                 <Info
                     modalTitle="SONHO ERÓTICO"
                     modalDescription={[
-                        "Seu sonho conteve conteúdo sexual? Se sim, marque essa opção, esse sonho não será mostrado com os outros na listagem, fique tranquilo!"
+                        "Seu sonho conteve conteúdo sexual? Se sim, marque essa opção, esse sonho não será mostrado com os outros na listagem, fique tranquilo!",
                     ]}
                 />
                 <CustomSwitch
@@ -362,7 +362,7 @@ export default function AppendDream({
                     value={ dream.eroticDream }
                     onChange={ (e) => { onChange({
                         ...dream,
-                        eroticDream: e
+                        eroticDream: e,
                     })}}
                 />
             </Box.Row>
@@ -370,7 +370,7 @@ export default function AppendDream({
                 <Info
                     modalTitle="SONHO OCULTO"
                     modalDescription={[
-                        "Assunto delicado? Pessoas indesejadas no sonho? Se sim, marque essa opção, esse sonho não será mostrado com os outros na listagem, fique tranquilo!"
+                        "Assunto delicado? Pessoas indesejadas no sonho? Se sim, marque essa opção, esse sonho não será mostrado com os outros na listagem, fique tranquilo!",
                     ]}
                 />
                 <CustomSwitch
@@ -378,7 +378,7 @@ export default function AppendDream({
                     value={ dream.hiddenDream }
                     onChange={ (e) => { onChange({
                         ...dream,
-                        hiddenDream: e
+                        hiddenDream: e,
                     })}}
                 />
             </Box.Row>
@@ -386,7 +386,7 @@ export default function AppendDream({
                 infoDescription="Análise pessoal?"
                 modalTitle="ANÁLISE PESSOAL"
                 modalDescription={[
-                    "Seu sonho faz sentido? Há uma mensagem oculta de seu subconsciente? Defina aqui (se quiser) uma interpretação pessoal de seu sonho."
+                    "Seu sonho faz sentido? Há uma mensagem oculta de seu subconsciente? Defina aqui (se quiser) uma interpretação pessoal de seu sonho.",
                 ]}
                 type="question"
             />
@@ -404,7 +404,7 @@ export default function AppendDream({
                         modalDescription={[
                             "Quantas vezes você já sonhou com aquela pessoa ou aquele lugar? mencione-o aqui em uma tag e adicione!",
                             "Você pode sonhar com isso de novo e essas ocorrências serão mapeadas, adicione quantas tags achar necessário sobre seu sonho. Exemplo: Cachorro, Casa, Mãe, Evento...",
-                            `É possível filtrar sonhos por TAGs, portanto, você pode encontrar todos os sonhos em que "${ dream.tags[0] ? dream.tags[0].toLowerCase() : "cachorro" }" aparece.`
+                            `É possível filtrar sonhos por TAGs, portanto, você pode encontrar todos os sonhos em que "${ dream.tags[0] ? dream.tags[0].toLowerCase() : "cachorro" }" aparece.`,
                         ]}
                         type="question"
                     />
@@ -422,12 +422,13 @@ export default function AppendDream({
                 <Box.Row style={ styles.tagsContainer }>
                     {
                         dream.tags.map((tag, i) => {
-                            return <Pressable
+                            return <CustomText
+                                style={ styles.tag }
                                 onPress={ () => removeTag(tag) }
                                 key={ i }
                             >
-                                <TextBold style={ styles.tag }>{ tag }</TextBold>
-                            </Pressable>
+                                { tag }
+                            </CustomText>
                         })
                     }
                 </Box.Row>

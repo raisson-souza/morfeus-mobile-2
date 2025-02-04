@@ -3,8 +3,8 @@ import { StyleSheet } from "react-native"
 import { useState } from "react"
 import Box from "@/components/base/Box"
 import CustomSwitch from "@/components/customs/CustomSwitch"
+import CustomText from "@/components/customs/CustomText"
 import React from "react"
-import TextBold from "@/components/base/TextBold"
 
 type HumorsFormProps = {
     title: string
@@ -27,7 +27,10 @@ export default function HumorsForm({
                     label=""
                     onChange={ (e) => setOpen(e) }
                 />
-                <TextBold>{ title }</TextBold>
+                <CustomText
+                    weight="bold"
+                    size="s"
+                >{ title }</CustomText>
             </Box.Row>
             {
                 open

@@ -1,9 +1,10 @@
-import { Linking, StyleSheet } from "react-native"
+import { StyleContextProvider } from "@/contexts/StyleContext"
+import { StyleSheet } from "react-native"
 import Box from "@/components/base/Box"
 import CustomButton from "@/components/customs/CustomButton"
+import CustomText from "@/components/customs/CustomText"
 import env from "@/config/env"
 import ModalBox from "@/components/base/ModalBox"
-import TextBold from "@/components/base/TextBold"
 
 type AppInfoProps = {
     open: boolean
@@ -14,6 +15,8 @@ export default function AppInfo({
     open,
     setOpen,
 }: AppInfoProps) {
+    const { systemStyle } = StyleContextProvider()
+
     return <ModalBox
         visible={ open }
         setVisible={ setOpen }
@@ -23,11 +26,18 @@ export default function AppInfo({
                 <CustomButton
                     title="FECHAR"
                     onPress={ () => setOpen(false) }
-                    btnTextColor={ styles.text.color }
+                    btnTextColor={ systemStyle.oppositeTextColor }
                 />
                 <Box.Column style={ styles.developerContainer }>
-                    <TextBold style={ styles.text }>Versão { env.AppVersion() }</TextBold>
-                    <TextBold style={ styles.developerText }>Desenvolvido por Raisson Souza</TextBold>
+                    <CustomText
+                        style={ styles.text }
+                        isOpposite
+                        weight="thin"
+                    >{ `Versão ${ env.AppVersion() }` }</CustomText>
+                    <CustomText
+                        isOpposite
+                        weight="thin"
+                    >Desenvolvido por Raisson Souza</CustomText>
                 </Box.Column>
             </Box.Column>
         }
@@ -42,13 +52,7 @@ const styles = StyleSheet.create({
     developerContainer: {
         alignItems: "center",
     },
-    developerText: {
-        fontSize: 16,
-        color: "white",
-    },
     text: {
-        color: "white",
-        fontSize: 20,
         textAlign: "center",
     },
 })

@@ -1,13 +1,14 @@
 import { DefaultDreamClimate } from "@/types/dreamClimate"
 import { DreamInSleepCycleModel } from "@/types/sleeps"
+import { StyleContextProvider } from "@/contexts/StyleContext"
 import { StyleSheet } from "react-native"
 import { useState } from "react"
 import AppendDream from "./AppendDream"
 import Box from "@/components/base/Box"
 import CustomButton from "@/components/customs/CustomButton"
+import CustomText from "@/components/customs/CustomText"
 import IconAntDesign from "react-native-vector-icons/AntDesign"
 import React from "react"
-import TextBold from "@/components/base/TextBold"
 
 export type DreamInSleepCycleModelListed = {
     open: boolean
@@ -21,6 +22,7 @@ type DreamAppenderProps = {
 export default function DreamAppender({
     onChange,
 }: DreamAppenderProps) {
+    const { systemStyle } = StyleContextProvider()
     const [ dreams, setDreams ] = useState<DreamInSleepCycleModelListed[]>([])
     const [ creatingDream, setCreatingDream ] = useState<boolean>(false)
     const [ newDream, setNewDream ] = useState<DreamInSleepCycleModelListed | null>(null)
@@ -106,7 +108,6 @@ export default function DreamAppender({
     if (dreams.length === 0 && creatingDream) {
         return (
             <Box.Column style={ styles.firstDreamContainer }>
-                <TextBold>Cadastro de Sonho</TextBold>
                 <AppendDream
                     dream={ newDream ? newDream : getNewDreamModel() }
                     onChange={ (e) => { updateDream(e) }}
@@ -132,9 +133,17 @@ export default function DreamAppender({
                             style={ styles.dream }
                             key={ i }
                         >
-                            <Box.Row onPress={ () => openDream(dream.id) }>
-                                <IconAntDesign name={ dream.open ? "down" : "right" } size={ 20 } />
-                                <TextBold>{ `Sonho ${ i + 1 } - ${ dream.title }` }</TextBold>
+                            <Box.Row
+                                onPress={ () => openDream(dream.id) }
+                                style={ styles.dreamTitleContainer }
+                            >
+                                <IconAntDesign
+                                    name={ dream.open ? "down" : "right" }
+                                    size={ systemStyle.normalIconSize }
+                                />
+                                <CustomText
+                                    weight="bold"
+                                >{ `Sonho ${ i + 1 } - ${ dream.title }` }</CustomText>
                             </Box.Row>
                             {
                                 dream.open
@@ -156,7 +165,10 @@ export default function DreamAppender({
                 creatingDream
                     ? (
                         <Box.Column style={ styles.anotherDreamContainer }>
-                            <TextBold>Cadastrando novo sonho</TextBold>
+                            <CustomText
+                                weight="bold"
+                                size="s"
+                            >Cadastrando novo sonho</CustomText>
                             <AppendDream
                                 dream={ newDream! }
                                 onChange={ (e) => updateDream(e) }
@@ -201,4 +213,7 @@ const styles = StyleSheet.create({
     anotherDreamContainer: {
         gap: 5,
     },
+    dreamTitleContainer: {
+        alignItems: 'center',
+    }
 })

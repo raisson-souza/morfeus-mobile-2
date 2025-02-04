@@ -1,6 +1,8 @@
-import { StyleSheet, Text } from "react-native"
+import { StyleContextProvider } from "@/contexts/StyleContext"
+import { StyleSheet } from "react-native"
 import Box from "@/components/base/Box"
 import Carousel from "@/components/base/Carousel"
+import CustomText from "@/components/customs/CustomText"
 import IconFontAwesome from "react-native-vector-icons/FontAwesome"
 import IconFontAwesome5 from "react-native-vector-icons/FontAwesome5"
 import IconFontAwesome6 from "react-native-vector-icons/FontAwesome6"
@@ -9,7 +11,6 @@ import IconIonicons from "react-native-vector-icons/Ionicons"
 import IconMaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
 import IconMaterialIcons from "react-native-vector-icons/MaterialIcons"
 import React, { useId } from "react"
-import TextBold from "@/components/base/TextBold"
 
 type BiologicalOccurencesInfoModalProps = {
     visible: boolean
@@ -20,6 +21,7 @@ export default function BiologicalOccurencesInfoModal({
     visible,
     setVisible,
 }: BiologicalOccurencesInfoModalProps) {
+    const { systemStyle } = StyleContextProvider()
     const biologicalOccurenceInfoIconWrapper = (icon: JSX.Element, title: string, description: string) => {
         return (
             <Box.Row
@@ -27,85 +29,91 @@ export default function BiologicalOccurencesInfoModal({
                 key={ useId() }
             >
                 { icon }
-                <TextBold style={ styles.iconWrapperText }>{ `${ title }:` }</TextBold>
-                <Text style={ styles.iconWrapperText }>{ description }</Text>
+                <CustomText
+                    isOpposite
+                >{ `${ title }:` }</CustomText>
+                <CustomText
+                    isOpposite
+                    size="s"
+                    weight="thin"
+                >{ description }</CustomText>
             </Box.Row>
         )
     }
 
     const biologicalOccurencesInfo = [
         biologicalOccurenceInfoIconWrapper(
-            <IconFontAwesome5 name="hand-holding-water" color="white" />,
+            <IconFontAwesome5 name="hand-holding-water" color={ systemStyle.oppositeIconColor } />,
             "Sudorese",
             biologicalOccurencesDescriptions.sudorese
         ),
         biologicalOccurenceInfoIconWrapper(
-            <IconFontAwesome5 name="teeth" color="white" />,
+            <IconFontAwesome5 name="teeth" color={ systemStyle.oppositeIconColor } />,
             "Bruxismo",
             biologicalOccurencesDescriptions.bruxismo
         ),
         biologicalOccurenceInfoIconWrapper(
-            <IconFontAwesome5 name="lungs" color="white" />,
+            <IconFontAwesome5 name="lungs" color={ systemStyle.oppositeIconColor } />,
             "Apnéia do Sono",
             biologicalOccurencesDescriptions.apneiaDoSono
         ),
         biologicalOccurenceInfoIconWrapper(
-            <IconFontisto name="open-mouth" color="white" />,
+            <IconFontisto name="open-mouth" color={ systemStyle.oppositeIconColor } />,
             "Ronco",
             biologicalOccurencesDescriptions.ronco
         ),
         biologicalOccurenceInfoIconWrapper(
-            <IconIonicons name="body" color="white" />,
+            <IconIonicons name="body" color={ systemStyle.oppositeIconColor } />,
             "Movimento Periódico dos Membros",
             biologicalOccurencesDescriptions.movimentosPeriodicosDosMembros
         ),
         biologicalOccurenceInfoIconWrapper(
-            <IconIonicons name="alarm" color="white" />,
+            <IconIonicons name="alarm" color={ systemStyle.oppositeIconColor } />,
             "Despertares Parciais",
             biologicalOccurencesDescriptions.despertaresParciais
         ),
         biologicalOccurenceInfoIconWrapper(
-            <IconMaterialCommunityIcons name="water-alert" color="white" />,
+            <IconMaterialCommunityIcons name="water-alert" color={ systemStyle.oppositeIconColor } />,
             "Refluxo Gastroesofágico",
             biologicalOccurencesDescriptions.refluxoGastroesofagico
         ),
         biologicalOccurenceInfoIconWrapper(
-            <IconFontAwesome6 name="glass-water" color="white" />,
+            <IconFontAwesome6 name="glass-water" color={ systemStyle.oppositeIconColor } />,
             "Sialorréia",
             biologicalOccurencesDescriptions.sialorreia
         ),
         biologicalOccurenceInfoIconWrapper(
-            <IconFontAwesome name="heartbeat" color="white" />,
+            <IconFontAwesome name="heartbeat" color={ systemStyle.oppositeIconColor } />,
             "Arritmias",
             biologicalOccurencesDescriptions.arritmias
         ),
         biologicalOccurenceInfoIconWrapper(
-            <IconMaterialIcons name="sports-gymnastics" color="white" />,
+            <IconMaterialIcons name="sports-gymnastics" color={ systemStyle.oppositeIconColor } />,
             "Mioclonia",
             biologicalOccurencesDescriptions.mioclonia
         ),
         biologicalOccurenceInfoIconWrapper(
-            <IconFontisto name="confused" color="white" />,
+            <IconFontisto name="confused" color={ systemStyle.oppositeIconColor } />,
             "Parassonia",
             biologicalOccurencesDescriptions.parassonia
         ),
         biologicalOccurenceInfoIconWrapper(
-            <IconFontisto name="blood-drop" color="white" />,
+            <IconFontisto name="blood-drop" color={ systemStyle.oppositeIconColor } />,
             "Epistaxe",
             biologicalOccurencesDescriptions.epistaxe
         ),
         biologicalOccurenceInfoIconWrapper(
-            <IconMaterialCommunityIcons name="toilet" color="white" />,
+            <IconMaterialCommunityIcons name="toilet" color={ systemStyle.oppositeIconColor } />,
             "Micção Involuntária",
             biologicalOccurencesDescriptions.miccaoInvoluntaria
         ),
         biologicalOccurenceInfoIconWrapper(
-            <IconMaterialCommunityIcons name="toilet" color="white" />,
+            <IconMaterialCommunityIcons name="toilet" color={ systemStyle.oppositeIconColor } />,
             "Evacuação Involuntária",
             biologicalOccurencesDescriptions.evacuacaoInvoluntaria
         ),
         biologicalOccurenceInfoIconWrapper(
-            <Text style={ styles.iconWrapperText }>+18</Text>,
+            <CustomText isOpposite>+18</CustomText>,
             "Polução Noturna",
             biologicalOccurencesDescriptions.polucao
         ),
@@ -124,9 +132,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         flexWrap: 'wrap',
         gap: 5,
-    },
-    iconWrapperText: {
-        color: 'white',
     },
 })
 
