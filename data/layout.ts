@@ -5,9 +5,9 @@ export function GetTabStyle() {
         const { systemStyle } = StyleContextProvider()
         return {
             /** Cor de fundo da tab ativa */
-            tabBarActiveBackgroundColor: "royalblue",
+            tabBarActiveBackgroundColor: systemStyle.secondary,
             /** Cor de fundo das tabs inativas */
-            tabBarInactiveBackgroundColor: "darkblue",
+            tabBarInactiveBackgroundColor: systemStyle.primary,
             /** Cor de título do header da tab atual */
             headerTintColor: systemStyle.headerTextColor,
             headerStyle: {
@@ -39,5 +39,12 @@ export function GetStackStyle() {
             headerTintColor: systemStyle.headerTextColor,
         }
     }
-    catch { return {} }
+    catch { // headerStyle e headerTintColor com valores mockados devido a ordem de renderização do primeiro layout
+        return {
+            headerStyle: {
+                backgroundColor: "#00008B",
+            },
+            headerTintColor: "#fff",
+        }
+    }
 }

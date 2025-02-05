@@ -2,13 +2,14 @@ import { AuthContextProvider } from "@/contexts/AuthContext"
 import { LoginForm } from "@/types/login"
 import { loginValidator } from "@/validators/login"
 import { Screen } from "@/components/base/Screen"
-import { StyleSheet, Text } from "react-native"
+import { StyleSheet } from "react-native"
 import { useRouter } from "expo-router"
 import { useState } from "react"
 import AuthRedirect from "@/components/auth/AuthRedirect"
 import Box from "@/components/base/Box"
 import CustomButton from "@/components/customs/CustomButton"
 import CustomInput from "@/components/customs/CustomInput"
+import CustomText from "@/components/customs/CustomText"
 import Loading from "@/components/base/Loading"
 import React from "react"
 import validatorErrorParser from "@/validators/base/validatorErrorParser"
@@ -40,7 +41,10 @@ export default function LoginScreen() {
         <AuthRedirect>
             <Screen flex>
                 <Box.Center style={ styles.container }>
-                    <Text style={ styles.title }>Realize seu login</Text>
+                    <CustomText
+                        size="l"
+                        weight="bold"
+                    >Realize seu login</CustomText>
                     <Box.Column style={ styles.container }>
                         <CustomInput
                             label="Email"
@@ -75,9 +79,6 @@ export default function LoginScreen() {
 }
 
 const styles = StyleSheet.create({
-    title: {
-        fontSize: 22,
-    },
     container: {
         gap: 10,
     },

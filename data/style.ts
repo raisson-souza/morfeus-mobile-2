@@ -67,22 +67,22 @@ const LightStyle: Style = {
     headerBackgroundColor: "#00008B",
     headerTextColor: "#fff",
     footerBackgroundColor: "#00008B",
-    footerSelectedTabBackgroundColor: "#4169E1",
+    footerSelectedTabBackgroundColor: "#4169E1", // royalblue
     btnImportantBackgroundColor: "#00008B",
     footerIconColor: "#fff",
     footerTextColor: "#fff",
     textColor: "#000",
-    inactiveTextColor: "#808080",
+    inactiveTextColor: "#808080", // gray
     oppositeTextColor: "#fff",
     iconColor: "#000",
-    inactiveIconColor: "#808080",
+    inactiveIconColor: "#808080", // gray
     oppositeIconColor: "#fff",
-    btnOutlineColor: "#38B4E1",
+    btnOutlineColor: "#38B4E1", // lightblue
     btnBackgroundColor: "#fff",
-    primary: "#00008B",
-    secondary: "#4169E1",
-    terciary: "#12518E",
-    quaternary: "#d3d3d3",
+    primary: "#00008B", // darkblue
+    secondary: "#4169E1", // royalblue
+    terciary: "#12518E", // other dark blue
+    quaternary: "#d3d3d3", // gray
 }
 
 export { LightStyle, DarkStyle }
