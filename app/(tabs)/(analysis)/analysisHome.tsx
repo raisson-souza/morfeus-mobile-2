@@ -5,10 +5,10 @@ import { SyncContextProvider } from "@/contexts/SyncContext"
 import { useRouter, useNavigation } from "expo-router"
 import Box from "@/components/base/Box"
 import CustomButton from "@/components/customs/CustomButton"
+import CustomText from "@/components/customs/CustomText"
 import HELPERS from "@/data/helpers"
 import Info from "@/components/base/Info"
 import React, { useEffect, useState } from "react"
-import TextBold from "@/components/base/TextBold"
 
 export default function AnalysisIndexScreen() {
     const router = useRouter()
@@ -48,7 +48,12 @@ export default function AnalysisIndexScreen() {
                                     onPress={ () => router.navigate("/(tabs)/(analysis)/listSleepsAnalysis")}
                                 />
                             </Box.Column>
-                        : <TextBold style={ styles.offlineText }>As funcionalidades de análise não estão disponíveis offline, conecte-se a internet!</TextBold>
+                        : <CustomText
+                            style={ styles.offlineText }
+                            weight="bold"
+                        >
+                            As funcionalidades de análise não estão disponíveis offline, conecte-se a internet!
+                        </CustomText>
                 }
             </Box.Center>
         </Screen>

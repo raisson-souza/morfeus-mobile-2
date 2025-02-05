@@ -7,12 +7,12 @@ import { useEffect, useState } from "react"
 import { useRouter } from "expo-router"
 import Box from "@/components/base/Box"
 import CustomButton from "@/components/customs/CustomButton"
+import CustomText from "@/components/customs/CustomText"
 import Loading from "@/components/base/Loading"
 import MonthExtractorHeader from "@/components/screens/general/MonthExtractorHeader"
 import React from "react"
 import SleepListedByUser from "@/components/screens/sleeps/SleepListedByUser"
 import SleepService from "@/services/api/SleepService"
-import TextBold from "@/components/base/TextBold"
 
 export default function SleepsListScreen() {
     const router = useRouter()
@@ -49,11 +49,7 @@ export default function SleepsListScreen() {
                 return (
                     <>
                         <Box.Column style={ styles.sleepsCycleList }>
-                            {
-                                sleeps.map((sleepCycle, i) => {
-                                    return <SleepListedByUser sleepCycle={ sleepCycle } key={ i } />
-                                })
-                            }
+                            { sleeps.map((sleepCycle, i) => <SleepListedByUser sleepCycle={ sleepCycle } key={ i } />) }
                         </Box.Column>
                         {
                             sleeps.length >= 10
@@ -70,9 +66,9 @@ export default function SleepsListScreen() {
                     </>
                 )
             }
-            return <TextBold style={ styles.noSleepCycleFound }>Nenhum Ciclo de Sono encontrado.</TextBold>
+            return <CustomText style={ styles.noSleepCycleFound }>Nenhum Ciclo de Sono encontrado.</CustomText>
         }
-        return <TextBold style={ styles.errorSleepCycle }>{ `Houve um erro ao buscar os ciclos de sono: ${ errorMessage }` }</TextBold>
+        return <CustomText style={ styles.errorSleepCycle }>{ `Houve um erro ao buscar os ciclos de sono: ${ errorMessage }` }</CustomText>
     }
 
     return (

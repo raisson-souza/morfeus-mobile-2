@@ -12,7 +12,6 @@ import Loading from "@/components/base/Loading"
 import ModalBox from "@/components/base/ModalBox"
 import React from "react"
 import SleepService from "@/services/api/SleepService"
-import TextBold from "@/components/base/TextBold"
 
 type SleepExtractionBySleepCycleProps = {
     sleepId: number | null
@@ -193,7 +192,12 @@ export default function SleepExtractionBySleepCycle({
                                         Fim do sono: { DateFormatter.removeTime(selectedSleep.sleepEnd) } { DateFormatter.removeDate(selectedSleep.sleepEnd) }
                                     </Text>
                                 </Box.Column>
-                                : <TextBold style={{ color: textColor, ...styles.centerDefaultMessage }}>Nenhum ciclo de sono selecionado.</TextBold>
+                                : <CustomText
+                                    style={{ color: textColor, ...styles.centerDefaultMessage }}
+                                    weight="bold"
+                                >
+                                    Nenhum ciclo de sono selecionado.
+                                </CustomText>
                             : <></>
                     }
                     <CustomButton

@@ -9,13 +9,13 @@ import { useLocalSearchParams, useNavigation, useRouter } from "expo-router"
 import Box from "@/components/base/Box"
 import CreateCompleteDream from "@/components/screens/dreams/CreateCompleteDream"
 import CustomButton from "@/components/customs/CustomButton"
+import CustomText from "@/components/customs/CustomText"
 import DreamService from "@/services/api/DreamService"
 import Loading from "@/components/base/Loading"
 import React from "react"
 import SleepExtractionBySleepCycle from "@/components/screens/dreams/sleepInfoForDreamCreation/SleepExtractionBySleepCycle"
 import SleepService from "@/services/api/SleepService"
 import TagService from "@/services/api/TagService"
-import TextBold from "@/components/base/TextBold"
 
 type UpdateDreamParams = {
     id: string
@@ -115,18 +115,18 @@ export default function UpdateDreamScreen() {
             return <Loading text="Buscando Sonho..." onlyLoading={ false } />
 
         if (errorOnFetch)
-            return <TextBold>Ocorreu um erro ao buscar o sonho.</TextBold>
+            return <CustomText>Ocorreu um erro ao buscar o sonho.</CustomText>
 
         if (dream && sleepInfo) {
             return <>
                 <Box.Column>
-                    <Box.Row>
-                        <TextBold>{ `Início do sono: ` }</TextBold>
-                        <Text>{ DateFormatter.removeTime(sleepInfo.sleepStart) } { DateFormatter.removeDate(sleepInfo.sleepStart) }</Text>
+                    <Box.Row style={ styles.dreamSleepCycle }>
+                        <CustomText weight="bold">{ `Início do sono: ` }</CustomText>
+                        <CustomText weight="thin">{ `${ DateFormatter.removeTime(sleepInfo.sleepStart) } ${ DateFormatter.removeDate(sleepInfo.sleepStart) }` }</CustomText>
                     </Box.Row>
-                    <Box.Row>
-                        <TextBold>{ `Fim do sono: ` }</TextBold>
-                        <Text>{ DateFormatter.removeTime(sleepInfo.sleepEnd) } { DateFormatter.removeDate(sleepInfo.sleepEnd) }</Text>
+                    <Box.Row style={ styles.dreamSleepCycle }>
+                        <CustomText weight="bold">{ `Fim do sono: ` }</CustomText>
+                        <CustomText weight="thin">{ `${ DateFormatter.removeTime(sleepInfo.sleepEnd) } ${ DateFormatter.removeDate(sleepInfo.sleepEnd) }` }</CustomText>
                     </Box.Row>
                 </Box.Column>
                 {
@@ -191,4 +191,7 @@ const styles = StyleSheet.create({
         width: "100%",
         gap: 10,
     },
+    dreamSleepCycle: {
+        alignItems: "center",
+    }
 })

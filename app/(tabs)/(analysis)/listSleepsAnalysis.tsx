@@ -1,12 +1,14 @@
 import { DateFormatter } from "@/utils/DateFormatter"
 import { Screen } from "@/components/base/Screen"
 import { SleepAnalysisModel } from "@/types/sleepAnalysis"
+import { StyleContextProvider } from "@/contexts/StyleContext"
 import { StyleSheet } from "react-native"
 import { useEffect, useState } from "react"
 import { useRouter } from "expo-router"
 import AnalysisService from "@/services/api/AnalysisService"
 import Box from "@/components/base/Box"
 import CustomButton from "@/components/customs/CustomButton"
+import CustomText from "@/components/customs/CustomText"
 import IconFontAwesome5 from "react-native-vector-icons/FontAwesome5"
 import IconMaterialIcons from "react-native-vector-icons/MaterialIcons"
 import Info from "@/components/base/Info"
@@ -14,7 +16,6 @@ import Loading from "@/components/base/Loading"
 import MonthExtractorHeader from "@/components/screens/general/MonthExtractorHeader"
 import React from "react"
 import SleepHumorTranslator from "@/utils/SleepHumorTranslator"
-import TextBold from "@/components/base/TextBold"
 
 type DisableFetchActions = {
     get: boolean
@@ -22,6 +23,7 @@ type DisableFetchActions = {
 }
 
 export default function ListSleepsAnalysisScreen() {
+    const { systemStyle } = StyleContextProvider()
     const router = useRouter()
     const [ date, setDate ] = useState<Date>(DateFormatter.fixUTC(new Date().getTime()))
     const [ analysis, setAnalysis ] = useState<SleepAnalysisModel | null>(null)
@@ -91,7 +93,9 @@ export default function ListSleepsAnalysisScreen() {
         if (!analysis) {
             return (
                 <Box.Column style={ styles.analysisContainer }>
-                    <TextBold>{ errorMessage }</TextBold>
+                    <CustomText
+                        weight="thin"
+                    >{ errorMessage }</CustomText>
                     <CustomButton
                         title="Buscar Análise"
                         onPress={ async () => {
@@ -135,10 +139,12 @@ export default function ListSleepsAnalysisScreen() {
                 <Box.Row style={ styles.individualAnalysis }>
                     {
                         iconLib === "fontAwesome5"
-                            ? <IconFontAwesome5 name={ iconName } size={ 20 } />
-                            : <IconMaterialIcons name={ iconName } size={ 20 } />
+                            ? <IconFontAwesome5 name={ iconName } size={ systemStyle.smallIconSize } />
+                            : <IconMaterialIcons name={ iconName } size={ systemStyle.normalIconSize } />
                     }
-                    <TextBold>{ msg }</TextBold>
+                    <CustomText
+                        weight="thin"
+                    >{ msg }</CustomText>
                 </Box.Row>
             )
         }
@@ -167,7 +173,9 @@ export default function ListSleepsAnalysisScreen() {
             if (dreamsCount != 0 || mostSleepDuration != 0 || leastSleepDuration != 0 || averageDreamPerSleep != 0 || sleepDurationAverage != 0) {
                 return (
                     <Box.Column style={ styles.groupAnalysisContainer }>
-                        <TextBold>Estatísticas gerais:</TextBold>
+                        <CustomText
+                            weight="bold"
+                        >Estatísticas gerais:</CustomText>
                         { renderIndividualAnalysis(dreamsCount, `Quantidade de sonhos: ${ dreamsCount }`, "cloud-meatball") }
                         { renderIndividualAnalysis(mostSleepDuration, `Maior duração de sono: ${ mostSleepDuration } horas`, "cloud") }
                         { renderIndividualAnalysis(leastSleepDuration, `Menor duração de sono: ${ leastSleepDuration } horas`, "cloud") }
@@ -183,7 +191,9 @@ export default function ListSleepsAnalysisScreen() {
             if (goodWakeUpHumorPercentage != 0 || badWakeUpHumorPercentage != 0 || goodLayDownHumorPercentage != 0 ||badLayDownHumorPercentage != 0) {
                 return (
                     <Box.Column style={ styles.groupAnalysisContainer }>
-                        <TextBold>Porcentagens sobre humores:</TextBold>
+                        <CustomText
+                            weight="bold"
+                        >Porcentagens sobre humores:</CustomText>
                         { renderIndividualAnalysis(goodWakeUpHumorPercentage, `Bom humor ao acordar: ${ goodWakeUpHumorPercentage }%`, "mood", "materialIcons") }
                         { renderIndividualAnalysis(badWakeUpHumorPercentage, `Mau humor ao acordar: ${ badWakeUpHumorPercentage }%`, "mood-bad", "materialIcons") }
                         { renderIndividualAnalysis(goodLayDownHumorPercentage, `Bom humor ao dormir: ${ goodLayDownHumorPercentage }%`, "mood", "materialIcons") }
@@ -198,7 +208,9 @@ export default function ListSleepsAnalysisScreen() {
             if (mostFrequentWakeUpHumor || leastFrequentWakeUpHumor || mostFrequentLayDownHumor || leastFrequentLayDownHumor) {
                 return (
                     <Box.Column style={ styles.groupAnalysisContainer }>
-                        <TextBold>Frequência de humores:</TextBold>
+                        <CustomText
+                            weight="bold"
+                        >Frequência de humores:</CustomText>
                         { renderIndividualAnalysis(mostFrequentWakeUpHumor, `Humor ao acordar mais frequente: ${ SleepHumorTranslator(mostFrequentWakeUpHumor) }`, "sun") }
                         { renderIndividualAnalysis(leastFrequentWakeUpHumor, `Humor ao acordar menos frequente: ${ SleepHumorTranslator(leastFrequentWakeUpHumor) }`, "sun") }
                         { renderIndividualAnalysis(mostFrequentLayDownHumor, `Humor ao dormir mais frequente: ${ SleepHumorTranslator(mostFrequentLayDownHumor) }`, "moon") }
@@ -213,7 +225,9 @@ export default function ListSleepsAnalysisScreen() {
             if (mostFrequentBiologicalOccurence || leastFrequentBiologicalOccurence) {
                 return (
                     <Box.Column style={ styles.groupAnalysisContainer }>
-                        <TextBold>Frequência sobre ocorrências biológicas:</TextBold>
+                        <CustomText
+                            weight="bold"
+                        >Frequência sobre ocorrências biológicas:</CustomText>
                         { renderIndividualAnalysis(mostFrequentBiologicalOccurence, `Ocorrência biológica mais frequente: ${ mostFrequentBiologicalOccurence }`, "health-and-safety", "materialIcons") }
                         { renderIndividualAnalysis(leastFrequentBiologicalOccurence, `Ocorrência biológica menos frequente: ${ leastFrequentBiologicalOccurence }`, "health-and-safety", "materialIcons") }
                     </Box.Column>
@@ -226,7 +240,9 @@ export default function ListSleepsAnalysisScreen() {
             if (mostDreamsPerSleepDate) {
                 return (
                     <Box.Column style={ styles.groupAnalysisContainer }>
-                        <TextBold>Estatísticas diversas:</TextBold>
+                        <CustomText
+                            weight="bold"
+                        >Estatísticas diversas:</CustomText>
                         { renderIndividualAnalysis(mostDreamsPerSleepDate, `Data do ciclo de sono com maior ocorrência de sonhos: ${ mostDreamsPerSleepDate }`, "calendar-day") }
                     </Box.Column>
                 )
@@ -249,7 +265,10 @@ export default function ListSleepsAnalysisScreen() {
 
         return (
             <Box.Column style={ styles.analysisContainer }>
-                <TextBold>Análises obtidas dos ciclos de sono cadastrados no mês escolhido:</TextBold>
+                <CustomText
+                    size="l"
+                    weight="bold"
+                >Análises obtidas dos ciclos de sono cadastrados no mês escolhido:</CustomText>
                 { renderGeneralStatisticsAnalysis() }
                 { renderHumorPercentagesAnalysis() }
                 { renderHumorFrequencesAnalysis() }
@@ -280,7 +299,7 @@ export default function ListSleepsAnalysisScreen() {
                 }
                 <Info
                     type="warn"
-                    overrideInfoColor="black"
+                    overrideInfoColor={ systemStyle.iconColor }
                     infoDescription="Mais análises?"
                     modalTitle="Novas Análises"
                     modalDescription={[
@@ -308,5 +327,6 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
         gap: 5,
         alignItems: "center",
+        flexWrap: "wrap"
     },
 })

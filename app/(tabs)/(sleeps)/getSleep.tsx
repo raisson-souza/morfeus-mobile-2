@@ -3,7 +3,8 @@ import { ListedDreamBySleepCycle } from "@/types/dream"
 import { Screen } from "@/components/base/Screen"
 import { SleepHumorType } from "@/types/sleepHumor"
 import { SleepModel } from "@/types/sleeps"
-import { StyleSheet, Text } from "react-native"
+import { StyleContextProvider } from "@/contexts/StyleContext"
+import { StyleSheet } from "react-native"
 import { SyncContextProvider } from "@/contexts/SyncContext"
 import { useEffect, useState } from "react"
 import { useLocalSearchParams, useRouter } from "expo-router"
@@ -11,6 +12,7 @@ import BiologicalOccurencesInfoModal from "@/components/screens/sleeps/biologica
 import Box from "@/components/base/Box"
 import ConfirmRecordDeletion from "@/components/screens/general/ConfirmRecordDeletion"
 import CustomButton from "@/components/customs/CustomButton"
+import CustomText from "@/components/customs/CustomText"
 import DreamListedByUser from "@/components/screens/dreams/DreamListedByUser"
 import DreamService from "@/services/api/DreamService"
 import IconFeather from "react-native-vector-icons/Feather"
@@ -21,13 +23,13 @@ import isNil from "@/utils/IsNill"
 import Loading from "@/components/base/Loading"
 import React from "react"
 import SleepService from "@/services/api/SleepService"
-import TextBold from "@/components/base/TextBold"
 
 type GetSleepCycleParams = {
     id: string
 }
 
 export default function GetSleepScreen() {
+    const { systemStyle } = StyleContextProvider()
     const router = useRouter()
     const { checkIsConnected } = SyncContextProvider()
     const { id } = useLocalSearchParams<GetSleepCycleParams>()
@@ -89,9 +91,19 @@ export default function GetSleepScreen() {
         else {
             const fixedSleepTime = Number.parseFloat(sleep!.sleepTime.toFixed(2))
             return (
-                <Box.Row style={ styles.gap }>
-                    <IconFeather name="clock" size={ 19 } color="white" />
-                    <TextBold style={{ color: "white" }}>{ `${ fixedSleepTime } horas de sono` }</TextBold>
+                <Box.Row style={ styles.sleepHoursContainer }>
+                    <IconFeather
+                        name="clock"
+                        size={ systemStyle.normalIconSize }
+                        color={ systemStyle.oppositeIconColor }
+                    />
+                    <CustomText
+                        isOpposite
+                        size="s"
+                        weight="thin"
+                    >
+                        { `${ fixedSleepTime } horas de sono` }
+                    </CustomText>
                 </Box.Row>
             )
         }
@@ -101,8 +113,15 @@ export default function GetSleepScreen() {
         if (sleep!.isNightSleep)
             return (
                 <Box.Row style={{ ...styles.gap, ...styles.center }}>
-                    <IconFontisto name="night-clear" size={ 20 } />
-                    <TextBold>Sono Noturno</TextBold>
+                    <IconFontisto
+                        name="night-clear"
+                        size={ systemStyle.normalIconSize }
+                    />
+                    <CustomText
+                        weight="thin"
+                    >
+                        Sono Noturno
+                    </CustomText>
                 </Box.Row>
             )
         else
@@ -133,14 +152,26 @@ export default function GetSleepScreen() {
 
         return (
             <Box.Row style={ styles.humorsAndBiologicalOccurencesContainer }>
-                <IconFeather name={ isWakeUpHumor ? "sunrise" : "sunset"} size={ 22 } />
+                <IconFeather
+                    name={ isWakeUpHumor ? "sunrise" : "sunset"}
+                    size={ systemStyle.normalIconSize }
+                />
                 {
                     humors.length > 1
                         ? <>
-                            <TextBold>{ humorsStr }</TextBold>
-                            <Text>{ humors.join(", ") }</Text>
+                            <CustomText
+                                size="s"
+                                weight="bold"
+                            >{ humorsStr }</CustomText>
+                            <CustomText
+                                size="s"
+                                weight="thin"
+                            >{ humors.join(", ") }</CustomText>
                         </>
-                        : <TextBold>{ humorsStr }</TextBold>
+                        : <CustomText
+                            size="s"
+                            weight="thin"
+                        >{ humorsStr }</CustomText>
                 }
             </Box.Row>
         )
@@ -166,13 +197,30 @@ export default function GetSleepScreen() {
 
         return biologicalOccurences.length === 0
             ? <Box.Row style={ styles.humorsAndBiologicalOccurencesContainer }>
-                <IconMaterialIcons name="health-and-safety" size={ 22 } />
-                <TextBold>Nenhuma ocorrência biológica registrada.</TextBold>
+                <IconMaterialIcons
+                    name="health-and-safety"
+                    size={ systemStyle.normalIconSize }
+                />
+                <CustomText
+                >Nenhuma ocorrência biológica registrada.</CustomText>
             </Box.Row>
             : <Box.Row style={ styles.humorsAndBiologicalOccurencesContainer }>
-                <IconMaterialIcons name="health-and-safety" size={ 22 } />
-                <TextBold>Ocorrências Biológicas:</TextBold>
-                <Text>{ biologicalOccurences.join(", ") }</Text>
+                <IconMaterialIcons
+                    name="health-and-safety"
+                    size={ systemStyle.normalIconSize }
+                />
+                <CustomText
+                    size="s"
+                    weight="bold"
+                >
+                    Ocorrências Biológicas:
+                </CustomText>
+                <CustomText
+                    weight="thin"
+                    size="s"
+                >
+                    { biologicalOccurences.join(", ") }
+                </CustomText>
             </Box.Row>
     }
 
@@ -184,9 +232,14 @@ export default function GetSleepScreen() {
             <Box.Column>
                 {
                     sleepDreams.length === 0
-                        ? <Text style={ styles.dreamsOfSleepCycleText }>Nenhum sonho cadastrado neste ciclo de sono.</Text>
+                        ? <CustomText
+                            weight="thin"
+                            style={ styles.dreamsOfSleepCycleText }
+                        >
+                            Nenhum sonho cadastrado neste ciclo de sono.
+                        </CustomText>
                         : <>
-                            <TextBold style={ styles.dreamsOfSleepCycleText }>Sonhos deste ciclo de sono:</TextBold>
+                            <CustomText style={ styles.dreamsOfSleepCycleText }>Sonhos deste ciclo de sono:</CustomText>
                             <Box.Column style={ styles.sleepDreamsContainer }>
                                 {
                                     sleepDreams.map((dream, i) =>
@@ -219,7 +272,7 @@ export default function GetSleepScreen() {
 
         if (errorMessage != "")
             return <Box.Column style={ styles.errorOnFetchSleep }>
-                <Text>{ errorMessage }</Text>
+                <CustomText>{ errorMessage }</CustomText>
                 <CustomButton
                     title="Voltar"
                     onPress={ () => router.navigate("/(tabs)/(sleeps)/sleepsList") }
@@ -235,7 +288,13 @@ export default function GetSleepScreen() {
 
         return <>
             { renderIsNightSleep() }
-            <Box.Column style={{ ...styles.dateContainer, ...styles.center }}>
+            <Box.Column
+                style={{
+                    ...styles.dateContainer,
+                    ...styles.center,
+                    backgroundColor: systemStyle.secondary
+                }}
+            >
                 <Info
                     infoDescription={ `Data referente ${ sleep!.date }` }
                     type="question"
@@ -245,21 +304,38 @@ export default function GetSleepScreen() {
                         "Se não, se refere ao dia de hoje.",
                         "Essa regra foi aplicada ao ciclo de sono visualizado agora.",
                     ]}
-                    overrideInfoColor="white"
-                    iconSize={ 22 }
+                    overrideInfoColor={ systemStyle.oppositeIconColor}
                 />
                 { renderSleepTime() }
             </Box.Column>
             <Box.Column>
-                <Box.Row style={ styles.gap }>
-                    <TextBold>{ `Início:` }</TextBold>
-                    <TextBold>{ sleepStartFormatted.date }</TextBold>
-                    <TextBold>{ sleepStartFormatted.time }</TextBold>
+                <Box.Row style={{ ...styles.gap, ...styles.sleepPeriodIndividualContainer }}>
+                    <CustomText
+                        size="s"
+                        weight="bold"
+                    >
+                        { `Início:` }
+                    </CustomText>
+                    <CustomText weight="thin">
+                        { sleepStartFormatted.date }
+                    </CustomText>
+                    <CustomText weight="thin">
+                        { sleepStartFormatted.time }
+                    </CustomText>
                 </Box.Row>
-                <Box.Row style={ styles.gap }>
-                    <TextBold>{ `Fim:   ` }</TextBold>
-                    <TextBold>{ sleepEndFormatted.date }</TextBold>
-                    <TextBold>{ sleepEndFormatted.time }</TextBold>
+                <Box.Row style={{ ...styles.gap, ...styles.sleepPeriodIndividualContainer }}>
+                    <CustomText
+                        size="s"
+                        weight="bold"
+                    >
+                        { `Fim:   ` }
+                    </CustomText>
+                    <CustomText weight="thin">
+                        { sleepEndFormatted.date }
+                    </CustomText>
+                    <CustomText weight="thin">
+                        { sleepEndFormatted.time }
+                    </CustomText>
                 </Box.Row>
             </Box.Column>
             { layDownHumorsRendered }
@@ -269,7 +345,7 @@ export default function GetSleepScreen() {
                 title="Mais informações sobre ocorrências biológicas"
                 onPress={ () => setOpenBiologicalOccurencesInfo(true) }
                 titleStyle={{
-                    fontSize: styles.biologicalOccurencesInfoBtn.fontSize,
+                    fontSize: systemStyle.normalTextSize,
                     fontWeight: "light",
                 }}
             />
@@ -311,7 +387,6 @@ const styles = StyleSheet.create({
         justifyContent: "center",
     },
     dateContainer: {
-        backgroundColor: "royalblue",
         padding: 10,
         borderRadius: 15,
         gap: 5,
@@ -323,9 +398,7 @@ const styles = StyleSheet.create({
     humorsAndBiologicalOccurencesContainer: {
         flexWrap: "wrap",
         gap: 5,
-    },
-    biologicalOccurencesInfoBtn: {
-        fontSize: 13,
+        alignItems: "center",
     },
     errorOnFetchSleep: {
         gap: 15,
@@ -333,10 +406,16 @@ const styles = StyleSheet.create({
     dreamsOfSleepCycleText: {
         alignSelf: "center",
         textAlign: "center",
-        fontSize: 20,
     },
     sleepDreamsContainer: {
         paddingTop: 5,
         gap: 5,
+    },
+    sleepHoursContainer: {
+        gap: 10,
+        alignItems: "center",
+    },
+    sleepPeriodIndividualContainer: {
+        alignItems: "center",
     },
 })
