@@ -8,7 +8,7 @@ type Update = {
 const CHANGELOG: Update[] = [
     {
         version: "1.4.0",
-        date: "05/02/2025",
+        date: "07/02/2025",
         title: "Estilo",
         description: [
             "Estilo global da interface refeito",
