@@ -25,7 +25,7 @@ const DefaultStyle: Style = {
     quaternary: "#d3d3d3",
 
     headerTextSize: 23,
-    footerTextSize: 23,
+    footerTextSize: 11,
 
     extraSmallTextSize: 14,
     smallTextSize: 16,

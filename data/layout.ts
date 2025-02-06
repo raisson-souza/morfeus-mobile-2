@@ -20,7 +20,9 @@ export function GetTabStyle() {
             },
             tabBarLabelStyle: {
                 /** Cor do texto das tabs */
-                color: "white",
+                color: systemStyle.footerTextColor,
+                /** Tamanho do texto das tabs */
+                fontSize: systemStyle.footerTextSize,
             },
         }
     }
