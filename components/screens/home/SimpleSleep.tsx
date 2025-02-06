@@ -149,8 +149,10 @@ export default function SimpleSleep({}: SimpleSleepProps) {
                         }}
                         textStyle={{
                             color: systemStyle.oppositeTextColor,
+                            fontSize: systemStyle.largeTextSize,
                         }}
                         iconColor={ systemStyle.oppositeIconColor }
+                        iconSize={ systemStyle.normalIconSize }
                     />
                     <TimePickerShow
                         time={ simpleSleep.sleepStart! }
@@ -164,8 +166,10 @@ export default function SimpleSleep({}: SimpleSleepProps) {
                         }}
                         textStyle={{
                             color: systemStyle.oppositeTextColor,
+                            fontSize: systemStyle.largeTextSize,
                         }}
                         iconColor={ systemStyle.oppositeIconColor }
+                        iconSize={ systemStyle.normalIconSize }
                     />
                 </Box.Column>
             </Box.Column>
@@ -189,8 +193,10 @@ export default function SimpleSleep({}: SimpleSleepProps) {
                         }}
                         textStyle={{
                             color: systemStyle.oppositeTextColor,
+                            fontSize: systemStyle.largeTextSize,
                         }}
                         iconColor={ systemStyle.oppositeIconColor }
+                        iconSize={ systemStyle.normalIconSize }
                     />
                     <TimePickerShow
                         time={ simpleSleep.sleepEnd! }
@@ -204,8 +210,10 @@ export default function SimpleSleep({}: SimpleSleepProps) {
                         }}
                         textStyle={{
                             color: systemStyle.oppositeTextColor,
+                            fontSize: systemStyle.largeTextSize,
                         }}
                         iconColor={ systemStyle.oppositeIconColor }
+                        iconSize={ systemStyle.normalIconSize }
                     />
                 </Box.Column>
             </Box.Column>
