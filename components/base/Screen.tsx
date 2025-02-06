@@ -16,13 +16,24 @@ export const Screen: React.FC<ScreenProps> = ({
 }) => {
     const systemStyle = GetSystemStyle()
 
+    const flexStyle = flex
+        ? {
+            justifyContent: 'center',
+            alignItems: 'center',
+        }
+        : {
+            justifyContent: 'flex-start',
+            alignItems: 'center',
+        }
+
     return (
         <ScrollView
             contentContainerStyle={{
                 ...styles.container,
+                ...flexStyle,
                 ...compStyle as any,
-                flex: flex ? 1 : "auto",
                 backgroundColor: systemStyle.backgroundColor,
+                flexGrow: 1,
             }}
         >
             { children }
@@ -44,8 +55,6 @@ const styles = StyleSheet.create({
     container: {
         display: "flex",
         flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
         width: "100%",
         padding: 10,
     },
