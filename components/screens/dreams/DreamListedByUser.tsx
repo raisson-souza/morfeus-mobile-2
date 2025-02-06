@@ -65,7 +65,7 @@ export default function DreamListedByUser({
         <Box.Column style={{ ...containerStyle as any }}>
             <CustomText
                 onPress={ () => router.navigate({ pathname: "/getDream", params: { id: dream.id, sleepDate: treatedDate } }) }
-                size="xl"
+                size="xxl"
                 weight="bold"
             >
                 { dream.title }

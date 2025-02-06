@@ -4,7 +4,7 @@ import { StyleProp, Text, TextStyle } from "react-native"
 interface CustomTextProps {
     children: string | number
     style?: StyleProp<TextStyle>
-    size?: "s" | "m" | "l" | "xl"
+    size?: "s" | "m" | "l" | "xl" | "xxl"
     isOpposite?: boolean
     weight?: "thin" | "normal" | "bold"
     onPress?: () => void
@@ -26,6 +26,7 @@ const CustomText: React.FC<CustomTextProps> = ({
             case "m": return systemStyle.normalTextSize
             case "l": return systemStyle.largeTextSize
             case "xl": return systemStyle.extraLargeTextSize
+            case "xxl": return systemStyle.xXLargeTextSize
         }
     }
 
