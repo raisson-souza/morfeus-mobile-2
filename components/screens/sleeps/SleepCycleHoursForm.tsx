@@ -1,4 +1,5 @@
 import { DateFormatter } from "@/utils/DateFormatter"
+import { StyleContextProvider } from "@/contexts/StyleContext"
 import { StyleSheet } from "react-native"
 import Box from "@/components/base/Box"
 import CustomText from "@/components/customs/CustomText"
@@ -17,6 +18,8 @@ export default function SleepCycleHoursForm({
     sleepEnd,
     onChange,
 }: SleepCycleHoursFormProps) {
+    const { systemStyle } = StyleContextProvider()
+
     return (
         <Box.Row style={ styles.container }>
             <Box.Column style={ styles.sleepCyclePeriod }>
@@ -27,10 +30,12 @@ export default function SleepCycleHoursForm({
                 <DatePickerShow
                     date={ sleepStart }
                     onChange={ (e) => onChange("start", DateFormatter.persistDateOrTime(e, sleepStart)) }
+                    iconColor={ systemStyle.iconColor }
                 />
                 <TimePickerShow
                     time={ sleepStart }
                     onChange={ (e) => onChange("start", DateFormatter.persistDateOrTime(sleepStart, e)) }
+                    iconColor={ systemStyle.iconColor }
                 />
             </Box.Column>
             <Box.Column style={ styles.sleepCyclePeriod }>
@@ -41,10 +46,12 @@ export default function SleepCycleHoursForm({
                 <DatePickerShow
                     date={ sleepEnd }
                     onChange={ (e) => onChange("end", DateFormatter.persistDateOrTime(e, sleepEnd)) }
+                    iconColor={ systemStyle.iconColor }
                 />
                 <TimePickerShow
                     time={ sleepEnd }
                     onChange={ (e) => onChange("end", DateFormatter.persistDateOrTime(sleepEnd, e)) }
+                    iconColor={ systemStyle.iconColor }
                 />
             </Box.Column>
         </Box.Row>
