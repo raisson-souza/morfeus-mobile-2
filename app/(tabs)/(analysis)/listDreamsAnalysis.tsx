@@ -285,7 +285,7 @@ export default function ListDreamsAnalysisScreen() {
                 }
                 <Info
                     type="warn"
-                    overrideInfoColor="black"
+                    overrideInfoColor={ systemStyle.iconColor }
                     infoDescription="Mais análises?"
                     modalTitle="Novas Análises"
                     modalDescription={[

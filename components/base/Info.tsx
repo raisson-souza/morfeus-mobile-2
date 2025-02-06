@@ -28,12 +28,12 @@ export default function Info({
 
     const renderColor = () => {
         switch (type) {
-            case "info": return "black"
+            case "info": return systemStyle.textColor
             case "warn": return "yellow"
             case "error": return "red"
             case "success": return "green"
-            case "question": return "black"
-            default: return "black"
+            case "question": return systemStyle.textColor
+            default: return systemStyle.textColor
         }
     }
 
