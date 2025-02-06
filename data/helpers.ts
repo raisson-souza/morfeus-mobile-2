@@ -35,7 +35,7 @@ const HELPERS: HelperListType = {
         modalTitle: "Análises de Ciclos de Sono e Sonhos",
         infoDescription: "Análises?",
         modalDescription: [
-            "Ao acessar as análises de ciclos de sono ou sonhos, todos os seus registros do mês selecionado são reúnidos e estatísticas interessantes sobre eles são geradas.",
+            "Ao acessar as análises de ciclos de sono ou sonhos, todos os seus registros do mês selecionado são reunidos e estatísticas interessantes sobre eles são geradas.",
         ],
     },
 }
