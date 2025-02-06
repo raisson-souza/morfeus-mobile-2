@@ -443,9 +443,10 @@ export default function AppendDream({
                     {
                         dream.tags.map((tag, i) => {
                             return <CustomText
-                                style={ styles.tag }
-                                onPress={ () => removeTag(tag) }
                                 key={ i }
+                                onPress={ () => removeTag(tag) }
+                                size="l"
+                                weight="bold"
                             >
                                 { tag }
                             </CustomText>
@@ -472,9 +473,6 @@ const styles = StyleSheet.create({
     },
     tagsContainer: {
         gap: 10,
-    },
-    tag: {
-        fontSize: 19,
     },
     infoContainer: {
         alignItems: 'center',

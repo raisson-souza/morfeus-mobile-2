@@ -210,7 +210,7 @@ export default function GetDreamScreen() {
                                         { renderDreamUpperInfo() }
                                         <Box.Row style={ styles.dreamTitleTextContainer }>
                                             <CustomText
-                                                size="xl"
+                                                size="xxl"
                                                 weight="bold"
                                                 style={ styles.dreamTitleText }
                                             >
@@ -280,16 +280,13 @@ export default function GetDreamScreen() {
                                                             size={ systemStyle.normalIconSize }
                                                         />
                                                         <CustomText
-                                                            style={ styles.personalAnalysisText }
                                                             weight="bold"
+                                                            size="l"
                                                         >
                                                             Análise pessoal:
                                                         </CustomText>
                                                     </Box.Row>
-                                                    <CustomText
-                                                        style={ styles.personalAnalysisText }
-                                                        weight="thin"
-                                                    >
+                                                    <CustomText weight="thin">
                                                         { dream.personalAnalysis }
                                                     </CustomText>
                                                 </Box.Column>
@@ -449,9 +446,6 @@ const styles = StyleSheet.create({
     },
     personalAnalysisContainer: {
         paddingVertical: 10,
-    },
-    personalAnalysisText: {
-        fontSize: 20,
     },
     tagsInfoContainer: {
         alignItems: "center",
