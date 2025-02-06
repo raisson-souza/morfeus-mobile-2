@@ -89,7 +89,12 @@ export default function DreamsList() {
                             {
                                 dreamList.map((dream, i) => (
                                     <Box.Center style={ styles.dreamOuterContainer } key={ i }>
-                                        <View style={ styles.dreamSeparator }></View>
+                                        <View
+                                            style={{
+                                                ...styles.dreamSeparator,
+                                                borderTopColor: systemStyle.iconColor,
+                                            }}
+                                        ></View>
                                         <DreamListedByUser
                                             dream={ dream }
                                             containerStyle={ styles.dreamContainer }

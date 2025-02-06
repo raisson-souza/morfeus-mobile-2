@@ -46,28 +46,28 @@ const DarkStyle: Style = {
     ...DefaultStyle,
     styleName: "dark",
 
-    backgroundColor: "#fff", // branco
-    loadingColor: "#00008B", // darkblue
+    backgroundColor: "#040457", // darkblue mais escuro
+    loadingColor: "#4169E1", // royalblue
 
     headerBackgroundColor: "#00008B", // darkblue
-    headerTextColor: "#fff", // branco
+    headerTextColor: "#fff", // white
 
     footerBackgroundColor: "#00008B", // darkblue
     footerSelectedTabBackgroundColor: "#4169E1", // royalblue
-    footerIconColor: "#fff", // branco
-    footerTextColor: "#fff", // branco
+    footerIconColor: "#fff", // white
+    footerTextColor: "#fff", // white
 
     btnImportantBackgroundColor: "#00008B", // darkblue
     btnOutlineColor: "#38B4E1", // lightblue
-    btnBackgroundColor: "#fff", // branco
+    btnBackgroundColor: "#fff", // white
 
-    textColor: "#000", // black
+    textColor: "#fff", // white
     inactiveTextColor: "#808080", // gray
-    oppositeTextColor: "#fff", // branco
+    oppositeTextColor: "#000", // black
 
-    iconColor: "#000", // black
+    iconColor: "#fff", // white
     inactiveIconColor: "#808080", // gray
-    oppositeIconColor: "#fff", // branco
+    oppositeIconColor: "#000", // black
 
     primary: "#00008B", // darkblue
     secondary: "#4169E1", // royalblue
