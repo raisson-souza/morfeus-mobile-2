@@ -11,8 +11,8 @@ const CHANGELOG: Update[] = [
         date: "07/02/2025",
         title: "Estilo",
         description: [
-            "Estilo global da interface refeito",
-            "Inclusão de tema escuro",
+            "Melhorias de interface",
+            "Tema escuro",
         ],
     },
     {
