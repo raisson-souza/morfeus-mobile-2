@@ -1,5 +1,6 @@
 import { CreateDreamModel } from "@/types/dream"
 import { Picker } from "@react-native-picker/picker"
+import { StyleContextProvider } from "@/contexts/StyleContext"
 import { StyleSheet } from "react-native"
 import { useEffect, useState } from "react"
 import { useNavigation } from "expo-router"
@@ -21,6 +22,7 @@ export default function CreateCompleteDream({
     onChange,
     isLocked,
 }: CreateCompleteDream) {
+    const { systemStyle } = StyleContextProvider()
     const navigation = useNavigation()
     const [ tag, setTag ] = useState<string>("")
 
@@ -86,7 +88,10 @@ export default function CreateCompleteDream({
                         ...dream,
                         dreamPointOfViewId: e
                     })}
-                    style={ styles.picker }
+                    style={{
+                        ...styles.picker,
+                        color: systemStyle.textColor,
+                    }}
                     enabled={ !isLocked }
                 >
                     <Picker.Item label="Primeira Pessoa" value="1" />
@@ -271,7 +276,10 @@ export default function CreateCompleteDream({
                     ...dream,
                     dreamHourId: e,
                 })}
-                style={ styles.picker }
+                style={{
+                    ...styles.picker,
+                    color: systemStyle.textColor,
+                }}
                 enabled={ !isLocked }
             >
                 <Picker.Item label="Amanhecer" value="1" />
@@ -295,7 +303,10 @@ export default function CreateCompleteDream({
                     ...dream,
                     dreamDurationId: e,
                 })}
-                style={ styles.picker }
+                style={{
+                    ...styles.picker,
+                    color: systemStyle.textColor,
+                }}
                 enabled={ !isLocked }
             >
                 <Picker.Item label="Instantâneo" value="1" />
@@ -317,7 +328,10 @@ export default function CreateCompleteDream({
                     ...dream,
                     dreamLucidityLevelId: e,
                 })}
-                style={ styles.picker }
+                style={{
+                    ...styles.picker,
+                    color: systemStyle.textColor,
+                }}
                 enabled={ !isLocked }
             >
                 <Picker.Item label="Não Lúcido" value="1" />
@@ -339,7 +353,10 @@ export default function CreateCompleteDream({
                     ...dream,
                     dreamTypeId: e,
                 })}
-                style={ styles.picker }
+                style={{
+                    ...styles.picker,
+                    color: systemStyle.textColor,
+                }}
                 enabled={ !isLocked }
             >
                 <Picker.Item label="Sonho" value="1" />
@@ -360,7 +377,10 @@ export default function CreateCompleteDream({
                     ...dream,
                     dreamRealityLevelId: e,
                 })}
-                style={ styles.picker }
+                style={{
+                    ...styles.picker,
+                    color: systemStyle.textColor,
+                }}
                 enabled={ !isLocked }
             >
                 <Picker.Item label="Irreal" value="1" />

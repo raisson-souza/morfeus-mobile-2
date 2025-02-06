@@ -9,6 +9,7 @@ import CustomSwitch from "@/components/customs/CustomSwitch"
 import CustomText from "@/components/customs/CustomText"
 import Info from "@/components/base/Info"
 import React from "react"
+import { StyleContextProvider } from "@/contexts/StyleContext"
 
 type AppendDreamProps = {
     dream: DreamInSleepCycleModelListed
@@ -19,6 +20,7 @@ export default function AppendDream({
     dream,
     onChange,
 }: AppendDreamProps) {
+    const { systemStyle } = StyleContextProvider()
     const [ tag, setTag ] = useState<string>("")
 
     const appendTag = () => {
@@ -75,7 +77,10 @@ export default function AppendDream({
                         ...dream,
                         dreamPointOfViewId: e
                     })}
-                    style={ styles.picker }
+                    style={{
+                        ...styles.picker,
+                        color: systemStyle.textColor,
+                    }}
                 >
                     <Picker.Item label="Primeira Pessoa" value="1" />
                     <Picker.Item label="Segunda Pessoa" value="2" />
@@ -259,7 +264,10 @@ export default function AppendDream({
                     ...dream,
                     dreamHourId: e,
                 })}
-                style={ styles.picker }
+                style={{
+                    ...styles.picker,
+                    color: systemStyle.textColor,
+                }}
             >
                 <Picker.Item label="Amanhecer" value="1" />
                 <Picker.Item label="Dia" value="2" />
@@ -282,7 +290,10 @@ export default function AppendDream({
                     ...dream,
                     dreamDurationId: e
                 })}
-                style={ styles.picker }
+                style={{
+                    ...styles.picker,
+                    color: systemStyle.textColor,
+                }}
             >
                 <Picker.Item label="Instantâneo" value="1" />
                 <Picker.Item label="Curto" value="2" />
@@ -303,7 +314,10 @@ export default function AppendDream({
                     ...dream,
                     dreamLucidityLevelId: e,
                 })}
-                style={ styles.picker }
+                style={{
+                    ...styles.picker,
+                    color: systemStyle.textColor,
+                }}
             >
                 <Picker.Item label="Não Lúcido" value="1" />
                 <Picker.Item label="Parcialmente Lúcido" value="2" />
@@ -324,7 +338,10 @@ export default function AppendDream({
                     ...dream,
                     dreamTypeId: e,
                 })}
-                style={ styles.picker }
+                style={{
+                    ...styles.picker,
+                    color: systemStyle.textColor,
+                }}
             >
                 <Picker.Item label="Sonho" value="1" />
                 <Picker.Item label="Pesadelo" value="2" />
@@ -344,7 +361,10 @@ export default function AppendDream({
                     ...dream,
                     dreamRealityLevelId: e,
                 })}
-                style={ styles.picker }
+                style={{
+                    ...styles.picker,
+                    color: systemStyle.textColor,
+                }}
             >
                 <Picker.Item label="Irreal" value="1" />
                 <Picker.Item label="Parcialmente Real" value="2" />

@@ -5,7 +5,6 @@ import AntDesignIcons from "react-native-vector-icons/AntDesign"
 import Box from "./Box"
 import CustomInput from "../customs/CustomInput"
 import React from "react"
-import TextBold from "./TextBold"
 import { StyleContextProvider } from "@/contexts/StyleContext"
 import CustomText from "../customs/CustomText"
 
