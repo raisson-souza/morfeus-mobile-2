@@ -13,9 +13,10 @@ type LoadingProps = {
 export default function Loading({
     onlyLoading = true,
     text = "Carregando...",
-    textColor = "black",
+    textColor,
 }: LoadingProps) {
     const systemStyle = GetSystemStyle()
+    textColor = textColor ? textColor : systemStyle.textColor
 
     return (
         <View>
