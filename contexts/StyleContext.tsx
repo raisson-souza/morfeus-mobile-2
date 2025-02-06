@@ -19,7 +19,7 @@ const StyleContext = createContext<StyleContext | null>(null)
 export default function StyleContextComponent({ children }: StyleContextProps) {
     const db = useSQLiteContext()
     const [ loading, setLoading ] = useState<boolean>(true)
-    const [ systemStyle, setSystemStyle ] = useState<Style>(DarkStyle)
+    const [ systemStyle, setSystemStyle ] = useState<Style>(LightStyle)
 
     const fetchStyle = async () => {
         await db.getFirstAsync<{ is_dark_style: number }>('SELECT is_dark_style FROM PARAMS')
