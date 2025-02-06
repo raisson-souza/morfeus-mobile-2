@@ -116,6 +116,7 @@ export default function GetSleepScreen() {
                     <IconFontisto
                         name="night-clear"
                         size={ systemStyle.normalIconSize }
+                        color={ systemStyle.iconColor }
                     />
                     <CustomText
                         weight="thin"
@@ -155,6 +156,7 @@ export default function GetSleepScreen() {
                 <IconFeather
                     name={ isWakeUpHumor ? "sunrise" : "sunset"}
                     size={ systemStyle.normalIconSize }
+                    color={ systemStyle.iconColor }
                 />
                 {
                     humors.length > 1
@@ -208,6 +210,7 @@ export default function GetSleepScreen() {
                 <IconMaterialIcons
                     name="health-and-safety"
                     size={ systemStyle.normalIconSize }
+                    color={ systemStyle.iconColor }
                 />
                 <CustomText
                     size="s"

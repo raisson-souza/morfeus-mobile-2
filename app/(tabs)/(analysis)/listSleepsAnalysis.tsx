@@ -139,8 +139,16 @@ export default function ListSleepsAnalysisScreen() {
                 <Box.Row style={ styles.individualAnalysis }>
                     {
                         iconLib === "fontAwesome5"
-                            ? <IconFontAwesome5 name={ iconName } size={ systemStyle.smallIconSize } />
-                            : <IconMaterialIcons name={ iconName } size={ systemStyle.normalIconSize } />
+                            ? <IconFontAwesome5
+                                name={ iconName }
+                                size={ systemStyle.smallIconSize }
+                                color={ systemStyle.iconColor }
+                            />
+                            : <IconMaterialIcons
+                                name={ iconName }
+                                size={ systemStyle.normalIconSize }
+                                color={ systemStyle.iconColor }
+                            />
                     }
                     <CustomText
                         weight="thin"

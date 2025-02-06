@@ -132,8 +132,16 @@ export default function ListDreamsAnalysisScreen() {
                 <Box.Row style={ styles.individualAnalysis }>
                     {
                         iconLib === "fontAwesome5"
-                            ? <IconFontAwesome5 name={ iconName } size={ 20 } />
-                            : <IconMaterialIcons name={ iconName } size={ 20 } />
+                            ? <IconFontAwesome5
+                                name={ iconName }
+                                size={ systemStyle.smallIconSize }
+                                color={ systemStyle.iconColor }
+                            />
+                            : <IconMaterialIcons
+                                name={ iconName }
+                                size={ systemStyle.smallIconSize }
+                                color={ systemStyle.iconColor }
+                            />
                     }
                     <CustomText weight="thin">{ msg }</CustomText>
                 </Box.Row>
