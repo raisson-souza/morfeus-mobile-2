@@ -72,7 +72,7 @@ const DarkStyle: Style = {
     primary: "#00008B", // darkblue
     secondary: "#4169E1", // royalblue
     terciary: "#12518E", // outro azul escuro
-    quaternary: "#d3d3d3", // lightgray
+    quaternary: "#808080", // gray
 }
 
 const LightStyle: Style = {
