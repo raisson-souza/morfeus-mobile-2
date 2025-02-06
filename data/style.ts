@@ -1,8 +1,9 @@
 import { Style } from "@/types/style"
 
-const defaultStyle: Style = {
+const DefaultStyle: Style = {
     styleName: "default",
     backgroundColor: "#fff",
+    loadingColor: "#00008B",
     headerBackgroundColor: "#00008B",
     headerTextColor: "#fff",
     footerBackgroundColor: "#00008B",
@@ -42,10 +43,11 @@ const defaultStyle: Style = {
 }
 
 const DarkStyle: Style = {
-    ...defaultStyle,
+    ...DefaultStyle,
     styleName: "dark",
 
     backgroundColor: "#fff", // branco
+    loadingColor: "#00008B", // darkblue
 
     headerBackgroundColor: "#00008B", // darkblue
     headerTextColor: "#fff", // branco
@@ -74,10 +76,11 @@ const DarkStyle: Style = {
 }
 
 const LightStyle: Style = {
-    ...defaultStyle,
+    ...DefaultStyle,
     styleName: "light",
 
     backgroundColor: "#fff", // branco
+    loadingColor: "#00008B", // darkblue
 
     headerBackgroundColor: "#00008B", // darkblue
     headerTextColor: "#fff", // branco
@@ -105,4 +108,4 @@ const LightStyle: Style = {
     quaternary: "#d3d3d3", // lightgray
 }
 
-export { LightStyle, DarkStyle }
+export { LightStyle, DarkStyle, DefaultStyle }

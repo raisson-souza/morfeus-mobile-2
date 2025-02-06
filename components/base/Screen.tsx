@@ -1,3 +1,5 @@
+import { DefaultStyle } from "@/data/style"
+import { StyleContextProvider } from "@/contexts/StyleContext"
 import { StyleSheet, ScrollView, StyleProp, ViewStyle } from "react-native"
 
 type ScreenProps = {
@@ -12,17 +14,30 @@ export const Screen: React.FC<ScreenProps> = ({
     flex = false,
     compStyle = {},
 }) => {
+    const systemStyle = GetSystemStyle()
+
     return (
         <ScrollView
             contentContainerStyle={{
                 ...styles.container,
                 ...compStyle as any,
-                flex: flex ? 1 : "auto"
+                flex: flex ? 1 : "auto",
+                backgroundColor: systemStyle.backgroundColor,
             }}
         >
             { children }
         </ScrollView>
     )
+}
+
+const GetSystemStyle = () => {
+    try {
+        const { systemStyle } = StyleContextProvider()
+        return systemStyle
+    }
+    catch {
+        return DefaultStyle
+    }
 }
 
 const styles = StyleSheet.create({

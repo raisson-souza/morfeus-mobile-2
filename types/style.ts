@@ -3,6 +3,8 @@ export type Style = {
 
     backgroundColor: string
 
+    loadingColor: string
+
     headerBackgroundColor: string
     headerTextColor: string
     headerTextSize: number

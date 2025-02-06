@@ -1,5 +1,7 @@
-import React from "react"
 import { ActivityIndicator, Text, View } from "react-native"
+import { DefaultStyle } from "@/data/style"
+import { StyleContextProvider } from "@/contexts/StyleContext"
+import React from "react"
 
 type LoadingProps = {
     onlyLoading?: boolean
@@ -7,19 +9,19 @@ type LoadingProps = {
     textColor?: string
 }
 
-// ESSE COMPONENTE NÃO PUXA O ESTILO GLOBAL DEVIDO A SUA ORDEM DE RENDERIZAÇÃO
-
 /** Componente de loading padrão para a aplicação */
 export default function Loading({
     onlyLoading = true,
     text = "Carregando...",
     textColor = "black",
 }: LoadingProps) {
+    const systemStyle = GetSystemStyle()
+
     return (
         <View>
             <ActivityIndicator
-                color="darkblue"
-                size="large"
+                color={ systemStyle.loadingColor }
+                size={ systemStyle.extraLargeIconSize }
             />
             {
                 onlyLoading
@@ -28,4 +30,14 @@ export default function Loading({
             }
         </View>
     )
+}
+
+const GetSystemStyle = () => {
+    try {
+        const { systemStyle } = StyleContextProvider()
+        return systemStyle
+    }
+    catch {
+        return DefaultStyle
+    }
 }
