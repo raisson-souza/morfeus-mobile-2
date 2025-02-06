@@ -229,7 +229,6 @@ export default function SimpleSleep({}: SimpleSleepProps) {
 
 const styles = StyleSheet.create({
     container: {
-        marginBottom: 20,
         gap: 5,
         padding: 10,
         borderRadius: 15,

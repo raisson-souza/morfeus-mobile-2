@@ -46,11 +46,12 @@ export default function IndexScreen() {
                 <CustomButton
                     title="Criar Sonho"
                     onPress={ () => router.navigate("/createDream") }
+                    btnWidth="65%"
                 />
-                <FutureDevelopmentButton btnTitle="Criar Sonho Rápido"/>
                 <CustomButton
                     title="Criar Ciclo de Sono"
                     onPress={ () => router.navigate("/createSleep") }
+                    btnWidth="65%"
                 />
             </Box.Center>
         </Screen>
