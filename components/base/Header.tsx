@@ -1,14 +1,14 @@
 import { AuthContextProvider } from "../../contexts/AuthContext"
+import { StyleContextProvider } from "@/contexts/StyleContext"
 import { StyleSheet, Pressable } from "react-native"
 import { useState } from "react"
 import Box from "./Box"
 import ChangelogModal from "../screens/header/ChangelogModal"
 import ConfigModal from "../screens/header/ConfigModal"
+import CustomText from "../customs/CustomText"
 import IconIon from "react-native-vector-icons/Ionicons"
 import IconMaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
 import React from "react"
-import { StyleContextProvider } from "@/contexts/StyleContext"
-import CustomText from "../customs/CustomText"
 
 type HeaderProps = { }
 
@@ -38,13 +38,15 @@ export default function Header({}: HeaderProps): JSX.Element {
             <Box.Row style={ styles.logo }>
                 <IconIon
                     name="moon-outline"
-                    color={ systemStyle.oppositeIconColor }
+                    color={ systemStyle.headerTextColor }
                     size={ systemStyle.normalIconSize }
                 />
                 <CustomText
-                    isOpposite
+                    style={{
+                        color: systemStyle.headerTextColor,
+                        fontSize: systemStyle.headerTextSize,
+                    }}
                     weight="bold"
-                    size="l"
                 >
                     Morfeus
                 </CustomText>
@@ -54,21 +56,21 @@ export default function Header({}: HeaderProps): JSX.Element {
                     <IconIon
                         name="megaphone"
                         size={ systemStyle.normalIconSize }
-                        color={ systemStyle.oppositeIconColor }
+                        color={ systemStyle.headerTextColor }
                     />
                 </Pressable>
                 <Pressable onPress={ () => {} }>
                     <IconMaterialCommunityIcons
                         name="bell"
                         size={ systemStyle.normalIconSize }
-                        color={ systemStyle.oppositeIconColor }
+                        color={ systemStyle.headerTextColor }
                     />
                 </Pressable>
                 <Pressable onPress={ () => setOpenConfigModal(true) }>
                     <IconIon
                         name="menu"
                         size={ systemStyle.largeIconSize }
-                        color={ systemStyle.oppositeIconColor }
+                        color={ systemStyle.headerTextColor }
                     />
                 </Pressable>
             </Box.Row>

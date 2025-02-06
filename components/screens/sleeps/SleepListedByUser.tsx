@@ -33,8 +33,16 @@ export default function SleepListedByUser({
 
     const renderIsNightSleep = () => {
         return sleepCycle.isNightSleep
-            ? <IconFeather name="moon" size={ systemStyle.normalIconSize } />
-            : <IconFeather name="sun" size={ systemStyle.normalIconSize } />
+            ? <IconFeather
+                name="moon"
+                size={ systemStyle.normalIconSize }
+                color={ systemStyle.iconColor }
+            />
+            : <IconFeather
+                name="sun"
+                size={ systemStyle.normalIconSize }
+                color={ systemStyle.iconColor }
+            />
     }
 
     const renderSleepTime = () => {
@@ -46,7 +54,10 @@ export default function SleepListedByUser({
 
     return (
         <Box.Row
-            style={ styles.container }
+            style={{
+                ...styles.container,
+                borderTopColor: systemStyle.textColor,
+            }}
             onPress={ () => router.navigate({
                 pathname: "/(tabs)/(sleeps)/getSleep",
                 params: { "id": sleepCycle.id },
@@ -67,6 +78,7 @@ export default function SleepListedByUser({
                     <IconFeather
                         name={ "sunset" }
                         size={ systemStyle.smallIconSize }
+                        color={ systemStyle.iconColor }
                     />
                     <CustomText
                         size="s"
@@ -76,6 +88,7 @@ export default function SleepListedByUser({
                     <IconFeather
                         name={ "sunrise" }
                         size={ systemStyle.smallIconSize }
+                        color={ systemStyle.iconColor }
                     />
                     <CustomText
                         size="s"

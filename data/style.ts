@@ -63,11 +63,11 @@ const DarkStyle: Style = {
 
     textColor: "#fff", // white
     inactiveTextColor: "#808080", // gray
-    oppositeTextColor: "#000", // black
+    oppositeTextColor: "#fff", // white
 
     iconColor: "#fff", // white
     inactiveIconColor: "#808080", // gray
-    oppositeIconColor: "#000", // black
+    oppositeIconColor: "#fff", // white
 
     primary: "#00008B", // darkblue
     secondary: "#4169E1", // royalblue
