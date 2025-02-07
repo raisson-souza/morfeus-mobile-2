@@ -39,7 +39,7 @@ export default function Header({}: HeaderProps): JSX.Element {
                 <IconIon
                     name="moon-outline"
                     color={ systemStyle.headerTextColor }
-                    size={ systemStyle.normalIconSize }
+                    size={ systemStyle.largeIconSize }
                 />
                 <CustomText
                     style={{
@@ -55,21 +55,21 @@ export default function Header({}: HeaderProps): JSX.Element {
                 <Pressable onPress={ () => setOpenChangelogModal(true) }>
                     <IconIon
                         name="megaphone"
-                        size={ systemStyle.normalIconSize }
+                        size={ systemStyle.largeIconSize }
                         color={ systemStyle.headerTextColor }
                     />
                 </Pressable>
                 <Pressable onPress={ () => {} }>
                     <IconMaterialCommunityIcons
                         name="bell"
-                        size={ systemStyle.normalIconSize }
+                        size={ systemStyle.largeIconSize }
                         color={ systemStyle.headerTextColor }
                     />
                 </Pressable>
                 <Pressable onPress={ () => setOpenConfigModal(true) }>
                     <IconIon
                         name="menu"
-                        size={ systemStyle.largeIconSize }
+                        size={ systemStyle.extraLargeIconSize }
                         color={ systemStyle.headerTextColor }
                     />
                 </Pressable>
@@ -81,7 +81,7 @@ export default function Header({}: HeaderProps): JSX.Element {
 const styles = StyleSheet.create({
     container: {
         justifyContent: "space-between",
-        paddingVertical: 3,
+        paddingVertical: 5,
         paddingHorizontal: 10,
     },
     logo: {
