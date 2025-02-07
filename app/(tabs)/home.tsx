@@ -7,7 +7,6 @@ import { useNavigation, useRouter } from "expo-router"
 import Box from "@/components/base/Box"
 import CustomButton from "@/components/customs/CustomButton"
 import CustomText from "@/components/customs/CustomText"
-import FutureDevelopmentButton from "@/components/utils/FutureDevelopmentButton"
 import React, { useEffect, useState } from "react"
 import SimpleSleep from "@/components/screens/home/SimpleSleep"
 
@@ -27,14 +26,20 @@ export default function IndexScreen() {
     return (
         <Screen>
             <Box.Center style={ styles.container }>
-                <Box.Column>
+                <Box.Column style={ styles.welcomeContainer }>
                     <CustomText
                         weight="thin"
                         size="l"
-                    >{ `Bem vindo de volta, ${ userInfo.name }!` }</CustomText>
+                    >
+                        { `Bem vindo de volta, ${ userInfo.name }!` }
+                    </CustomText>
                     {
                         isConnected
-                            ? <></>
+                            ? <CustomButton
+                                title="Seus Dados"
+                                onPress={ () => router.navigate("/(user)/user") }
+                                important
+                            />
                             : <CustomText style={ styles.internetContainer }>Você está offline, nem todos os recursos estarão disponíveis!</CustomText>
                     }
                 </Box.Column>
@@ -71,5 +76,8 @@ const styles = StyleSheet.create({
         width: "100%",
         height: 200,
         borderRadius: 10,
+    },
+    welcomeContainer: {
+        gap: 5,
     },
 })
