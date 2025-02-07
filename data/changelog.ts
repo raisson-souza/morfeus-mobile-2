@@ -11,8 +11,8 @@ const CHANGELOG: Update[] = [
         date: "07/02/2025",
         title: "Estilo",
         description: [
-            "Melhorias de interface",
             "Tema escuro",
+            "Melhorias de interface",
         ],
     },
     {
@@ -26,10 +26,10 @@ const CHANGELOG: Update[] = [
     {
         version: "1.2.1",
         date: "31/01/2025",
-        title: "Correção do Ícone",
+        title: "Ícone da Aplicação",
         description: [
             "Ajuste do ícone e imagens da aplicação",
-            "Pequenas correções",
+            "Correção de bugs",
         ],
     },
     {
@@ -47,9 +47,9 @@ const CHANGELOG: Update[] = [
         date: "24/01/2025",
         title: "Changelog e Melhorias",
         description: [
+            "Implementado changelog",
             "Correção de bugs",
             "Melhorias de interface",
-            "Implementado changelog",
         ],
     },
     {
