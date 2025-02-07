@@ -2,10 +2,11 @@ import { UpdateUserRequest, UpdateUserResponse, UserModel } from "../../types/us
 import Endpoints from "./base/Endpoints"
 
 export default abstract class UserService extends Endpoints {
-    static async Update(body: UpdateUserRequest) {
+    static async Update(request: UpdateUserRequest) {
         return await this.Put<UpdateUserResponse>({
             url: "/users",
-            authorization: await this.GetAuthorization()
+            body: request,
+            authorization: await this.GetAuthorization(),
         })
     }
 
