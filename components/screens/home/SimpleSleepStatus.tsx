@@ -73,7 +73,11 @@ export default function SimpleSleepStatus({
                             ? <Pressable onPress={ () => setIsInfoModalOpen(true) }>
                                 <IconAntDesign
                                     name="checkcircle"
-                                    color="green"
+                                    color={
+                                        systemStyle.styleName === "light"
+                                            ? "#008000"
+                                            : "#90ee90"
+                                    }
                                     size={ systemStyle.normalIconSize }
                                 />
                             </Pressable>
