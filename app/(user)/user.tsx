@@ -9,6 +9,7 @@ import CustomButton from "@/components/customs/CustomButton"
 import CustomInput from "@/components/customs/CustomInput"
 import CustomText from "@/components/customs/CustomText"
 import Loading from "@/components/base/Loading"
+import UserDataDeletionConfirmation from "@/components/screens/user/UserDataDeletionConfirmation"
 import UserService from "@/services/api/UserService"
 
 export default function User() {
@@ -24,6 +25,7 @@ export default function User() {
         fullName: userInfo.current.name,
         password: userInfo.current.password,
     })
+    const [ showUserDataDeletionModal, setShowUserDataDeletionModal ] = useState<boolean>(false)
 
     const updateUser = async () => {
         setLoading(true)
@@ -47,10 +49,11 @@ export default function User() {
     }
 
     useEffect(() => {
-        navigation.addListener("blur", () => {
+        return navigation.addListener("blur", () => {
             setUpdating(false)
             setAllowUpdate(false)
             resetUserData()
+            setShowUserDataDeletionModal(false)
         })
     }, [])
 
@@ -65,6 +68,11 @@ export default function User() {
 
     return (
         <Screen flex>
+            {
+                showUserDataDeletionModal
+                    ? <UserDataDeletionConfirmation isOpen={ showUserDataDeletionModal } />
+                    : <></>
+            }
             {
                 loading
                     ? <Loading />
@@ -87,6 +95,7 @@ export default function User() {
                                 }}
                                 btnColor={ updating ? "red" : "orange" }
                                 btnTextColor={ updating ? "red" : "orange" }
+                                btnWidth="90%"
                             />
                         </Box.Column>
                         <Box.Column style={ styles.userInfoContainer }>
@@ -156,7 +165,16 @@ export default function User() {
                             <CustomButton
                                 title="Voltar"
                                 onPress={ () => router.navigate("/(tabs)/home") }
-                                btnWidth="100%"
+                                btnWidth="90%"
+                            />
+                        </Box.Center>
+                        <Box.Center style={ styles.dataDeletionContainer }>
+                            <CustomButton
+                                title="Excluir Dados"
+                                onPress={ () => setShowUserDataDeletionModal(true) }
+                                btnWidth="60%"
+                                btnColor="red"
+                                btnTextColor="red"
                             />
                         </Box.Center>
                     </Box.Column>
@@ -173,6 +191,8 @@ const styles = StyleSheet.create({
     },
     header: {
         gap: 5,
+        alignItems: "center",
+        width: "100%",
     },
     goBackBtn: {
         width: "100%",
@@ -185,5 +205,9 @@ const styles = StyleSheet.create({
         alignSelf: "flex-start",
         gap: 10,
         width: "100%",
+    },
+    dataDeletionContainer: {
+        width: "100%",
+        paddingTop: 30,
     },
 })

@@ -13,10 +13,6 @@ export default function RootLayout() {
                 options={{ headerShown: false }}
             />
             <Stack.Screen
-                name='dataDeletion'
-                options={{ title: "Exclusão de Dados" }}
-            />
-            <Stack.Screen
                 name='accountRestoration'
                 options={{ title: "Restauração de Conta" }}
             />

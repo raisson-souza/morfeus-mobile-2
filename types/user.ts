@@ -28,3 +28,5 @@ export type UserPresentationModel = {
     email: string
     password: string
 }
+
+export type UserDataDeletionResponse = string

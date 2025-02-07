@@ -1,4 +1,4 @@
-import { UpdateUserRequest, UpdateUserResponse, UserModel } from "../../types/user"
+import { UpdateUserRequest, UpdateUserResponse, UserDataDeletionResponse, UserModel } from "../../types/user"
 import Endpoints from "./base/Endpoints"
 
 export default abstract class UserService extends Endpoints {
@@ -14,6 +14,13 @@ export default abstract class UserService extends Endpoints {
         return await this.Get<UserModel>({
             url: `/users/${ id }`,
             authorization: await this.GetAuthorization()
+        })
+    }
+
+    static async DataDeletion() {
+        return await this.Post<UserDataDeletionResponse>({
+            url: `/users/data_deletion`,
+            authorization: await this.GetAuthorization(),
         })
     }
 }
