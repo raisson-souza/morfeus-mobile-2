@@ -1,11 +1,12 @@
 import { CreateCompleteDreamModel, DreamNoSleepDateKnownPeriods } from "@/types/dream"
 import { DateTime } from "luxon"
 import { Picker } from "@react-native-picker/picker"
+import { StyleContextProvider } from "@/contexts/StyleContext"
 import { StyleSheet } from "react-native"
 import { useEffect } from "react"
 import Box from "@/components/base/Box"
+import CustomText from "@/components/customs/CustomText"
 import DatePickerShow from "@/components/date/DatePickerShow"
-import TextBold from "@/components/base/TextBold"
 
 type SleepExtractionByDateProps = {
     setDate: React.Dispatch<React.SetStateAction<CreateCompleteDreamModel>>
@@ -13,7 +14,12 @@ type SleepExtractionByDateProps = {
     defaultDate: DateTime<true>
 }
 
-export default function SleepExtractionByDate({ date, setDate, defaultDate }: SleepExtractionByDateProps) {
+export default function SleepExtractionByDate({
+    date,
+    setDate,
+    defaultDate,
+}: SleepExtractionByDateProps) {
+    const { systemStyle } = StyleContextProvider()
     const sleepDate = date.dreamNoSleepDateKnown?.date ?? defaultDate.toJSDate()
     const sleepPeriod = date.dreamNoSleepDateKnown?.period ?? "morning"
 
@@ -29,7 +35,7 @@ export default function SleepExtractionByDate({ date, setDate, defaultDate }: Sl
 
     return (
         <Box.Column style={ styles.container }>
-            <TextBold style={ styles.text }>Defina a data do ciclo de sono referente</TextBold>
+            <CustomText isOpposite>Defina a data do ciclo de sono referente</CustomText>
             <DatePickerShow
                 date={ sleepDate }
                 onChange={ (e) => {
@@ -37,14 +43,16 @@ export default function SleepExtractionByDate({ date, setDate, defaultDate }: Sl
                         ...date,
                         dreamNoSleepDateKnown: {
                             period: sleepPeriod,
-                            date: e
+                            date: e,
                         }
                     })
                 }}
-                textStyle={ styles.text }
-                iconColor="white"
+                iconColor={ systemStyle.oppositeIconColor }
+                textStyle={{
+                    color: systemStyle.oppositeTextColor,
+                }}
             />
-            <TextBold style={ styles.text }>Defina o período do ciclo de sono</TextBold>
+            <CustomText isOpposite>Defina o período do ciclo de sono</CustomText>
             <Picker
                 selectedValue={ sleepPeriod }
                 onValueChange={ (e) => {
@@ -52,11 +60,13 @@ export default function SleepExtractionByDate({ date, setDate, defaultDate }: Sl
                         ...date,
                         dreamNoSleepDateKnown: {
                             date: sleepDate,
-                            period: e as DreamNoSleepDateKnownPeriods
+                            period: e as DreamNoSleepDateKnownPeriods,
                         }
                     })
                 }}
-                style={{ color: "white" }}
+                style={{
+                    color: systemStyle.oppositeIconColor,
+                }}
             >
                 <Picker.Item label="Manhã" value="morning" />
                 <Picker.Item label="Tarde" value="afternoon" />
@@ -69,9 +79,5 @@ export default function SleepExtractionByDate({ date, setDate, defaultDate }: Sl
 const styles = StyleSheet.create({
     container: {
         gap: 10,
-    },
-    text: {
-        color: "white",
-        fontSize: 18,
     },
 })

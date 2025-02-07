@@ -1,15 +1,15 @@
 import { DreamModel } from "@/types/dream"
 import { Screen } from "@/components/base/Screen"
+import { StyleSheet } from "react-native"
 import { SyncContextProvider } from "@/contexts/SyncContext"
-import { Text, StyleSheet } from "react-native"
 import { useEffect, useState } from "react"
 import { useLocalSearchParams, useRouter } from "expo-router"
 import Box from "@/components/base/Box"
 import CustomButton from "@/components/customs/CustomButton"
+import CustomText from "@/components/customs/CustomText"
 import DreamListedByUser from "@/components/screens/dreams/DreamListedByUser"
 import Loading from "@/components/base/Loading"
 import TagService from "@/services/api/TagService"
-import TextBold from "@/components/base/TextBold"
 
 type GetTagParams = {
     id: string
@@ -40,13 +40,18 @@ export default function GetTagScreen() {
     return (
         <Screen>
             <Box.Center style={ styles.container }>
-                <TextBold style={ styles.tagTitle }>TAG { title }</TextBold>
+                <CustomText
+                    size="xl"
+                    weight="bold"
+                >
+                    { `TAG ${ title }` }
+                </CustomText>
                 {
                     dreams
                         ? dreams.length > 0
                             ? (
                                 <Box.Column style={ styles.dreamContainer }>
-                                    <TextBold style={ styles.dreamContainerTitle }>SONHOS:</TextBold>
+                                    <CustomText size="l">SONHOS:</CustomText>
                                     <Box.Column style={ styles.dreamsContainer }>
                                         {
                                             dreams.map((dream, i) =>
@@ -68,12 +73,12 @@ export default function GetTagScreen() {
                                     </Box.Column>
                                 </Box.Column>
                             )
-                            : <Text>Nenhum sono encontrado.</Text>
+                            : <CustomText>Nenhum sono encontrado.</CustomText>
                         : errorMessage
                             ? (
                                 <Box.Column>
-                                    <Text>Houve um erro ao buscar os sonhos da tag { title }:</Text>
-                                    <Text>{ errorMessage }</Text>
+                                    <CustomText>{ `Houve um erro ao buscar os sonhos da tag ${ title }:` }</CustomText>
+                                    <CustomText>{ errorMessage }</CustomText>
                                 </Box.Column>
                             )
                             : <Loading onlyLoading={ false } text="Buscando Sonhos..." />
@@ -92,14 +97,8 @@ const styles = StyleSheet.create({
         width: '100%',
         gap: 15,
     },
-    tagTitle: {
-        fontSize: 30,
-    },
     dreamContainer: {
         width: '100%',
-    },
-    dreamContainerTitle: {
-        fontSize: 25,
     },
     dreamsContainer: {
         paddingLeft: 20,

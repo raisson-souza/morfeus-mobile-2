@@ -9,12 +9,12 @@ import { useNavigation, useRouter } from "expo-router"
 import Box from "@/components/base/Box"
 import CreateCompleteDream from "@/components/screens/dreams/CreateCompleteDream"
 import CustomButton from "@/components/customs/CustomButton"
+import CustomText from "@/components/customs/CustomText"
 import DefineDreamSleep from "@/components/screens/dreams/DefineDreamSleep"
 import DreamService from "@/services/api/DreamService"
 import HELPERS from "@/data/helpers"
 import Info from "@/components/base/Info"
 import Loading from "@/components/base/Loading"
-import TextBold from "@/components/base/TextBold"
 
 const defaultDreamModel: CreateDreamModel = {
     title: "",
@@ -112,7 +112,11 @@ export default function CreateDreamScreen() {
                     modalDescription={ HELPERS.createDream.modalDescription }
                     type="question"
                 />
-                <TextBold style={ styles.dreamDateText }>Defina a data de seu sonho</TextBold>
+                <CustomText
+                    weight="bold"
+                >
+                    Defina a data de seu sonho
+                </CustomText>
                 <DefineDreamSleep
                     date={ completeDreamModel }
                     setDate={ setCompleteDreamModel }
@@ -162,9 +166,6 @@ const styles = StyleSheet.create({
     container: {
         width: "100%",
         gap: 10,
-    },
-    dreamDateText: {
-        fontSize: 18,
     },
     loading: {
         alignSelf: "center",

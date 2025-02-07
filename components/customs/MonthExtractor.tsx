@@ -1,8 +1,8 @@
 import { StyleSheet } from "react-native"
 import Box from "@/components/base/Box"
+import CustomText from "./CustomText"
 import DatePicker from "@/components/customs/DatePicker"
 import MonthParser from "@/utils/MonthParser"
-import TextBold from "@/components/base/TextBold"
 
 export type MonthExtractorProps = {
     initialDate: Date
@@ -17,19 +17,25 @@ export default function MonthExtractor({
     return (
         <Box.Center style={ styles.container }>
             <Box.Row style={ styles.dateTextContainer }>
-                <TextBold style={ styles.dateText }>
+                <CustomText
+                    style={ styles.dateText }
+                    weight="bold"
+                >
                     { MonthParser(initialDate.getMonth() + 1) }
-                </TextBold>
-                <TextBold style={ styles.dateText }>
+                </CustomText>
+                <CustomText
+                    style={ styles.dateText }
+                    weight="bold"
+                >
                     { initialDate.getFullYear() }
-                </TextBold>
+                </CustomText>
             </Box.Row>
             <DatePicker
                 date={ initialDate }
                 onChange={ (e) => onChange(e) }
                 buttonProps={{
                     title: "Selecione um mês",
-                    onPress: () => {}
+                    onPress: () => {},
                 }}
             />
         </Box.Center>

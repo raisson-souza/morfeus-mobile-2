@@ -5,8 +5,8 @@ import BiologicalOccurencesInfoModal from "./biologicalOccurencesInfoModal"
 import Box from "@/components/base/Box"
 import CustomButton from "@/components/customs/CustomButton"
 import CustomSwitch from "@/components/customs/CustomSwitch"
+import CustomText from "@/components/customs/CustomText"
 import React from "react"
-import TextBold from "@/components/base/TextBold"
 
 type BiologicalOccurencesProps = {
     value: BiologicalOccurencesType
@@ -28,7 +28,10 @@ export default function BiologicalOccurencesForm({
                     label=""
                     onChange={ (e) => setOpen(e) }
                 />
-                <TextBold>Ocorrências biológicas durante o sono</TextBold>
+                <CustomText
+                    weight="bold"
+                    size="s"
+                >Ocorrências biológicas durante o sono</CustomText>
             </Box.Row>
             {
                 open
@@ -128,6 +131,7 @@ export default function BiologicalOccurencesForm({
 const styles = StyleSheet.create({
     switchesBtn: {
         alignItems: "center",
+        flexWrap: "wrap",
     },
     switchesBox: {
         paddingLeft: 20,

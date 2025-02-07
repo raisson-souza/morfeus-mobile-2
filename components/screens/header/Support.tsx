@@ -1,10 +1,11 @@
 import { AuthContextProvider } from "@/contexts/AuthContext"
-import { Linking, StyleSheet, Text } from "react-native"
+import { Linking, StyleSheet } from "react-native"
+import { StyleContextProvider } from "@/contexts/StyleContext"
 import Box from "@/components/base/Box"
 import CustomButton from "@/components/customs/CustomButton"
+import CustomText from "@/components/customs/CustomText"
 import env from "@/config/env"
 import ModalBox from "@/components/base/ModalBox"
-import TextBold from "@/components/base/TextBold"
 
 type SupportProps = {
     open: boolean
@@ -15,6 +16,7 @@ export default function Support({
     open,
     setOpen,
 }: SupportProps) {
+    const { systemStyle } = StyleContextProvider()
     const { userInfo: { current: { name, id }}} = AuthContextProvider()
     const appVersion = env.AppVersion()
 
@@ -49,30 +51,41 @@ export default function Support({
             description={
                 <Box.Column style={ styles.container }>
                     <Box.Column style={ styles.textContainer }>
-                        <Text style={ styles.text }>Em caso de sugestões de desenvolvimento, críticas quanto a funcionalidades ou aviso de bugs, utilize este local para seu relato</Text>
-                        <Text style={ styles.text }>Se for relatar um bug, tire um print ou realize uma gravação de tela para o melhor relato de seu problema antes de prosseguir!</Text>
+                        <CustomText
+                            isOpposite
+                            size="s"
+                        >Em caso de sugestões de desenvolvimento, críticas quanto a funcionalidades ou aviso de bugs, utilize este local para seu relato</CustomText>
+                        <CustomText
+                            isOpposite
+                            size="s"
+                        >Se for relatar um bug, tire um print ou realize uma gravação de tela para o melhor relato de seu problema antes de prosseguir!</CustomText>
                     </Box.Column>
                     <CustomButton
                         title="Sugestão"
                         onPress={ () => Linking.openURL(`mailto:${ env.DevContact() }?subject=${ renderSubject("suggestion") }&body=${ renderBody("suggestion") }`) }
-                        btnTextColor={ styles.text.color }
+                        btnTextColor={ systemStyle.oppositeTextColor }
                     />
                     <CustomButton
                         title="Crítica"
                         onPress={ () => Linking.openURL(`mailto:${ env.DevContact() }?subject=${ renderSubject("review") }&body=${ renderBody("review") }`) }
-                        btnTextColor={ styles.text.color }
+                        btnTextColor={ systemStyle.oppositeTextColor }
                     />
                     <CustomButton
                         title="Bug"
                         onPress={ () => Linking.openURL(`mailto:${ env.DevContact() }?subject=${ renderSubject("bug") }&body=${ renderBody("bug") }`) }
-                        btnTextColor={ styles.text.color }
+                        btnTextColor={ systemStyle.oppositeTextColor }
                     />
                     <CustomButton
                         title="FECHAR"
                         onPress={ () => setOpen(false) }
-                        btnTextColor={ styles.text.color }
+                        btnTextColor={ systemStyle.oppositeTextColor }
                     />
-                    <TextBold style={ styles.appVersionContainer }>Versão do software: { appVersion }</TextBold>
+                    <CustomText
+                        style={ styles.appVersionContainer }
+                        isOpposite
+                        size="s"
+                        weight="thin"
+                    >{ `Versão do software: ${ appVersion }` }</CustomText>
                 </Box.Column>
             }
         />
@@ -86,13 +99,7 @@ const styles = StyleSheet.create({
     textContainer: {
         gap: 5,
     },
-    text: {
-        color: "white",
-        fontSize: 17,
-    },
     appVersionContainer: {
-        color: "white",
-        fontSize: 15,
         alignSelf: "center",
     },
 })

@@ -1,14 +1,14 @@
 import { Stack } from "expo-router"
 import AuthRoute from "@/components/auth/Auth"
-import LayoutStyles from "@/styles/layouts"
 import React from "react"
+import { GetStackStyle } from "@/data/layout"
 
 export default function RootLayout() {
   return (
     <AuthRoute>
       <Stack
         initialRouteName='analysisHome'
-        screenOptions={ LayoutStyles.stack }
+        screenOptions={ GetStackStyle() }
       >
         <Stack.Screen
           name='analysisHome'

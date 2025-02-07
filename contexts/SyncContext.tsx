@@ -1,7 +1,6 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react"
-import { Screen } from "@/components/base/Screen"
+import DefaultLoadingScreen from "@/components/screens/general/DefaultLoadingScreen"
 import InternetInfo from "../utils/InternetInfo"
-import Loading from "@/components/base/Loading"
 
 type SyncContextProps = {
     children: JSX.Element | JSX.Element[]
@@ -97,13 +96,7 @@ export default function SyncContextComponent({ children }: SyncContextProps) {
         return isConnectedRef.current
     }
 
-    if (loading) {
-        return (
-            <Screen flex>
-                <Loading onlyLoading={ false } />
-            </Screen>
-        )
-    }
+    if (loading) return <DefaultLoadingScreen />
 
     return (
         <SyncContext.Provider value={{

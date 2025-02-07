@@ -2,12 +2,11 @@ import { createContext, useContext, useEffect, useRef, useState } from "react"
 import { LocalStorage, LocalStorageCredentials } from "@/utils/LocalStorage"
 import { LoginRequest } from "@/types/login"
 import { RegistryRequest } from "@/types/registry"
-import { Screen } from "../components/base/Screen"
 import { UserDataLocalStorage } from "@/types/user"
 import { useRouter } from "expo-router"
 import AuthService from "@/services/api/AuthService"
+import DefaultLoadingScreen from "@/components/screens/general/DefaultLoadingScreen"
 import InternetInfo from "@/utils/InternetInfo"
-import Loading from "../components/base/Loading"
 import UserService from "@/services/api/UserService"
 
 type AuthContextProps = {
@@ -221,13 +220,7 @@ export default function AuthContextComponent({ children }: AuthContextProps) {
         refreshInterval.current = _refreshInterval
     }
 
-    if (loading) {
-        return (
-            <Screen flex>
-                <Loading onlyLoading={ false } />
-            </Screen>
-        )
-    }
+    if (loading) return <DefaultLoadingScreen />
 
     return (
         <AuthContext.Provider value={{

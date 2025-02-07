@@ -1,4 +1,7 @@
 import { ActivityIndicator, Text, View } from "react-native"
+import { DefaultStyle } from "@/data/style"
+import { StyleContextProvider } from "@/contexts/StyleContext"
+import React from "react"
 
 type LoadingProps = {
     onlyLoading?: boolean
@@ -10,13 +13,16 @@ type LoadingProps = {
 export default function Loading({
     onlyLoading = true,
     text = "Carregando...",
-    textColor = "black",
+    textColor,
 }: LoadingProps) {
+    const systemStyle = GetSystemStyle()
+    textColor = textColor ? textColor : systemStyle.textColor
+
     return (
         <View>
             <ActivityIndicator
-                color="darkblue"
-                size="large"
+                color={ systemStyle.loadingColor }
+                size={ systemStyle.extraLargeIconSize }
             />
             {
                 onlyLoading
@@ -25,4 +31,14 @@ export default function Loading({
             }
         </View>
     )
+}
+
+const GetSystemStyle = () => {
+    try {
+        const { systemStyle } = StyleContextProvider()
+        return systemStyle
+    }
+    catch {
+        return DefaultStyle
+    }
 }

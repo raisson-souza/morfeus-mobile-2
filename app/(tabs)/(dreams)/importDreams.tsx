@@ -1,12 +1,12 @@
 import { Screen } from "@/components/base/Screen"
 import Box from "@/components/base/Box"
-import TextBold from "@/components/base/TextBold"
+import CustomText from "@/components/customs/CustomText"
 
 export default function ImportDreamsScreen() {
     return (
         <Screen>
             <Box.Column>
-                <TextBold>ImportDreamsScreen</TextBold>
+                <CustomText>ImportDreamsScreen</CustomText>
             </Box.Column>
         </Screen>
     )

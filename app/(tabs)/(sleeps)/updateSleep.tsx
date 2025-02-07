@@ -8,12 +8,12 @@ import { useLocalSearchParams, useRouter } from "expo-router"
 import BiologicalOccurencesForm from "@/components/screens/sleeps/BiologicalOccurencesForm"
 import Box from "@/components/base/Box"
 import CustomButton from "@/components/customs/CustomButton"
+import CustomText from "@/components/customs/CustomText"
 import HumorsForm from "@/components/screens/sleeps/HumorsForm"
 import Loading from "@/components/base/Loading"
 import React from "react"
 import SleepCycleHoursForm from "@/components/screens/sleeps/SleepCycleHoursForm"
 import SleepService from "@/services/api/SleepService"
-import TextBold from "@/components/base/TextBold"
 
 type UpdateSleepParams = {
     id: string
@@ -79,7 +79,7 @@ export default function UpdateSleepScreen() {
             return <Loading text="Buscando ciclo de sono..." onlyLoading={ false } />
         
         if (errorOnFetch)
-            return <TextBold>Ocorreu um erro ao buscar o ciclo de sono</TextBold>
+            return <CustomText weight="bold">Ocorreu um erro ao buscar o ciclo de sono</CustomText>
 
         return <>
             <SleepCycleHoursForm

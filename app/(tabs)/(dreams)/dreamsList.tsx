@@ -1,12 +1,14 @@
 import { DateFormatter } from "@/utils/DateFormatter"
 import { DreamListedByUserType, ListDreamsByUserRequest } from "@/types/dream"
 import { Screen } from "@/components/base/Screen"
-import { StyleSheet, Text, View } from "react-native"
+import { StyleContextProvider } from "@/contexts/StyleContext"
+import { StyleSheet, View } from "react-native"
 import { SyncContextProvider } from "@/contexts/SyncContext"
 import { useEffect, useState } from "react"
 import { useRouter } from "expo-router"
 import Box from "@/components/base/Box"
 import CustomButton from "@/components/customs/CustomButton"
+import CustomText from "@/components/customs/CustomText"
 import DreamListedByUser from "@/components/screens/dreams/DreamListedByUser"
 import DreamService from "@/services/api/DreamService"
 import DreamsListEspecificFilters from "@/components/screens/dreams/DreamsListEspecificFilters"
@@ -14,9 +16,9 @@ import DreamsListObjectiveFilters from "@/components/screens/dreams/DreamsListOb
 import Loading from "@/components/base/Loading"
 import MonthExtractorHeader from "@/components/screens/general/MonthExtractorHeader"
 import React from "react"
-import TextBold from "@/components/base/TextBold"
 
 export default function DreamsList() {
+    const { systemStyle } = StyleContextProvider()
     const router = useRouter()
     const [ loading, setLoading ] = useState<boolean>(true)
     const [ dreamList, setDreamList ] = useState<DreamListedByUserType[] | null>(null)
@@ -87,7 +89,12 @@ export default function DreamsList() {
                             {
                                 dreamList.map((dream, i) => (
                                     <Box.Center style={ styles.dreamOuterContainer } key={ i }>
-                                        <View style={ styles.dreamSeparator }></View>
+                                        <View
+                                            style={{
+                                                ...styles.dreamSeparator,
+                                                borderTopColor: systemStyle.iconColor,
+                                            }}
+                                        ></View>
                                         <DreamListedByUser
                                             dream={ dream }
                                             containerStyle={ styles.dreamContainer }
@@ -107,9 +114,9 @@ export default function DreamsList() {
                     </>
                 )
             }
-            return <Text>Nenhum sonho encontrado.</Text>
+            return <CustomText>Nenhum sonho encontrado.</CustomText>
         }
-        return <Text>Houve um erro ao buscar os sonhos.</Text>
+        return <CustomText>Houve um erro ao buscar os sonhos.</CustomText>
     }
 
     return (
@@ -133,8 +140,13 @@ export default function DreamsList() {
                 {
                     dreamList
                         ? (
-                            <Box.Column style={ styles.filterContainer }>
-                                <TextBold style={ styles.filterMessage }>Filtragem de Sonhos</TextBold>
+                            <Box.Column
+                                style={{
+                                    ...styles.filterContainer,
+                                    backgroundColor: systemStyle.quaternary,
+                                }}
+                            >
+                                <CustomText weight="bold">Filtragem de Sonhos</CustomText>
                                 <DreamsListObjectiveFilters
                                     listDreamsByUserForm={ listDreamsByUserForm }
                                     setListDreamsByUserForm={ setListDreamsByUserForm }
@@ -163,14 +175,11 @@ const styles = StyleSheet.create({
         gap: 10,
     },
     filterContainer: {
-        backgroundColor: "lightgray",
         width: "100%",
         padding: 10,
         borderRadius: 10,
     },
-    filterMessage: {
-        fontSize: 20,
-    },
+    
     dreamsListContainer: {
         alignSelf: "flex-start",
         width: "100%",

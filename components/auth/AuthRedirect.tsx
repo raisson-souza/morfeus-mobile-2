@@ -14,7 +14,7 @@ export default function AuthRedirect({ children }: AuthRedirectProps) {
     const { isLogged } = AuthContextProvider()
 
     useEffect(() => {
-        if (isLogged) router.navigate("/(tabs)")
+        if (isLogged) router.navigate("/(tabs)/home")
     }, [])
 
     return children

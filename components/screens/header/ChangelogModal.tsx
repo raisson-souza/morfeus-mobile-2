@@ -1,8 +1,8 @@
-import { StyleSheet, Text } from "react-native"
+import { StyleSheet } from "react-native"
 import Box from "@/components/base/Box"
 import Carousel from "@/components/base/Carousel"
 import CHANGELOG from "@/data/changelog"
-import TextBold from "@/components/base/TextBold"
+import CustomText from "@/components/customs/CustomText"
 
 type ChangelogModalProps = {
     open: boolean
@@ -24,24 +24,32 @@ export default function ChangelogModal({
             }}
         >
             <Box.Column>
-                <TextBold style={{ ...styles.text, ...styles.title }}>
+                <CustomText
+                    size="xl"
+                    isOpposite
+                    weight="bold"
+                >
                     { changelog.title }
-                </TextBold>
+                </CustomText>
                 <Box.Row>
-                    <Text style={{ ...styles.text, ...styles.description }}>
+                    <CustomText
+                        size="s"
+                        isOpposite
+                        weight="thin"
+                    >
                         { `Versão ${ changelog.version } - ${ changelog.date }` }
-                    </Text>
+                    </CustomText>
                 </Box.Row>
             </Box.Column>
             <Box.Column>
                 {
                     changelog.description.map((description, i) => (
-                        <Text
+                        <CustomText
                             key={ i }
-                            style={{ ...styles.text, ...styles.description }}
+                            isOpposite
                         >
                             { `- ${ description };` }
-                        </Text>
+                        </CustomText>
                     ))
                 }
             </Box.Column>
@@ -61,17 +69,9 @@ const styles = StyleSheet.create({
     container: {
         gap: 10,
     },
-    text: {
-        color: "white"
-    },
     log: {
         gap: 5,
-        flexWrap: "wrap"
+        flexWrap: "wrap",
+        paddingBottom: 10,
     },
-    title: {
-        fontSize: 18,
-    },
-    description: {
-        fontSize: 16,
-    }
 })

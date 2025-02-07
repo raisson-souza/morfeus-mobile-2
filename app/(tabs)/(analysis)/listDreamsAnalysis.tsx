@@ -1,11 +1,13 @@
 import { DateFormatter } from "@/utils/DateFormatter"
 import { Screen } from "@/components/base/Screen"
+import { StyleContextProvider } from "@/contexts/StyleContext"
 import { StyleSheet } from "react-native"
 import { useEffect, useState } from "react"
 import { useRouter } from "expo-router"
 import AnalysisService from "@/services/api/AnalysisService"
 import Box from "@/components/base/Box"
 import CustomButton from "@/components/customs/CustomButton"
+import CustomText from "@/components/customs/CustomText"
 import IconFontAwesome5 from "react-native-vector-icons/FontAwesome5"
 import IconMaterialIcons from "react-native-vector-icons/MaterialIcons"
 import Info from "@/components/base/Info"
@@ -13,7 +15,6 @@ import isNil from "@/utils/IsNill"
 import Loading from "@/components/base/Loading"
 import MonthExtractorHeader from "@/components/screens/general/MonthExtractorHeader"
 import React from "react"
-import TextBold from "@/components/base/TextBold"
 
 type DisableFetchActions = {
     get: boolean
@@ -21,6 +22,7 @@ type DisableFetchActions = {
 }
 
 export default function ListDreamsAnalysisScreen() {
+    const { systemStyle } = StyleContextProvider()
     const router = useRouter()
     const [ date, setDate ] = useState<Date>(DateFormatter.fixUTC(new Date().getTime()))
     const [ analysis, setAnalysis ] = useState<DreamAnalysisModel | null>(null)
@@ -90,7 +92,7 @@ export default function ListDreamsAnalysisScreen() {
         if (!analysis) {
             return (
                 <Box.Column style={ styles.analysisContainer }>
-                    <TextBold>{ errorMessage }</TextBold>
+                    <CustomText>{ errorMessage }</CustomText>
                     <CustomButton
                         title="Buscar Análise"
                         onPress={ async () => {
@@ -130,10 +132,18 @@ export default function ListDreamsAnalysisScreen() {
                 <Box.Row style={ styles.individualAnalysis }>
                     {
                         iconLib === "fontAwesome5"
-                            ? <IconFontAwesome5 name={ iconName } size={ 20 } />
-                            : <IconMaterialIcons name={ iconName } size={ 20 } />
+                            ? <IconFontAwesome5
+                                name={ iconName }
+                                size={ systemStyle.smallIconSize }
+                                color={ systemStyle.iconColor }
+                            />
+                            : <IconMaterialIcons
+                                name={ iconName }
+                                size={ systemStyle.smallIconSize }
+                                color={ systemStyle.iconColor }
+                            />
                     }
-                    <TextBold>{ msg }</TextBold>
+                    <CustomText weight="thin">{ msg }</CustomText>
                 </Box.Row>
             )
         }
@@ -181,7 +191,12 @@ export default function ListDreamsAnalysisScreen() {
         const renderMostOccurencesAnalysis = () => {
             return (
                 <Box.Column style={ styles.groupAnalysisContainer }>
-                    <TextBold>Maiores ocorrências:</TextBold>
+                    <CustomText
+                        weight="bold"
+                        size="l"
+                    >
+                        Maiores ocorrências:
+                    </CustomText>
                     { renderMostPointOfViewOccurence() }
                     { renderMostClimateOccurence() }
                     { renderIndividualAnalysis(mostHourOccurence, `Horário: ${ mostHourOccurence }`, "clock") }
@@ -197,7 +212,12 @@ export default function ListDreamsAnalysisScreen() {
             if (eroticDreamsAverage != 0 || tagPerDreamAverage != 0) {
                 return (
                     <Box.Column style={ styles.groupAnalysisContainer }>
-                        <TextBold>Médias:</TextBold>
+                        <CustomText
+                            weight="bold"
+                            size="l"
+                        >
+                            Médias:
+                        </CustomText>
                         { renderIndividualAnalysis(eroticDreamsAverage, `Sonhos eróticos: ${ eroticDreamsAverage }%`, "18-up-rating", "materialIcons") }
                         { renderIndividualAnalysis(tagPerDreamAverage, `Tags por sonho: ${ tagPerDreamAverage }`, "tag") }
                     </Box.Column>
@@ -211,7 +231,12 @@ export default function ListDreamsAnalysisScreen() {
             if (!isNil(longestDreamTitle)) {
                 return (
                     <Box.Column style={ styles.groupAnalysisContainer }>
-                        <TextBold>Diversos:</TextBold>
+                        <CustomText
+                            weight="bold"
+                            size="l"
+                        >
+                            Diversos:
+                        </CustomText>
                         { renderIndividualAnalysis(longestDreamTitle, `Título mais longo: ${ longestDreamTitle }`, "title", "materialIcons") }
                     </Box.Column>
                 )
@@ -234,7 +259,12 @@ export default function ListDreamsAnalysisScreen() {
 
         return (
             <Box.Column style={ styles.analysisContainer }>
-                <TextBold>Análises obtidas dos sonhos cadastrados no mês escolhido:</TextBold>
+                <CustomText
+                    size="xl"
+                    weight="bold"
+                >
+                    Análises obtidas dos sonhos cadastrados no mês escolhido:
+                </CustomText>
                 { renderMostOccurencesAnalysis() }
                 { renderAveragesAnalysis() }
                 { renderSeveralsAnalysis() }
@@ -263,7 +293,7 @@ export default function ListDreamsAnalysisScreen() {
                 }
                 <Info
                     type="warn"
-                    overrideInfoColor="black"
+                    overrideInfoColor={ systemStyle.iconColor }
                     infoDescription="Mais análises?"
                     modalTitle="Novas Análises"
                     modalDescription={[

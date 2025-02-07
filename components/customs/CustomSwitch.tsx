@@ -1,4 +1,6 @@
-import { Switch, Text, View, StyleSheet, SwitchProps, StyleProp, TextStyle } from "react-native"
+import { Switch, StyleSheet, SwitchProps, StyleProp, TextStyle } from "react-native"
+import Box from "../base/Box"
+import CustomText from "./CustomText"
 
 type CustomSwitchProps = {
     label: string
@@ -8,17 +10,21 @@ type CustomSwitchProps = {
     innerProps?: SwitchProps
 }
 
-export default function CustomSwitch({ label, labelStyle = {}, value, onChange, innerProps }: CustomSwitchProps) {
-    return (
-        <View style={ styles.switch }>
-            <Text style={ labelStyle }>{ label }</Text>
-            <Switch
-                value={ value }
-                onValueChange={ (e) => onChange(e) }
-                { ...innerProps }
-            />
-        </View>
-    )
+export default function CustomSwitch({
+    label,
+    labelStyle = {},
+    value,
+    onChange,
+    innerProps,
+}: CustomSwitchProps) {
+    return <Box.Row style={ styles.switch }>
+        <CustomText style={ labelStyle }>{ label }</CustomText>
+        <Switch
+            value={ value }
+            onValueChange={ (e) => onChange(e) }
+            { ...innerProps }
+        />
+    </Box.Row>
 }
 
 const styles = StyleSheet.create({

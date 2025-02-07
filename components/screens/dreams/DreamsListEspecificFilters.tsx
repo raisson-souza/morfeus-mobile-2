@@ -1,9 +1,11 @@
 import { ListDreamsByUserRequest } from "@/types/dream"
 import { Picker } from "@react-native-picker/picker"
-import { StyleSheet, Switch, Text } from "react-native"
+import { StyleSheet, Switch } from "react-native"
 import Box from "@/components/base/Box"
+import CustomText from "@/components/customs/CustomText"
 import React from "react"
 import SwitchNull from "@/components/customs/CustomSwitchNull"
+import { StyleContextProvider } from "@/contexts/StyleContext"
 
 type DreamsListEspecificFiltersProps = {
     listDreamsByUserForm: ListDreamsByUserRequest
@@ -14,10 +16,12 @@ export default function DreamsListEspecificFilters({
     listDreamsByUserForm,
     setListDreamsByUserForm,
 }: DreamsListEspecificFiltersProps) {
+    const { systemStyle } = StyleContextProvider()
+
     return (
         <Box.Column style={ styles.container }>
             <Box.Row style={ styles.filterNoEspecificyContainer }>
-                <Text>Sem Especificidades</Text>
+                <CustomText size="s">Sem Especificidades</CustomText>
                 <Switch
                     value={ listDreamsByUserForm.dreamEspecificCaracteristicsFilter.noEspecificy }
                     onValueChange={ (e) => setListDreamsByUserForm({
@@ -217,7 +221,10 @@ export default function DreamsListEspecificFilters({
                                             dreamHourId: e,
                                         },
                                     })}
-                                    style={ styles.pickerNoEspecificy }
+                                    style={{
+                                        ...styles.pickerNoEspecificy,
+                                        color: systemStyle.textColor,
+                                    }}
                                 >
                                     <Picker.Item label="Horário do Sonho..." value={ null } />
                                     <Picker.Item label="Amanhecer" value="1" />
@@ -236,7 +243,10 @@ export default function DreamsListEspecificFilters({
                                             dreamDurationId: e,
                                         },
                                     })}
-                                    style={ styles.pickerNoEspecificy }
+                                    style={{
+                                        ...styles.pickerNoEspecificy,
+                                        color: systemStyle.textColor,
+                                    }}
                                 >
                                     <Picker.Item label="Duração do Sonho..." value={ null } />
                                     <Picker.Item label="Instantâneo" value="1" />
@@ -253,7 +263,10 @@ export default function DreamsListEspecificFilters({
                                             dreamLucidityLevelId: e,
                                         },
                                     })}
-                                    style={ styles.pickerNoEspecificy }
+                                    style={{
+                                        ...styles.pickerNoEspecificy,
+                                        color: systemStyle.textColor,
+                                    }}
                                 >
                                     <Picker.Item label="Nível de Lucidez do Sonho..." value={ null } />
                                     <Picker.Item label="Não Lúcido" value="1" />
@@ -270,7 +283,10 @@ export default function DreamsListEspecificFilters({
                                             dreamTypeId: e,
                                         },
                                     })}
-                                    style={ styles.pickerNoEspecificy }
+                                    style={{
+                                        ...styles.pickerNoEspecificy,
+                                        color: systemStyle.textColor,
+                                    }}
                                 >
                                     <Picker.Item label="Tipo de Sonho..." value={ null } />
                                     <Picker.Item label="Sonho" value="1" />
@@ -286,7 +302,10 @@ export default function DreamsListEspecificFilters({
                                             dreamRealityLevelId: e,
                                         },
                                     })}
-                                    style={ styles.pickerNoEspecificy }
+                                    style={{
+                                        ...styles.pickerNoEspecificy,
+                                        color: systemStyle.textColor,
+                                    }}
                                 >
                                     <Picker.Item label="Nível de Realidade do Sonho..." value={ null } />
                                     <Picker.Item label="Irreal" value="1" />
@@ -302,7 +321,10 @@ export default function DreamsListEspecificFilters({
                                             dreamPointOfViewId: e,
                                         },
                                     })}
-                                    style={ styles.pickerNoEspecificy }
+                                    style={{
+                                        ...styles.pickerNoEspecificy,
+                                        color: systemStyle.textColor,
+                                    }}
                                 >
                                     <Picker.Item label="Perspectiva..." value={ null } />
                                     <Picker.Item label="Primeira Pessoa" value="1" />

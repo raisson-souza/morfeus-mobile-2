@@ -1,11 +1,12 @@
 import { AuthContextProvider } from "@/contexts/AuthContext"
 import { CustomImage } from "@/components/customs/CustomImage"
 import { Screen } from "@/components/base/Screen"
-import { StyleSheet, Text } from "react-native"
+import { StyleSheet } from "react-native"
 import { SyncContextProvider } from "@/contexts/SyncContext"
 import { useNavigation, useRouter } from "expo-router"
 import Box from "@/components/base/Box"
 import CustomButton from "@/components/customs/CustomButton"
+import CustomText from "@/components/customs/CustomText"
 import FutureDevelopmentButton from "@/components/utils/FutureDevelopmentButton"
 import React, { useEffect, useState } from "react"
 import SimpleSleep from "@/components/screens/home/SimpleSleep"
@@ -27,11 +28,14 @@ export default function IndexScreen() {
         <Screen>
             <Box.Center style={ styles.container }>
                 <Box.Column>
-                    <Text style={ styles.welcome }>Bem vindo de volta, { userInfo.name }!</Text>
+                    <CustomText
+                        weight="thin"
+                        size="l"
+                    >{ `Bem vindo de volta, ${ userInfo.name }!` }</CustomText>
                     {
                         isConnected
                             ? <></>
-                            : <Text style={ styles.internetContainer }>Você está offline, nem todos os recursos estarão disponíveis!</Text>
+                            : <CustomText style={ styles.internetContainer }>Você está offline, nem todos os recursos estarão disponíveis!</CustomText>
                     }
                 </Box.Column>
                 <CustomImage.Local
@@ -42,11 +46,12 @@ export default function IndexScreen() {
                 <CustomButton
                     title="Criar Sonho"
                     onPress={ () => router.navigate("/createDream") }
+                    btnWidth="65%"
                 />
-                <FutureDevelopmentButton btnTitle="Criar Sonho Rápido"/>
                 <CustomButton
                     title="Criar Ciclo de Sono"
                     onPress={ () => router.navigate("/createSleep") }
+                    btnWidth="65%"
                 />
             </Box.Center>
         </Screen>
@@ -66,9 +71,5 @@ const styles = StyleSheet.create({
         width: "100%",
         height: 200,
         borderRadius: 10,
-    },
-    welcome: {
-        fontSize: 20,
-        fontWeight: "bold",
     },
 })

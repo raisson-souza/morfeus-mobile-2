@@ -30,11 +30,16 @@ export default async function SqliteDbManager(db: SQLiteDatabase): Promise<void>
 
         if (newUserVersion === 0) {
             db.execAsync(`
-                CREATE TABLE PARAMS (
+                CREATE TABLE IF NOT EXISTS PARAMS (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    tutorial_read BOOLEAN NOT NULL DEFAULT 0
+                    tutorial_read BOOLEAN NOT NULL DEFAULT 0,
+                    is_dark_style BOOLEAN NOT NULL DEFAULT 0
                 );
-                INSERT INTO params (tutorial_read) VALUES (0);
+                INSERT INTO PARAMS (
+                    tutorial_read,
+                    is_dark_style
+                )
+                VALUES (0, 0);
             `)
             newUserVersion = 1
         }

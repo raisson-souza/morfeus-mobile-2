@@ -2,6 +2,7 @@ import { ListDreamsByUserRequest } from "@/types/dream"
 import { Picker } from "@react-native-picker/picker"
 import { StyleSheet } from "react-native"
 import Box from "@/components/base/Box"
+import { StyleContextProvider } from "@/contexts/StyleContext"
 
 type DreamsListObjectiveFiltersProps = {
     listDreamsByUserForm: ListDreamsByUserRequest
@@ -12,6 +13,8 @@ export default function DreamsListObjectiveFilters({
     listDreamsByUserForm,
     setListDreamsByUserForm,
 }: DreamsListObjectiveFiltersProps) {
+    const { systemStyle } = StyleContextProvider()
+
     return (
         <Box.Column style={ styles.container }>
             <Picker
@@ -20,7 +23,7 @@ export default function DreamsListObjectiveFilters({
                     ...listDreamsByUserForm,
                     dreamCaracteristicsFilter: e,
                 })}
-                style={ styles.picker }
+                style={{ color: systemStyle.textColor }}
             >
                 <Picker.Item label="Todos os Sonhos" value="all" />
                 <Picker.Item label="Todos os Sonhos (menos os ocultos)" value="allNotHidden" />
@@ -35,7 +38,7 @@ export default function DreamsListObjectiveFilters({
                     ...listDreamsByUserForm,
                     dreamOriginFilter: e,
                 })}
-                style={ styles.picker }
+                style={{ color: systemStyle.textColor }}
             >
                 <Picker.Item label="Todas as Origens" value="all" />
                 <Picker.Item label="Sonhos Completos" value="completeDreams" />
@@ -49,7 +52,5 @@ export default function DreamsListObjectiveFilters({
 const styles = StyleSheet.create({
     container: {
         width: "100%",
-    },
-    picker: {
     },
 })

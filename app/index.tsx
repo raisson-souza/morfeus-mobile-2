@@ -1,10 +1,11 @@
 import { AuthContextProvider } from "@/contexts/AuthContext"
 import { CustomImage } from "@/components/customs/CustomImage"
 import { Screen } from "@/components/base/Screen"
-import { StyleSheet, Text } from "react-native"
+import { StyleSheet } from "react-native"
 import { useRouter } from "expo-router"
 import Box from "@/components/base/Box"
 import CustomButton from "@/components/customs/CustomButton"
+import CustomText from "@/components/customs/CustomText"
 import React, { useState } from "react"
 import TutorialEnclosure from "@/components/screens/enclosures/TutorialEnclosure"
 import TutorialModal from "@/components/screens/general/TutorialModal"
@@ -27,7 +28,10 @@ export default function InfoScreen() {
                     <CustomImage.Local
                         filePathByRequire={ require("../assets/images/morfeus_logo.png") }
                     />
-                    <Text style={ styles.description }>Uma aplicação que realiza o controle do ciclo do sono e gerenciamento de sonhos.</Text>
+                    <CustomText
+                        weight="thin"
+                        style={ styles.description }
+                    >Uma aplicação que realiza o controle do ciclo do sono e gerenciamento de sonhos.</CustomText>
                     <Box.Column style={ styles.btns }>
                         {
                             isLogged
@@ -53,10 +57,6 @@ const styles = StyleSheet.create({
     },
     description: {
         textAlign: "center",
-    },
-    title: {
-        fontSize: 25,
-        fontWeight: "bold",
     },
     btns: {
         gap: 10,

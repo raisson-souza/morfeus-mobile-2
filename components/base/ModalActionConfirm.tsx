@@ -3,6 +3,8 @@ import Box from "./Box"
 import CustomButton from "../customs/CustomButton"
 import CustomModal from "../customs/CustomModal"
 import React from "react"
+import { StyleContextProvider } from "@/contexts/StyleContext"
+import CustomText from "../customs/CustomText"
 
 type ModalActionConfirmProps = {
     title?: string
@@ -13,18 +15,34 @@ type ModalActionConfirmProps = {
 }
 
 export default function ModalActionConfirm({ title = "Deseja Continuar?", description, isOpen, setIsOpen, onChange }: ModalActionConfirmProps) {
+    const { systemStyle } = StyleContextProvider()
+
     const renderDescription = (): JSX.Element => {
         if (description instanceof Array) {
             return <>
                 {
-                    description.map((_description, i) => (<Text style={ styles.modalDescription } key={ i }>{ _description }</Text>))
+                    description.map((_description, i) =>
+                        <CustomText
+                            isOpposite
+                            key={ i }
+                        >
+                            { _description }
+                        </CustomText>
+                    )
                 }
             </>
         }
         else if (description === undefined) {
             return <></>
         }
-        return <Text style={ styles.modalDescription }>{ description }</Text>
+        return <Text
+            style={{
+                color: systemStyle.oppositeTextColor,
+                fontSize: systemStyle.normalTextSize,
+            }}
+        >
+            { description }
+        </Text>
     }
 
     return (
@@ -33,9 +51,15 @@ export default function ModalActionConfirm({ title = "Deseja Continuar?", descri
             setVisible={ setIsOpen }
             canOutsideClickClose={ false }
         >
-            <Box.Column style={ styles.container }>
-                <Box.Row style={ styles.modalTitleContainer }>
-                    <Text style={ styles.modalTitle }>{ title }</Text>
+            <Box.Column style={{
+                ...styles.container,
+                backgroundColor: systemStyle.primary,
+            }}>
+                <Box.Row style={{
+                    ...styles.modalTitleContainer,
+                    borderBottomColor: systemStyle.oppositeTextColor,
+                }}>
+                    <CustomText isOpposite>{ title }</CustomText>
                 </Box.Row>
                 <Box.Column>
                     { renderDescription() }
@@ -44,13 +68,13 @@ export default function ModalActionConfirm({ title = "Deseja Continuar?", descri
                     <CustomButton
                         title="Confirmar"
                         onPress={ () => { onChange(true); setIsOpen(false) } }
-                        btnTextColor="white"
+                        btnTextColor={ systemStyle.oppositeTextColor }
                         btnColor="green"
                     />
                     <CustomButton
                         title="Cancelar"
                         onPress={ () => { onChange(false); setIsOpen(false) } }
-                        btnTextColor="white"
+                        btnTextColor={ systemStyle.oppositeTextColor }
                         btnColor="red"
                     />
                 </Box.Row>
@@ -62,22 +86,13 @@ export default function ModalActionConfirm({ title = "Deseja Continuar?", descri
 const styles = StyleSheet.create({
     container: {
         width: "80%",
-        backgroundColor: "darkblue",
         gap: 10,
         padding: 10,
         borderRadius: 15,
     },
     modalTitleContainer: {
         borderBottomWidth: 1,
-        borderBottomColor: "white",
-    },
-    modalTitle: {
-        color: "white",
-        fontSize: 22,
-    },
-    modalDescription: {
-        color: "white",
-        fontSize: 18,
+        paddingBottom: 5,
     },
     modalBtnsContainer: {
         justifyContent: "space-around",

@@ -1,14 +1,15 @@
 import { CreateDreamModel } from "@/types/dream"
 import { Picker } from "@react-native-picker/picker"
-import { StyleSheet, Pressable } from "react-native"
+import { StyleContextProvider } from "@/contexts/StyleContext"
+import { StyleSheet } from "react-native"
 import { useEffect, useState } from "react"
 import { useNavigation } from "expo-router"
 import Box from "@/components/base/Box"
 import CustomButton from "@/components/customs/CustomButton"
 import CustomInput from "@/components/customs/CustomInput"
 import CustomSwitch from "@/components/customs/CustomSwitch"
+import CustomText from "@/components/customs/CustomText"
 import Info from "@/components/base/Info"
-import TextBold from "@/components/base/TextBold"
 
 type CreateCompleteDream = {
     dream: CreateDreamModel
@@ -21,6 +22,7 @@ export default function CreateCompleteDream({
     onChange,
     isLocked,
 }: CreateCompleteDream) {
+    const { systemStyle } = StyleContextProvider()
     const navigation = useNavigation()
     const [ tag, setTag ] = useState<string>("")
 
@@ -76,7 +78,7 @@ export default function CreateCompleteDream({
                     infoDescription="Primeira pessoa?"
                     modalTitle="PERSPECTIVA DE UM SONHO"
                     modalDescription={[
-                        "Você estava e era você no sonho? Você se via nele? Seu sonho contava uma história sua ou de outro? Defina aqui a perspectiva de seu sonho."
+                        "Você estava e era você no sonho? Você se via nele? Seu sonho contava uma história sua ou de outro? Defina aqui a perspectiva de seu sonho.",
                     ]}
                     type="question"
                 />
@@ -86,7 +88,10 @@ export default function CreateCompleteDream({
                         ...dream,
                         dreamPointOfViewId: e
                     })}
-                    style={ styles.picker }
+                    style={{
+                        ...styles.picker,
+                        color: systemStyle.textColor,
+                    }}
                     enabled={ !isLocked }
                 >
                     <Picker.Item label="Primeira Pessoa" value="1" />
@@ -98,7 +103,7 @@ export default function CreateCompleteDream({
                 infoDescription="Climas em um sonho?"
                 modalTitle="Clima de um Sonho"
                 modalDescription={[
-                    "Tinha uma tempestade em seu sonho? Defina aqui os climas presentes em seu sonho."
+                    "Tinha uma tempestade em seu sonho? Defina aqui os climas presentes em seu sonho.",
                 ]}
                 type="question"
             />
@@ -113,7 +118,7 @@ export default function CreateCompleteDream({
                         multiplos: false,
                         outro: false,
                         indefinido: false,
-                    }
+                    },
                 })}
             />
             <CustomSwitch
@@ -127,7 +132,7 @@ export default function CreateCompleteDream({
                         multiplos: false,
                         outro: false,
                         indefinido: false,
-                    }
+                    },
                 })}
             />
             <CustomSwitch
@@ -141,7 +146,7 @@ export default function CreateCompleteDream({
                         multiplos: false,
                         outro: false,
                         indefinido: false,
-                    }
+                    },
                 })}
             />
             <CustomSwitch
@@ -155,7 +160,7 @@ export default function CreateCompleteDream({
                         multiplos: false,
                         outro: false,
                         indefinido: false,
-                    }
+                    },
                 })}
             />
             <CustomSwitch
@@ -169,7 +174,7 @@ export default function CreateCompleteDream({
                         multiplos: false,
                         outro: false,
                         indefinido: false,
-                    }
+                    },
                 })}
             />
             <CustomSwitch
@@ -183,7 +188,7 @@ export default function CreateCompleteDream({
                         multiplos: false,
                         outro: false,
                         indefinido: false,
-                    }
+                    },
                 })}
             />
             <CustomSwitch
@@ -197,7 +202,7 @@ export default function CreateCompleteDream({
                         multiplos: false,
                         outro: false,
                         indefinido: false,
-                    }
+                    },
                 })}
             />
             <CustomSwitch
@@ -216,7 +221,7 @@ export default function CreateCompleteDream({
                         multiplos: e,
                         outro: false,
                         indefinido: false,
-                    }
+                    },
                 })}
             />
             <CustomSwitch
@@ -235,7 +240,7 @@ export default function CreateCompleteDream({
                         multiplos: false,
                         outro: e,
                         indefinido: false,
-                    }
+                    },
                 })}
             />
             <CustomSwitch
@@ -254,14 +259,14 @@ export default function CreateCompleteDream({
                         multiplos: false,
                         outro: false,
                         indefinido: e,
-                    }
+                    },
                 })}
             />
             <Info
                 infoDescription="Horário de um sonho?"
                 modalTitle="HORÁRIOS DE UM SONHO"
                 modalDescription={[
-                    "Seu sonho se passou de manhã? Defina o horário dele aqui."
+                    "Seu sonho se passou de manhã? Defina o horário dele aqui.",
                 ]}
                 type="question"
             />
@@ -269,9 +274,12 @@ export default function CreateCompleteDream({
                 selectedValue={ dream.dreamHourId }
                 onValueChange={ (e) => onChange({
                     ...dream,
-                    dreamHourId: e
+                    dreamHourId: e,
                 })}
-                style={ styles.picker }
+                style={{
+                    ...styles.picker,
+                    color: systemStyle.textColor,
+                }}
                 enabled={ !isLocked }
             >
                 <Picker.Item label="Amanhecer" value="1" />
@@ -285,7 +293,7 @@ export default function CreateCompleteDream({
                 infoDescription="Duração de um sonho?"
                 modalTitle="DURAÇÃO DE UM SONHO"
                 modalDescription={[
-                    "Seu sonho pareceu tão longo quanto um episódio de uma série ou foi curto como um flash? Defina a duração dele aqui."
+                    "Seu sonho pareceu tão longo quanto um episódio de uma série ou foi curto como um flash? Defina a duração dele aqui.",
                 ]}
                 type="question"
             />
@@ -293,9 +301,12 @@ export default function CreateCompleteDream({
                 selectedValue={ dream.dreamDurationId }
                 onValueChange={ (e) => onChange({
                     ...dream,
-                    dreamDurationId: e
+                    dreamDurationId: e,
                 })}
-                style={ styles.picker }
+                style={{
+                    ...styles.picker,
+                    color: systemStyle.textColor,
+                }}
                 enabled={ !isLocked }
             >
                 <Picker.Item label="Instantâneo" value="1" />
@@ -307,7 +318,7 @@ export default function CreateCompleteDream({
                 infoDescription="Nível de lucidez de um sonho?"
                 modalTitle="LUCIDEZ DE UM SONHO"
                 modalDescription={[
-                    "Você tinha noção de que estava em um sonho ou ao menos sabia quem eram as pessoas em seu sonho? Defina o seu nível de lucidez no sonho aqui."
+                    "Você tinha noção de que estava em um sonho ou ao menos sabia quem eram as pessoas em seu sonho? Defina o seu nível de lucidez no sonho aqui.",
                 ]}
                 type="question"
             />
@@ -315,9 +326,12 @@ export default function CreateCompleteDream({
                 selectedValue={ dream.dreamLucidityLevelId }
                 onValueChange={ (e) => onChange({
                     ...dream,
-                    dreamLucidityLevelId: e
+                    dreamLucidityLevelId: e,
                 })}
-                style={ styles.picker }
+                style={{
+                    ...styles.picker,
+                    color: systemStyle.textColor,
+                }}
                 enabled={ !isLocked }
             >
                 <Picker.Item label="Não Lúcido" value="1" />
@@ -329,7 +343,7 @@ export default function CreateCompleteDream({
                 infoDescription="Tipo de sonho?"
                 modalTitle="TIPO DE SONHO"
                 modalDescription={[
-                    "Seu sonho foi assustador ou não? Define se teve um sonho ou um pesadelo."
+                    "Seu sonho foi assustador ou não? Define se teve um sonho ou um pesadelo.",
                 ]}
                 type="question"
             />
@@ -337,9 +351,12 @@ export default function CreateCompleteDream({
                 selectedValue={ dream.dreamTypeId }
                 onValueChange={ (e) => onChange({
                     ...dream,
-                    dreamTypeId: e
+                    dreamTypeId: e,
                 })}
-                style={ styles.picker }
+                style={{
+                    ...styles.picker,
+                    color: systemStyle.textColor,
+                }}
                 enabled={ !isLocked }
             >
                 <Picker.Item label="Sonho" value="1" />
@@ -350,7 +367,7 @@ export default function CreateCompleteDream({
                 infoDescription="Nível de realidade de um sonho?"
                 modalTitle="REALIDADE DE UM SONHO"
                 modalDescription={[
-                    "Voou mais alto que um avião? Defina aqui o nível de realidade de seu sonho."
+                    "Voou mais alto que um avião? Defina aqui o nível de realidade de seu sonho.",
                 ]}
                 type="question"
             />
@@ -358,9 +375,12 @@ export default function CreateCompleteDream({
                 selectedValue={ dream.dreamRealityLevelId }
                 onValueChange={ (e) => onChange({
                     ...dream,
-                    dreamRealityLevelId: e
+                    dreamRealityLevelId: e,
                 })}
-                style={ styles.picker }
+                style={{
+                    ...styles.picker,
+                    color: systemStyle.textColor,
+                }}
                 enabled={ !isLocked }
             >
                 <Picker.Item label="Irreal" value="1" />
@@ -371,7 +391,7 @@ export default function CreateCompleteDream({
                 <Info
                     modalTitle="SONHO ERÓTICO"
                     modalDescription={[
-                        "Seu sonho conteve conteúdo sexual? Se sim, marque essa opção, esse sonho não será mostrado com os outros na listagem, fique tranquilo!"
+                        "Seu sonho conteve conteúdo sexual? Se sim, marque essa opção, esse sonho não será mostrado com os outros na listagem, fique tranquilo!",
                     ]}
                 />
                 <CustomSwitch
@@ -379,7 +399,7 @@ export default function CreateCompleteDream({
                     value={ dream.eroticDream }
                     onChange={ (e) => { onChange({
                         ...dream,
-                        eroticDream: e
+                        eroticDream: e,
                     })}}
                 />
             </Box.Row>
@@ -387,7 +407,7 @@ export default function CreateCompleteDream({
                 <Info
                     modalTitle="SONHO OCULTO"
                     modalDescription={[
-                        "Assunto delicado? Pessoas indesejadas no sonho? Se sim, marque essa opção, esse sonho não será mostrado com os outros na listagem, fique tranquilo!"
+                        "Assunto delicado? Pessoas indesejadas no sonho? Se sim, marque essa opção, esse sonho não será mostrado com os outros na listagem, fique tranquilo!",
                     ]}
                 />
                 <CustomSwitch
@@ -395,7 +415,7 @@ export default function CreateCompleteDream({
                     value={ dream.hiddenDream }
                     onChange={ (e) => { onChange({
                         ...dream,
-                        hiddenDream: e
+                        hiddenDream: e,
                     })}}
                 />
             </Box.Row>
@@ -403,7 +423,7 @@ export default function CreateCompleteDream({
                 infoDescription="Análise pessoal?"
                 modalTitle="ANÁLISE PESSOAL"
                 modalDescription={[
-                    "Seu sonho faz sentido? Há uma mensagem oculta de seu subconsciente? Defina aqui (se quiser) uma interpretação pessoal de seu sonho."
+                    "Seu sonho faz sentido? Há uma mensagem oculta de seu subconsciente? Defina aqui (se quiser) uma interpretação pessoal de seu sonho.",
                 ]}
                 type="question"
             />
@@ -422,7 +442,7 @@ export default function CreateCompleteDream({
                         modalDescription={[
                             "Quantas vezes você já sonhou com aquela pessoa ou aquele lugar? mencione-o aqui em uma tag e adicione!",
                             "Você pode sonhar com isso de novo e essas ocorrências serão mapeadas, adicione quantas tags achar necessário sobre seu sonho. Exemplo: Cachorro, Casa, Mãe, Evento...",
-                            `É possível filtrar sonhos por TAGs, portanto, você pode encontrar todos os sonhos em que "${ dream.tags[0] ? dream.tags[0].toLowerCase() : "cachorro" }" aparece.`
+                            `É possível filtrar sonhos por TAGs, portanto, você pode encontrar todos os sonhos em que "${ dream.tags[0] ? dream.tags[0].toLowerCase() : "cachorro" }" aparece.`,
                         ]}
                         type="question"
                     />
@@ -442,12 +462,13 @@ export default function CreateCompleteDream({
                 <Box.Row style={ styles.tagsContainer }>
                     {
                         dream.tags.map((tag, i) => {
-                            return <Pressable
-                                onPress={ () => removeTag(tag) }
+                            return <CustomText
                                 key={ i }
+                                onPress={ () => removeTag(tag) }
+                                weight="bold"
                             >
-                                <TextBold style={ styles.tag }>{ tag }</TextBold>
-                            </Pressable>
+                                { tag }
+                            </CustomText>
                         })
                     }
                 </Box.Row>
@@ -472,9 +493,6 @@ const styles = StyleSheet.create({
     tagsContainer: {
         columnGap: 10,
         flexWrap: "wrap",
-    },
-    tag: {
-        fontSize: 19,
     },
     infoContainer: {
         alignItems: 'center',

@@ -1,11 +1,12 @@
 import { DateFormatter } from "@/utils/DateFormatter"
 import { SleepListedByUserType } from "@/types/sleeps"
-import { StyleSheet, Text } from "react-native"
+import { StyleContextProvider } from "@/contexts/StyleContext"
+import { StyleSheet } from "react-native"
 import { useRouter } from "expo-router"
 import Box from "@/components/base/Box"
+import CustomText from "@/components/customs/CustomText"
 import IconFeather from "react-native-vector-icons/Feather"
 import React from "react"
-import TextBold from "@/components/base/TextBold"
 
 type SleepListedByUserProps = {
     sleepCycle: SleepListedByUserType
@@ -14,6 +15,7 @@ type SleepListedByUserProps = {
 export default function SleepListedByUser({
     sleepCycle,
 }: SleepListedByUserProps) {
+    const { systemStyle } = StyleContextProvider()
     const router = useRouter()
 
     const fixDate = () => {
@@ -31,39 +33,66 @@ export default function SleepListedByUser({
 
     const renderIsNightSleep = () => {
         return sleepCycle.isNightSleep
-            ? <IconFeather name="moon" size={ 20 } />
-            : <IconFeather name="sun" size={ 20 } />
+            ? <IconFeather
+                name="moon"
+                size={ systemStyle.normalIconSize }
+                color={ systemStyle.iconColor }
+            />
+            : <IconFeather
+                name="sun"
+                size={ systemStyle.normalIconSize }
+                color={ systemStyle.iconColor }
+            />
     }
 
     const renderSleepTime = () => {
         const fixedSleepTime = Number.parseFloat(sleepCycle.sleepTime.toFixed(2))
         return fixedSleepTime != 0
-            ? <Text>{ `${ fixedSleepTime } ${ fixedSleepTime === 1 ? "hora" : "horas" }` }</Text>
+            ? <CustomText size="s">{ `${ fixedSleepTime } ${ fixedSleepTime === 1 ? "hora" : "horas" }` }</CustomText>
             : <></>
     }
 
     return (
-        <Box.Row style={ styles.container }>
+        <Box.Row
+            style={{
+                ...styles.container,
+                borderTopColor: systemStyle.textColor,
+            }}
+            onPress={ () => router.navigate({
+                pathname: "/(tabs)/(sleeps)/getSleep",
+                params: { "id": sleepCycle.id },
+            }) }
+        >
             <Box.Column
-                onPress={ () => router.navigate({
-                    pathname: "/(tabs)/(sleeps)/getSleep",
-                    params: { "id": sleepCycle.id },
-                }) }
                 style={ styles.dayContainer }
             >
                 <Box.Row style={ styles.dayIconContainer }>
                     { renderIsNightSleep() }
-                    <TextBold>{ fixedDate }</TextBold>
+                    <CustomText
+                        weight="bold"
+                    >{ fixedDate }</CustomText>
                 </Box.Row>
             </Box.Column>
             <Box.Column style={ styles.sleepTimesContainer }>
                 <Box.Row style={ styles.sleepTimeContainer }>
-                    <IconFeather name={ "sunset" } size={ 22 } />
-                    <Text>{ renderTime(sleepCycle.sleepStart) }</Text>
+                    <IconFeather
+                        name={ "sunset" }
+                        size={ systemStyle.smallIconSize }
+                        color={ systemStyle.iconColor }
+                    />
+                    <CustomText
+                        size="s"
+                    >{ renderTime(sleepCycle.sleepStart) }</CustomText>
                 </Box.Row>
                 <Box.Row style={ styles.sleepTimeContainer }>
-                    <IconFeather name={ "sunrise" } size={ 22 } />
-                    <Text>{ renderTime(sleepCycle.sleepEnd) }</Text>
+                    <IconFeather
+                        name={ "sunrise" }
+                        size={ systemStyle.smallIconSize }
+                        color={ systemStyle.iconColor }
+                    />
+                    <CustomText
+                        size="s"
+                    >{ renderTime(sleepCycle.sleepEnd) }</CustomText>
                 </Box.Row>
             </Box.Column>
             { renderSleepTime() }
@@ -83,7 +112,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     dayIconContainer: {
-        gap: 3,
+        gap: 5,
     },
     sleepTimesContainer: {
         gap: 5,

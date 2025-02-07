@@ -2,15 +2,16 @@ import { DateFormatter } from "@/utils/DateFormatter"
 import { ListedSleepForDreamCreation } from "@/types/sleeps"
 import { PaginationConfig } from "@/types/pagination"
 import { Pressable, StyleSheet, Text } from "react-native"
+import { StyleContextProvider } from "@/contexts/StyleContext"
 import { useEffect, useState } from "react"
 import Box from "@/components/base/Box"
 import CustomButton from "@/components/customs/CustomButton"
+import CustomText from "@/components/customs/CustomText"
 import Datagrid from "@/components/base/Datagrid"
 import Loading from "@/components/base/Loading"
 import ModalBox from "@/components/base/ModalBox"
 import React from "react"
 import SleepService from "@/services/api/SleepService"
-import TextBold from "@/components/base/TextBold"
 
 type SleepExtractionBySleepCycleProps = {
     sleepId: number | null
@@ -22,9 +23,12 @@ type SleepExtractionBySleepCycleProps = {
 export default function SleepExtractionBySleepCycle({
     sleepId,
     onChange,
-    textColor = "white",
+    textColor,
     showSleep = true,
 }: SleepExtractionBySleepCycleProps) {
+    const { systemStyle } = StyleContextProvider()
+    textColor = textColor ? textColor : systemStyle.oppositeTextColor
+
     const [ sleeps, setSleeps ] = useState<ListedSleepForDreamCreation[] | null>(null)
     const [ selectedSleep, setSelectedSleep ] = useState<ListedSleepForDreamCreation | null>(null)
     const [ pagination, setPagination ] = useState<PaginationConfig>({
@@ -76,7 +80,10 @@ export default function SleepExtractionBySleepCycle({
 
     const renderDatagrid = (): JSX.Element => {
         if (!sleeps || !pagination) {
-            return <TextBold style={ styles.centerDefaultMessage }>Nenhum ciclo de sono encontrado</TextBold>
+            return <CustomText
+                style={ styles.centerDefaultMessage }
+                isOpposite
+            >Nenhum ciclo de sono encontrado</CustomText>
         }
         else {
             const onSelectSleepCycle = (sleep: ListedSleepForDreamCreation) => {
@@ -92,46 +99,44 @@ export default function SleepExtractionBySleepCycle({
                     <Box.Row>
                         <Box.Column>
                             <Box.Row style={ styles.sleepCycleContainer }>
-                                <TextBold
+                                <CustomText
                                     style={{
-                                        ...styles.sleepCycleText, 
                                         color: sleepId === sleep.id
-                                            ? "royalblue"
-                                            : "white",
+                                            ? systemStyle.secondary
+                                            : systemStyle.oppositeTextColor,
                                     }}
                                 >
                                     Ciclo de sono
-                                </TextBold>
-                                <TextBold
+                                </CustomText>
+                                <CustomText
                                     style={{
-                                        ...styles.sleepCycleText,
                                         color: sleepId === sleep.id
-                                            ? "royalblue"
-                                            : "white",
+                                            ? systemStyle.secondary
+                                            : systemStyle.oppositeTextColor,
                                     }}
                                 >
-                                    { sleep.date }
-                                </TextBold>
+                                    { sleep.date as unknown as string }
+                                </CustomText>
                             </Box.Row>
                             <Box.Row style={ styles.sleepCycleContainer }>
-                                <Text
+                                <CustomText
                                     style={{
                                         color: sleepId === sleep.id
-                                            ? "royalblue"
-                                            : "white",
+                                            ? systemStyle.secondary
+                                            : systemStyle.oppositeTextColor,
                                     }}
                                 >
                                     { DateFormatter.removeDate(sleep.sleepStart) }
-                                </Text>
-                                <Text
+                                </CustomText>
+                                <CustomText
                                     style={{
                                         color: sleepId === sleep.id
-                                            ? "royalblue"
-                                            : "white",
+                                            ? systemStyle.secondary
+                                            : systemStyle.oppositeTextColor,
                                     }}
                                 >
                                     { DateFormatter.removeDate(sleep.sleepEnd) }
-                                </Text>
+                                </CustomText>
                             </Box.Row>
                         </Box.Column>
                     </Box.Row>
@@ -151,7 +156,7 @@ export default function SleepExtractionBySleepCycle({
                     <CustomButton
                         title="Fechar"
                         onPress={ () => setIsOpen(false) }
-                        btnTextColor="white"
+                        btnTextColor={ systemStyle.oppositeTextColor }
                     />
                 </Box.Center>
             )
@@ -187,7 +192,12 @@ export default function SleepExtractionBySleepCycle({
                                         Fim do sono: { DateFormatter.removeTime(selectedSleep.sleepEnd) } { DateFormatter.removeDate(selectedSleep.sleepEnd) }
                                     </Text>
                                 </Box.Column>
-                                : <TextBold style={{ color: textColor, ...styles.centerDefaultMessage }}>Nenhum ciclo de sono selecionado.</TextBold>
+                                : <CustomText
+                                    style={{ color: textColor, ...styles.centerDefaultMessage }}
+                                    weight="bold"
+                                >
+                                    Nenhum ciclo de sono selecionado.
+                                </CustomText>
                             : <></>
                     }
                     <CustomButton
@@ -214,9 +224,6 @@ export default function SleepExtractionBySleepCycle({
 const styles = StyleSheet.create({
     sleepCycleContainer: {
         gap: 5,
-    },
-    sleepCycleText: {
-        fontSize: 20,
     },
     datagridContainer: {
         gap: 10,

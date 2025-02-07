@@ -1,7 +1,9 @@
 import { DateFormatter } from "../../utils/DateFormatter"
 import { DateTimePickerAndroid } from "@react-native-community/datetimepicker"
-import { StyleProp, Text, TextStyle, StyleSheet } from "react-native"
+import { StyleContextProvider } from "@/contexts/StyleContext"
+import { StyleProp, TextStyle, StyleSheet } from "react-native"
 import Box from "../base/Box"
+import CustomText from "../customs/CustomText"
 import IconIonicons from "react-native-vector-icons/Ionicons"
 
 type TimePickerShowProps = {
@@ -12,7 +14,17 @@ type TimePickerShowProps = {
     iconColor?: string
 }
 
-export default function TimePickerShow({ time, onChange, textStyle, iconSize = 20, iconColor = "black" }: TimePickerShowProps) {
+export default function TimePickerShow({
+    time,
+    onChange,
+    textStyle,
+    iconSize = 20,
+    iconColor = "black",
+}: TimePickerShowProps) {
+    const { systemStyle } = StyleContextProvider()
+    iconSize = iconSize ? iconSize : systemStyle.normalIconSize
+    iconColor = iconColor ? iconColor : systemStyle.iconColor
+
     const openTimePicker = () => {
         DateTimePickerAndroid.open({
             value: DateFormatter.increaseTime(3, time.getTime()),
@@ -32,12 +44,12 @@ export default function TimePickerShow({ time, onChange, textStyle, iconSize = 2
 
     return (
         <Box.Row style={ styles.container }>
-            <Text
+            <CustomText
                 style={ textStyle }
                 onPress={ () => openTimePicker() }
             >
                 { DateFormatter.removeDate(time.toISOString()) }
-            </Text>
+            </CustomText>
             <IconIonicons
                 name="time-outline"
                 size={ iconSize }

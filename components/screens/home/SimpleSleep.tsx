@@ -1,22 +1,24 @@
 import { DateFormatter } from "@/utils/DateFormatter"
 import { SimpleSleepModel } from "@/types/simpleSleep"
+import { StyleContextProvider } from "@/contexts/StyleContext"
 import { StyleSheet } from "react-native"
 import { useEffect, useState } from "react"
 import { useNavigation } from "expo-router"
 import Box from "@/components/base/Box"
 import CustomButton from "@/components/customs/CustomButton"
+import CustomText from "@/components/customs/CustomText"
 import DatePickerShow from "@/components/date/DatePickerShow"
 import Info from "@/components/base/Info"
 import isNil from "@/utils/IsNill"
 import Loading from "@/components/base/Loading"
 import SimpleSleepService from "@/services/api/SimpleSleepService"
 import SimpleSleepStatus from "./SimpleSleepStatus"
-import TextBold from "@/components/base/TextBold"
 import TimePickerShow from "@/components/date/TimePickerShow"
 
 type SimpleSleepProps = { }
 
 export default function SimpleSleep({}: SimpleSleepProps) {
+    const { systemStyle } = StyleContextProvider()
     const navigation = useNavigation()
     const [ loading, setLoading ] = useState<boolean>(true)
     const [ simpleSleep, setSimpleSleep ] = useState<SimpleSleepModel>({
@@ -104,14 +106,19 @@ export default function SimpleSleep({}: SimpleSleepProps) {
     if (isNil(simpleSleep.sleepStart) && isNil(simpleSleep.sleepEnd)) {
         return (
             <Box.Column style={ styles.container }>
-                <TextBold>Nenhum sono recente cadastrado.</TextBold>
+                <CustomText weight="bold">Nenhum sono recente cadastrado.</CustomText>
                 <CustomButton title="Cadastrar Sono Rápido" onPress={ () => { setSimpleSleep({ sleepStart: sleepStartExample, sleepEnd: sleepEndExample, sleepId: null }) } } />
             </Box.Column>
         )
     }
 
     return (
-        <Box.Column style={ styles.container }>
+        <Box.Column
+            style={{
+                ...styles.container,
+                backgroundColor: systemStyle.quaternary,
+            }}
+        >
             <Info
                 infoDescription="O que é isso?"
                 modalTitle="Sono Simples"
@@ -123,8 +130,13 @@ export default function SimpleSleep({}: SimpleSleepProps) {
                 type="question"
             />
             <Box.Column style={ styles.timePickerContainer }>
-                <TextBold style={ styles.timePickerContainerTitle }>Quando você dormiu pela última vez?</TextBold>
-                <Box.Column style={ styles.timePickersBox }>
+                <CustomText weight="bold">Quando você dormiu pela última vez?</CustomText>
+                <Box.Column
+                    style={{
+                        ...styles.timePickersBox,
+                        backgroundColor: systemStyle.secondary,
+                    }}
+                >
                     <DatePickerShow
                         date={ simpleSleep.sleepStart! }
                         onChange={ async (e) => {
@@ -135,8 +147,12 @@ export default function SimpleSleep({}: SimpleSleepProps) {
                             })
                             await updateSimpleSleep(fixedDate, "sleepStart")
                         }}
-                        textStyle={ styles.timePickersBoxText }
-                        iconColor="white"
+                        textStyle={{
+                            color: systemStyle.oppositeTextColor,
+                            fontSize: systemStyle.largeTextSize,
+                        }}
+                        iconColor={ systemStyle.oppositeIconColor }
+                        iconSize={ systemStyle.normalIconSize }
                     />
                     <TimePickerShow
                         time={ simpleSleep.sleepStart! }
@@ -148,14 +164,23 @@ export default function SimpleSleep({}: SimpleSleepProps) {
                             })
                             await updateSimpleSleep(fixedDate, "sleepStart")
                         }}
-                        textStyle={ styles.timePickersBoxText }
-                        iconColor="white"
+                        textStyle={{
+                            color: systemStyle.oppositeTextColor,
+                            fontSize: systemStyle.largeTextSize,
+                        }}
+                        iconColor={ systemStyle.oppositeIconColor }
+                        iconSize={ systemStyle.normalIconSize }
                     />
                 </Box.Column>
             </Box.Column>
             <Box.Column style={ styles.timePickerContainer }>
-                <TextBold style={ styles.timePickerContainerTitle }>Quando você acordou?</TextBold>
-                <Box.Column style={ styles.timePickersBox }>
+                <CustomText weight="bold">Quando você acordou?</CustomText>
+                <Box.Column
+                    style={{
+                        ...styles.timePickersBox,
+                        backgroundColor: systemStyle.secondary,
+                    }}
+                >
                     <DatePickerShow
                         date={ simpleSleep.sleepEnd! }
                         onChange={ async (e) => {
@@ -166,8 +191,12 @@ export default function SimpleSleep({}: SimpleSleepProps) {
                             })
                             await updateSimpleSleep(fixedDate, "sleepEnd")
                         }}
-                        textStyle={ styles.timePickersBoxText }
-                        iconColor="white"
+                        textStyle={{
+                            color: systemStyle.oppositeTextColor,
+                            fontSize: systemStyle.largeTextSize,
+                        }}
+                        iconColor={ systemStyle.oppositeIconColor }
+                        iconSize={ systemStyle.normalIconSize }
                     />
                     <TimePickerShow
                         time={ simpleSleep.sleepEnd! }
@@ -179,8 +208,12 @@ export default function SimpleSleep({}: SimpleSleepProps) {
                             })
                             await updateSimpleSleep(fixedDate, "sleepEnd")
                         }}
-                        textStyle={ styles.timePickersBoxText }
-                        iconColor="white"
+                        textStyle={{
+                            color: systemStyle.oppositeTextColor,
+                            fontSize: systemStyle.largeTextSize,
+                        }}
+                        iconColor={ systemStyle.oppositeIconColor }
+                        iconSize={ systemStyle.normalIconSize }
                     />
                 </Box.Column>
             </Box.Column>
@@ -196,28 +229,18 @@ export default function SimpleSleep({}: SimpleSleepProps) {
 
 const styles = StyleSheet.create({
     container: {
-        marginBottom: 20,
         gap: 5,
-        backgroundColor: "lightgray",
         padding: 10,
         borderRadius: 15,
     },
     timePickerContainer: {
         gap: 5,
     },
-    timePickerContainerTitle: {
-        fontSize: 20,
-    },
     timePickersBox: {
-        backgroundColor: "darkblue",
         padding: 10,
         borderRadius: 15,
         justifyContent: 'center',
         alignItems: "center",
         gap: 5,
-    },
-    timePickersBoxText: {
-        color: "white",
-        fontSize: 22,
     },
 })

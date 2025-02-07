@@ -2,6 +2,7 @@ import { Text, Switch, StyleSheet } from "react-native"
 import Box from "../base/Box"
 import CustomButton from "./CustomButton"
 import React, { useState } from "react"
+import CustomText from "./CustomText"
 
 type SwitchNullProps = {
     /** Nome do switch */
@@ -39,17 +40,15 @@ export default function SwitchNull({
                         if (!isNull) setSwitchValue(null)
                     }}
                 />
-                <Text>{ label }</Text>
+                <CustomText size="s">{ label }</CustomText>
             </Box.Row>
             {
                 isNull
                     ? <></>
-                    : (
-                        <Switch
-                            value={ switchValue! }
-                            onValueChange={ (e) => setSwitchValue(e) }
-                        />
-                    )
+                    : <Switch
+                        value={ switchValue! }
+                        onValueChange={ (e) => setSwitchValue(e) }
+                    />
             }
         </Box.Column>
     )

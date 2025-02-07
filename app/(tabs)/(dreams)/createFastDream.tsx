@@ -1,12 +1,12 @@
 import { Screen } from "@/components/base/Screen"
 import Box from "@/components/base/Box"
-import TextBold from "@/components/base/TextBold"
+import CustomText from "@/components/customs/CustomText"
 
 export default function CreateFastDream() {
     return (
         <Screen>
             <Box.Column>
-                <TextBold>CreateFastDream</TextBold>
+                <CustomText>CreateFastDream</CustomText>
             </Box.Column>
         </Screen>
     )

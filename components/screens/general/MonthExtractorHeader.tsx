@@ -1,10 +1,10 @@
 import { StyleSheet } from "react-native"
 import Box from "@/components/base/Box"
 import CustomButton from "@/components/customs/CustomButton"
+import CustomText from "@/components/customs/CustomText"
 import MonthParser from "@/utils/MonthParser"
 import MonthYearExtractor from "@/components/customs/MonthYearExtractor"
 import React, { useState } from "react"
-import TextBold from "@/components/base/TextBold"
 
 type CustomBtn = {
     title: string
@@ -39,9 +39,9 @@ export default function MonthExtractorHeader({
                 onChange={ (e) => onChange(e) }
             />
             <Box.Column style={ styles.dateContainer }>
-                <TextBold style={ styles.dateText }>
+                <CustomText weight="bold">
                     { `${ MonthParser(defaultDate.getMonth() + 1) } ${ defaultDate.getFullYear() }` }
-                </TextBold>
+                </CustomText>
                 <CustomButton
                     title="Selecionar Mês"
                     onPress={ () => setOpen(true) }
@@ -84,8 +84,6 @@ const styles = StyleSheet.create({
     },
     dateContainer: {
         gap: 5,
-    },
-    dateText: {
-        fontSize: 20,
+        alignItems: "center",
     },
 })

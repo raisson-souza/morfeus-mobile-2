@@ -1,6 +1,8 @@
-import { Text, StyleSheet } from "react-native"
+import { StyleContextProvider } from "@/contexts/StyleContext"
+import { StyleSheet } from "react-native"
 import { useState } from "react"
 import Box from "./Box"
+import CustomText from "../customs/CustomText"
 import IconEvilIcons from "react-native-vector-icons/EvilIcons"
 import IconFeather from "react-native-vector-icons/Feather"
 import ModalBox from "./ModalBox"
@@ -12,7 +14,6 @@ type InfoProps = {
     modalTitle: string
     modalDescription: string[] | JSX.Element[]
     overrideInfoColor?: string
-    iconSize?: number
 }
 
 export default function Info({
@@ -21,18 +22,18 @@ export default function Info({
     modalTitle,
     modalDescription,
     overrideInfoColor,
-    iconSize = 20,
 }: InfoProps) {
+    const { systemStyle } = StyleContextProvider()
     const [ open, setOpen ] = useState<boolean>(false)
 
     const renderColor = () => {
         switch (type) {
-            case "info": return "black"
+            case "info": return systemStyle.textColor
             case "warn": return "yellow"
             case "error": return "red"
             case "success": return "green"
-            case "question": return "black"
-            default: return "black"
+            case "question": return systemStyle.textColor
+            default: return systemStyle.textColor
         }
     }
 
@@ -49,45 +50,39 @@ export default function Info({
             <Box.Row style={ styles.infoContainer }>
                 {
                     type === "question"
-                        ? (
-                            <IconEvilIcons
-                                name="question"
-                                size={ iconSize }
-                                color={
-                                    overrideInfoColor
-                                        ? overrideInfoColor
-                                        : renderColor()
-                                }
-                                onPress={ () => setOpen(true) }
-                            />
-                        )
-                        : (
-                            <IconFeather
-                                name="info"
-                                size={ iconSize }
-                                color={
-                                    overrideInfoColor
-                                        ? overrideInfoColor
-                                        : renderColor()
-                                }
-                                onPress={ () => setOpen(true) }
-                            />
-                        )
+                        ? <IconEvilIcons
+                            name="question"
+                            size={ systemStyle.largeIconSize }
+                            color={
+                                overrideInfoColor
+                                    ? overrideInfoColor
+                                    : renderColor()
+                            }
+                            onPress={ () => setOpen(true) }
+                        />
+                        : <IconFeather
+                            name="info"
+                            size={ systemStyle.normalIconSize }
+                            color={
+                                overrideInfoColor
+                                    ? overrideInfoColor
+                                    : renderColor()
+                            }
+                            onPress={ () => setOpen(true) }
+                        />
                 }
                 {
                     infoDescription
-                        ? (
-                            <Text
-                                style={{
-                                    color: overrideInfoColor
-                                        ? overrideInfoColor
-                                        : renderColor()
-                                }}
-                                onPress={ () => setOpen(true) }
-                            >
-                                { infoDescription }
-                            </Text>
-                        )
+                        ? <CustomText
+                            style={{
+                                color: overrideInfoColor
+                                    ? overrideInfoColor
+                                    : renderColor(),
+                            }}
+                            onPress={ () => setOpen(true) }
+                        >
+                            { infoDescription }
+                        </CustomText>
                         : <></>
                 }
                 

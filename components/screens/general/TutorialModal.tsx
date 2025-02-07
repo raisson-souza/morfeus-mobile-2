@@ -1,11 +1,12 @@
-import { StyleSheet, Text } from "react-native"
+import { StyleContextProvider } from "@/contexts/StyleContext"
+import { StyleSheet } from "react-native"
 import { useSQLiteContext } from "expo-sqlite"
 import Box from "@/components/base/Box"
 import CustomButton from "@/components/customs/CustomButton"
+import CustomText from "@/components/customs/CustomText"
 import IconEntypo from "react-native-vector-icons/Entypo"
 import ModalBox from "@/components/base/ModalBox"
 import React, { useState } from "react"
-import TextBold from "@/components/base/TextBold"
 
 type TutorialModalProps = {
     open: boolean
@@ -30,9 +31,17 @@ export default function TutorialModal({
 
     const renderComponent = (title: string, description: string[], i: number) => {
         return <Box.Column key={ i }>
-            <TextBold style={ styles.tutorialTitle }>{ title }:</TextBold>
+            <CustomText isOpposite>{ `${ title }:` }</CustomText>
             <>
-                { description.map((_description, i) => (<Text key={ i } style={ styles.tutorialText }>{ _description }.</Text>)) }
+                {
+                    description.map((_description, i) => (
+                        <CustomText
+                            key={ i }
+                            size="s"
+                            isOpposite
+                        >{ `${ _description  }.` }</CustomText>
+                    ))
+                }
             </>
         </Box.Column>
     }
@@ -111,6 +120,7 @@ function CustomCarousel({
     onLastPageAction,
     canOutsideClick = false,
 }: CustomCarouselProps) {
+    const { systemStyle } = StyleContextProvider()
     const [ page, setPage ] = useState<number>(1)
     const finalPage = Math.ceil(components.length / 1)
     const [ reachedFinalPage, setReachedFinalPage ] = useState<boolean>(page === finalPage)
@@ -151,8 +161,12 @@ function CustomCarousel({
             dots.push(
                 <IconEntypo
                     name="dot-single"
-                    size={ page === (i + 1) ? 35 : 20 }
-                    color="white"
+                    size={
+                        page === (i + 1)
+                            ? systemStyle.extraLargeIconSize
+                            : systemStyle.smallIconSize
+                    }
+                    color={ systemStyle.oppositeIconColor }
                     key={ i }
                 />
             )
@@ -169,9 +183,12 @@ function CustomCarousel({
             visible={ visible }
             setVisible={ setVisible }
             title={ title }
-            canOutsideClickClose={ canOutsideClick }
             description={
-                <Box.Column style={ styles.container }>
+                <Box.Column
+                    style={{
+                        backgroundColor: systemStyle.primary,
+                    }}
+                >
                     { renderComponents() as any }
                     { renderRemainingPages() }
                     <Box.Row style={{
@@ -198,7 +215,7 @@ function CustomCarousel({
                                 : <></>
                         }
                         <CustomButton
-                            btnTextColor="white"
+                            btnTextColor={ systemStyle.oppositeTextColor }
                             title="Próximo"
                             onPress={ () => onNext() }
                             active={ page != finalPage }
@@ -212,7 +229,6 @@ function CustomCarousel({
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: "darkblue",
         width: "100%",
         borderRadius: 15,
     },
@@ -223,13 +239,7 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         alignItems: "center",
     },
-    tutorialTitle: {
-        fontSize: 17,
-        color: "white",
-    },
     tutorialText: {
-        fontSize: 15,
-        color: "white",
         textAlign: "justify",
     },
 })
