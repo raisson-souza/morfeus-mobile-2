@@ -52,6 +52,10 @@ export default function RootLayout() {
                   name='registry'
                   options={{ title: "Registre-se" }}
                 />
+                <Stack.Screen
+                  name='(user)'
+                  options={{ headerShown: false }}
+                />
               </Stack>
             </SyncContextComponent>
           </AuthContextComponent>

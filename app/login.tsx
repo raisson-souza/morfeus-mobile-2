@@ -66,9 +66,25 @@ export default function LoginScreen() {
                             loading
                                 ? <Loading />
                                 : <>
-                                    <CustomButton title="Entrar" onPress={ loginAction } important />
-                                    <CustomButton title="Voltar" onPress={ () => router.navigate("/") } />
-                                    <CustomButton title="Não possui uma conta?" onPress={ () => router.navigate("/registry") } />
+                                    <CustomButton
+                                        title="Entrar"
+                                        onPress={ loginAction }
+                                        important
+                                    />
+                                    <CustomButton
+                                        title="Esqueci minha senha"
+                                        onPress={ () => router.navigate("/(user)/accountRecovery") }
+                                        btnColor="red"
+                                        btnTextColor="red"
+                                    />
+                                    <CustomButton
+                                        title="Não possui uma conta?"
+                                        onPress={ () => router.navigate("/registry") }
+                                    />
+                                    <CustomButton
+                                        title="Voltar"
+                                        onPress={ () => router.navigate("/") }
+                                    />
                                 </>
                         }
                     </Box.Column>

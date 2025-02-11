@@ -21,3 +21,32 @@ export type UserDataLocalStorage = {
     email: string
     password: string
 }
+
+export type UserPresentationModel = {
+    id: number
+    fullName: string
+    email: string
+    password: string
+}
+
+export type UserDataDeletionResponse = string
+
+export type CreateAccountRecoveryRequest = {
+    email: string
+}
+
+export type CreateAccountRecoveryResponse = string
+
+export type CheckAccountRecoveryRequest = {
+    code: string
+}
+
+export type CheckAccountRecoveryResponse = string
+
+export type FinishAccountRecoveryRequest = {
+    code: string
+    email: string
+    password: string
+}
+
+export type FinishAccountRecoveryResponse = string
