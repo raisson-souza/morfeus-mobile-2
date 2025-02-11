@@ -13,8 +13,8 @@ export default function RootLayout() {
                 options={{ headerShown: false }}
             />
             <Stack.Screen
-                name='accountRestoration'
-                options={{ title: "Restauração de Conta" }}
+                name='accountRecovery'
+                options={{ title: "Recuperação de Conta" }}
             />
         </Stack>
     )

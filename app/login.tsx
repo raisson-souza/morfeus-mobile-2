@@ -73,7 +73,7 @@ export default function LoginScreen() {
                                     />
                                     <CustomButton
                                         title="Esqueci minha senha"
-                                        onPress={ () => router.navigate("/(user)/accountRestoration") }
+                                        onPress={ () => router.navigate("/(user)/accountRecovery") }
                                         btnColor="red"
                                         btnTextColor="red"
                                     />
