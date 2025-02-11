@@ -7,6 +7,17 @@ type Update = {
 
 const CHANGELOG: Update[] = [
     {
+        version: "1.5.0",
+        date: "12/02/2025",
+        title: "Ações do Usuário",
+        description: [
+            "Visualização de informações da conta",
+            "Edição de dados do usuário",
+            "Exclusão de dados",
+            "Recuperação de conta",
+        ],
+    },
+    {
         version: "1.4.0",
         date: "07/02/2025",
         title: "Estilo",
