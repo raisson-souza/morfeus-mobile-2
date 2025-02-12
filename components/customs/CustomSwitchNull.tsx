@@ -1,4 +1,4 @@
-import { Text, Switch, StyleSheet } from "react-native"
+import { Switch, StyleSheet } from "react-native"
 import Box from "../base/Box"
 import CustomButton from "./CustomButton"
 import React, { useState } from "react"

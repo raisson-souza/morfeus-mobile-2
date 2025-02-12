@@ -1,7 +1,7 @@
 import { DateFormatter } from "@/utils/DateFormatter"
 import { DreamListedByUserType } from "@/types/dream"
 import { StyleContextProvider } from "@/contexts/StyleContext"
-import { Text, StyleSheet, StyleProp, ViewStyle } from "react-native"
+import { StyleSheet, StyleProp, ViewStyle } from "react-native"
 import { useRouter } from "expo-router"
 import Box from "@/components/base/Box"
 import CustomText from "@/components/customs/CustomText"

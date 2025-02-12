@@ -1,4 +1,4 @@
-import { Text, StyleSheet } from "react-native"
+import { StyleSheet } from "react-native"
 import Box from "./Box"
 import CustomButton from "../customs/CustomButton"
 import CustomModal from "../customs/CustomModal"
@@ -35,14 +35,12 @@ export default function ModalActionConfirm({ title = "Deseja Continuar?", descri
         else if (description === undefined) {
             return <></>
         }
-        return <Text
-            style={{
-                color: systemStyle.oppositeTextColor,
-                fontSize: systemStyle.normalTextSize,
-            }}
+        return <CustomText
+            size="m"
+            isOpposite
         >
             { description }
-        </Text>
+        </CustomText>
     }
 
     return (

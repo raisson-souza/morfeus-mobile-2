@@ -1,8 +1,8 @@
 import { DateFormatter } from "@/utils/DateFormatter"
 import { ListedSleepForDreamCreation } from "@/types/sleeps"
 import { PaginationConfig } from "@/types/pagination"
-import { Pressable, StyleSheet, Text } from "react-native"
 import { StyleContextProvider } from "@/contexts/StyleContext"
+import { StyleSheet } from "react-native"
 import { useEffect, useState } from "react"
 import Box from "@/components/base/Box"
 import CustomButton from "@/components/customs/CustomButton"
@@ -183,12 +183,12 @@ export default function SleepExtractionBySleepCycle({
                         showSleep
                             ? selectedSleep
                                 ? <Box.Column style={ styles.centerSelectedSleepSycle }>
-                                    <Text style={{ color: textColor }}>
-                                        Início do sono: { DateFormatter.removeTime(selectedSleep.sleepStart) } { DateFormatter.removeDate(selectedSleep.sleepStart) }
-                                    </Text>
-                                    <Text style={{ color: textColor }}>
-                                        Fim do sono: { DateFormatter.removeTime(selectedSleep.sleepEnd) } { DateFormatter.removeDate(selectedSleep.sleepEnd) }
-                                    </Text>
+                                    <CustomText style={{ color: textColor }}>
+                                        { `Início do sono: ${ DateFormatter.removeTime(selectedSleep.sleepStart) } ${ DateFormatter.removeDate(selectedSleep.sleepStart) }` }
+                                    </CustomText>
+                                    <CustomText style={{ color: textColor }}>
+                                        { `Fim do sono: ${ DateFormatter.removeTime(selectedSleep.sleepEnd) } ${ DateFormatter.removeDate(selectedSleep.sleepEnd) }` }
+                                    </CustomText>
                                 </Box.Column>
                                 : <CustomText
                                     style={{ color: textColor, ...styles.centerDefaultMessage }}
@@ -207,7 +207,7 @@ export default function SleepExtractionBySleepCycle({
             )
         }
         else {
-            return <Text style={{ color: textColor, ...styles.centerDefaultMessage }}>Nenhum ciclo de sono encontrado, por favor, utilize outra opção acima.</Text>
+            return <CustomText style={{ color: textColor, ...styles.centerDefaultMessage }}>Nenhum ciclo de sono encontrado, por favor, utilize outra opção acima.</CustomText>
         }
     }
     else {

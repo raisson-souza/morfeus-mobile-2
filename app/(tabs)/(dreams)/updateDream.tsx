@@ -1,7 +1,7 @@
 import { DateFormatter } from "@/utils/DateFormatter"
 import { ListedSleepForDreamCreation } from "@/types/sleeps"
 import { Screen } from "@/components/base/Screen"
-import { StyleSheet, Text } from "react-native"
+import { StyleSheet } from "react-native"
 import { SyncContextProvider } from "@/contexts/SyncContext"
 import { UpdateDreamModel } from "@/types/dream"
 import { useEffect, useState } from "react"
