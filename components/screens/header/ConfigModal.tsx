@@ -32,6 +32,8 @@ export default function ConfigModal({
         router.navigate("/")
     }
 
+    const btnWidth = 200
+
     return (
         <CustomModal
             visible={ open }
@@ -61,26 +63,31 @@ export default function ConfigModal({
                     title="SUPORTE"
                     onPress={ () => setOpenSuggestionsModal(true) }
                     btnTextColor={ systemStyle.oppositeTextColor }
+                    btnWidth={ btnWidth }
                 />
                 <CustomButton
                     title="INFORMAÇÕES"
                     onPress={ () => setOpenAppInfoModal(true) }
                     btnTextColor={ systemStyle.oppositeTextColor }
+                    btnWidth={ btnWidth }
                 />
                 <CustomButton
                     title="TUTORIAL"
                     onPress={ () => setTutorialModalOpen(true) }
                     btnTextColor={ systemStyle.oppositeTextColor }
+                    btnWidth={ btnWidth }
                 />
                 <CustomButton
                     title="SAIR DA CONTA"
                     onPress={ () => logoffAction() }
                     btnTextColor={ systemStyle.oppositeTextColor }
+                    btnWidth={ btnWidth }
                 />
                 <CustomButton
                     title="FECHAR"
                     onPress={ () => setOpen(false) }
                     btnTextColor={ systemStyle.oppositeTextColor }
+                    btnWidth={ btnWidth }
                 />
                 <StyleSwitcher />
             </Box.Center>
@@ -90,7 +97,8 @@ export default function ConfigModal({
 
 const styles = StyleSheet.create({
     modal: {
-        padding: 30,
+        width: "100%",
+        padding: 20,
         borderRadius: 15,
         gap: 10,
     },
