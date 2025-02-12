@@ -143,7 +143,7 @@ export default function ListDreamsAnalysisScreen() {
                                 color={ systemStyle.iconColor }
                             />
                     }
-                    <CustomText weight="thin">{ msg }</CustomText>
+                    <CustomText weight="thin" selectable>{ msg }</CustomText>
                 </Box.Row>
             )
         }

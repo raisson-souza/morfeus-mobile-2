@@ -8,6 +8,7 @@ interface CustomTextProps {
     isOpposite?: boolean
     weight?: "thin" | "normal" | "bold"
     onPress?: () => void
+    selectable?: boolean
 }
 
 const CustomText: React.FC<CustomTextProps> = ({
@@ -17,6 +18,7 @@ const CustomText: React.FC<CustomTextProps> = ({
     isOpposite = false,
     weight = "normal",
     onPress,
+    selectable = false,
 }) => {
     const { systemStyle } = StyleContextProvider()
 
@@ -47,6 +49,7 @@ const CustomText: React.FC<CustomTextProps> = ({
                 ...style as any,
             }}
             onPress={ () => onPress ? onPress() : {} }
+            selectable={ selectable }
         >
             { children }
         </Text>

@@ -249,6 +249,7 @@ export default function GetDreamScreen() {
                                                 size="xxl"
                                                 weight="bold"
                                                 style={ styles.dreamTitleText }
+                                                selectable
                                             >
                                                 { dream.title }
                                             </CustomText>
@@ -261,6 +262,7 @@ export default function GetDreamScreen() {
                                             ...styles.dreamDescription,
                                             backgroundColor: systemStyle.quaternary,
                                         }}
+                                        selectable
                                     >
                                         { dream.description }
                                     </CustomText>
@@ -286,7 +288,7 @@ export default function GetDreamScreen() {
                                                             Análise Pessoal
                                                         </CustomText>
                                                     </Box.Row>
-                                                    <CustomText weight="thin">
+                                                    <CustomText weight="thin" selectable>
                                                         { dream.personalAnalysis }
                                                     </CustomText>
                                                 </Box.Column>

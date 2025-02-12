@@ -319,10 +319,10 @@ export default function GetSleepScreen() {
                     >
                         { `Início:` }
                     </CustomText>
-                    <CustomText weight="thin">
+                    <CustomText weight="thin" selectable>
                         { sleepStartFormatted.date }
                     </CustomText>
-                    <CustomText weight="thin">
+                    <CustomText weight="thin" selectable>
                         { sleepStartFormatted.time }
                     </CustomText>
                 </Box.Row>
@@ -333,10 +333,10 @@ export default function GetSleepScreen() {
                     >
                         { `Fim:   ` }
                     </CustomText>
-                    <CustomText weight="thin">
+                    <CustomText weight="thin" selectable>
                         { sleepEndFormatted.date }
                     </CustomText>
-                    <CustomText weight="thin">
+                    <CustomText weight="thin" selectable>
                         { sleepEndFormatted.time }
                     </CustomText>
                 </Box.Row>
