@@ -18,6 +18,7 @@ import IconIon from "react-native-vector-icons/Ionicons"
 import Info from "@/components/base/Info"
 import Loading from "@/components/base/Loading"
 import React from "react"
+import ShareDreamModal from "@/components/screens/dreams/ShareDreamModal"
 import ShowTags from "@/components/screens/dreams/ShowTags"
 import TagService from "@/services/api/TagService"
 
@@ -35,6 +36,7 @@ export default function GetDreamScreen() {
     const [ tags, setTags ] = useState<TagModel[] | null>(null)
     const [ loading, setLoading ] = useState<boolean>(true)
     const [ errorMessage, setErrorMessage ] = useState<string>("")
+    const [ openShareDreamModal, setOpenShareDreamModal ] = useState<boolean>(false)
 
     useEffect(() => {
         const fetchDream = async () => {
@@ -192,6 +194,17 @@ export default function GetDreamScreen() {
         )
     }
 
+    const mountDreamCharacteristicsForSharing = () => {
+        return [
+            { title: "Climas", description: renderClimates() },
+            { title: "Perspectiva", description: renderDreamPointOfView() },
+            { title: "Horário", description: renderHour() },
+            { title: "Duração", description: renderDuration() },
+            { title: "Nível de Lucidez", description: renderLucidityLevel() },
+            { title: "Nível de Realidade", description: renderRealityLevel() },
+        ]
+    }
+
     const renderButtons = () => {
         return <Box.Column style={ styles.btns }>
             <Box.Row style={ styles.goBackAndUpdateBtnsContainer }>
@@ -221,8 +234,20 @@ export default function GetDreamScreen() {
             </Box.Row>
             <CustomButton
                 title="Compartilhar"
-                onPress={ () => {}}
+                onPress={ () => setOpenShareDreamModal(true) }
                 important
+            />
+            <ShareDreamModal
+                open={ openShareDreamModal }
+                setOpen={ setOpenShareDreamModal }
+                dreamInfo={{
+                    title: dream!.title,
+                    description: dream!.description,
+                    characteristics: mountDreamCharacteristicsForSharing(),
+                }}
+                personalAnalysis={ dream?.personalAnalysis ?? undefined }
+                tags={ tags ? tags.map(tag => tag.title) : [] }
+                sleepId={ dream!.sleepId }
             />
         </Box.Column>
     }
@@ -281,10 +306,7 @@ export default function GetDreamScreen() {
                                                             color={ systemStyle.iconColor }
                                                             size={ systemStyle.normalIconSize }
                                                         />
-                                                        <CustomText
-                                                            weight="bold"
-                                                            size="l"
-                                                        >
+                                                        <CustomText size="l">
                                                             Análise Pessoal
                                                         </CustomText>
                                                     </Box.Row>

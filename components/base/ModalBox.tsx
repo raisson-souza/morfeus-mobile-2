@@ -67,8 +67,11 @@ export default function ModalBox({
                                 }}>
                                     <CustomText
                                         style={ styles.titleText }
+                                        size="l"
                                         isOpposite
-                                    >{ title }</CustomText>
+                                    >
+                                        { title }
+                                    </CustomText>
                                 </Box.Row>
                                 { renderModalContent() }
                             </>
