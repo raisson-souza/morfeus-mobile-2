@@ -97,7 +97,13 @@ export default function ShareDreamModal ({
                         sleepCycleInfoType: sleepCycleInfoType,
                         sleepId: sleepId,
                     })}
-                />           
+                />
+                <CustomButton
+                    title="Cancelar"
+                    btnColor="red"
+                    btnTextColor="red"
+                    onPress={ () => setOpen(false) }
+                />
             </Box.Column>
         }
     />
