@@ -42,7 +42,7 @@ export default function LoginScreen() {
             <Screen flex>
                 <Box.Center style={ styles.container }>
                     <CustomText
-                        size="l"
+                        size="xl"
                         weight="bold"
                     >Realize seu login</CustomText>
                     <Box.Column style={ styles.container }>
@@ -55,12 +55,14 @@ export default function LoginScreen() {
                                 textContentType: "emailAddress"
                             }}
                             active={ !loading }
+                            width="100%"
                         />
                         <CustomInput
                             label="Senha"
                             defaultValue={ credentials.password }
                             onChange={ (e) => setCredentials({ email: credentials.email, password: e }) }
                             active={ !loading }
+                            width="100%"
                         />
                         {
                             loading
@@ -96,6 +98,7 @@ export default function LoginScreen() {
 
 const styles = StyleSheet.create({
     container: {
+        width: "80%",
         gap: 10,
     },
 })

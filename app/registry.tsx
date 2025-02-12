@@ -9,6 +9,7 @@ import AuthRedirect from "@/components/auth/AuthRedirect"
 import Box from "@/components/base/Box"
 import CustomButton from "@/components/customs/CustomButton"
 import CustomInput from "@/components/customs/CustomInput"
+import CustomText from "@/components/customs/CustomText"
 import Loading from "@/components/base/Loading"
 import React from "react"
 import validatorErrorParser from "@/validators/base/validatorErrorParser"
@@ -51,7 +52,12 @@ export default function RegistryScreen() {
         <AuthRedirect>
             <Screen flex>
                 <Box.Center style={ styles.container }>
-                    <Text style={ styles.title }>Crie sua conta</Text>
+                    <CustomText
+                        size="xl"
+                        weight="bold"
+                    >
+                        Crie sua conta
+                    </CustomText>
                     <Box.Column style={ styles.gap }>
                         <CustomInput
                             label="Nome"
@@ -101,10 +107,8 @@ export default function RegistryScreen() {
 }
 
 const styles = StyleSheet.create({
-    title: {
-        fontSize: 22,
-    },
     container: {
+        width: "100%",
         gap: 15,
     },
     gap: {
