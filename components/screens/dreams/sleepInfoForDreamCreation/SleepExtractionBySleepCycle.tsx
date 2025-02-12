@@ -92,55 +92,53 @@ export default function SleepExtractionBySleepCycle({
             }
 
             const datagridRows = sleeps.map((sleep, i) => (
-                <Pressable
+                <Box.Row
                     key={ i }
                     onPress={ () => onSelectSleepCycle(sleep) }
                 >
-                    <Box.Row>
-                        <Box.Column>
-                            <Box.Row style={ styles.sleepCycleContainer }>
-                                <CustomText
-                                    style={{
-                                        color: sleepId === sleep.id
-                                            ? systemStyle.secondary
-                                            : systemStyle.oppositeTextColor,
-                                    }}
-                                >
-                                    Ciclo de sono
-                                </CustomText>
-                                <CustomText
-                                    style={{
-                                        color: sleepId === sleep.id
-                                            ? systemStyle.secondary
-                                            : systemStyle.oppositeTextColor,
-                                    }}
-                                >
-                                    { sleep.date as unknown as string }
-                                </CustomText>
-                            </Box.Row>
-                            <Box.Row style={ styles.sleepCycleContainer }>
-                                <CustomText
-                                    style={{
-                                        color: sleepId === sleep.id
-                                            ? systemStyle.secondary
-                                            : systemStyle.oppositeTextColor,
-                                    }}
-                                >
-                                    { DateFormatter.removeDate(sleep.sleepStart) }
-                                </CustomText>
-                                <CustomText
-                                    style={{
-                                        color: sleepId === sleep.id
-                                            ? systemStyle.secondary
-                                            : systemStyle.oppositeTextColor,
-                                    }}
-                                >
-                                    { DateFormatter.removeDate(sleep.sleepEnd) }
-                                </CustomText>
-                            </Box.Row>
-                        </Box.Column>
-                    </Box.Row>
-                </Pressable>
+                    <Box.Column>
+                        <Box.Row style={ styles.sleepCycleContainer }>
+                            <CustomText
+                                style={{
+                                    color: sleepId === sleep.id
+                                        ? systemStyle.secondary
+                                        : systemStyle.oppositeTextColor,
+                                }}
+                            >
+                                Ciclo de sono
+                            </CustomText>
+                            <CustomText
+                                style={{
+                                    color: sleepId === sleep.id
+                                        ? systemStyle.secondary
+                                        : systemStyle.oppositeTextColor,
+                                }}
+                            >
+                                { sleep.date as unknown as string }
+                            </CustomText>
+                        </Box.Row>
+                        <Box.Row style={ styles.sleepCycleContainer }>
+                            <CustomText
+                                style={{
+                                    color: sleepId === sleep.id
+                                        ? systemStyle.secondary
+                                        : systemStyle.oppositeTextColor,
+                                }}
+                            >
+                                { DateFormatter.removeDate(sleep.sleepStart) }
+                            </CustomText>
+                            <CustomText
+                                style={{
+                                    color: sleepId === sleep.id
+                                        ? systemStyle.secondary
+                                        : systemStyle.oppositeTextColor,
+                                }}
+                            >
+                                { DateFormatter.removeDate(sleep.sleepEnd) }
+                            </CustomText>
+                        </Box.Row>
+                    </Box.Column>
+                </Box.Row>
             ))
 
             return (

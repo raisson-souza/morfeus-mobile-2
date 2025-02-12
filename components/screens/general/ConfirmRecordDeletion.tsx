@@ -1,3 +1,4 @@
+import { DimensionValue } from "react-native"
 import CustomButton from "@/components/customs/CustomButton"
 import ModalActionConfirm from "@/components/base/ModalActionConfirm"
 import React, { useState } from "react"
@@ -11,6 +12,7 @@ type ConfirmRecordDeletionProps = {
         text: string
         border: string
     }
+    btnWidth?: DimensionValue
 }
 
 export default function ConfirmRecordDeletion({
@@ -22,6 +24,7 @@ export default function ConfirmRecordDeletion({
         text: "red",
         border: "red",
     },
+    btnWidth,
 }: ConfirmRecordDeletionProps) {
     const [ open, setOpen ] = useState<boolean>(false)
 
@@ -45,6 +48,7 @@ export default function ConfirmRecordDeletion({
                 active={ isActive }
                 btnColor={ btnColor.border }
                 btnTextColor={ btnColor.text }
+                btnWidth={ btnWidth }
             />
         </>
     )

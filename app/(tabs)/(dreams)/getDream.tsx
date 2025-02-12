@@ -18,6 +18,7 @@ import IconIon from "react-native-vector-icons/Ionicons"
 import Info from "@/components/base/Info"
 import Loading from "@/components/base/Loading"
 import React from "react"
+import ShowTags from "@/components/screens/dreams/ShowTags"
 import TagService from "@/services/api/TagService"
 
 type GetDreamParams = {
@@ -191,6 +192,41 @@ export default function GetDreamScreen() {
         )
     }
 
+    const renderButtons = () => {
+        return <Box.Column style={ styles.btns }>
+            <Box.Row style={ styles.goBackAndUpdateBtnsContainer }>
+                <ConfirmRecordDeletion
+                    btnWidth="50%"
+                    deletionAction={ async () => {
+                        setLoading(true)
+                        await DreamService.DeleteDream(checkIsConnected(), { id: dream!.id })
+                            .then((response) => {
+                                if (response.Success) {
+                                    alert(response.Data)
+                                    router.navigate("/(tabs)/(dreams)/dreamsList")
+                                    return
+                                }
+                                setLoading(false)
+                                alert(response.ErrorMessage)
+                            })
+                    }}
+                />
+                <CustomButton
+                    title="Editar"
+                    btnColor="orange"
+                    btnTextColor="orange"
+                    btnWidth="50%"
+                    onPress={ () => router.navigate({ pathname: "/updateDream", params: { id: id, sleepDate: sleepDate } }) }
+                />
+            </Box.Row>
+            <CustomButton
+                title="Compartilhar"
+                onPress={ () => {}}
+                important
+            />
+        </Box.Column>
+    }
+
     const tagInfo = tags
         ? tags.length > 0
             ? `Lembra de quando sonhou com ${ tags[0].title }? Selecione essa tag abaixo (ou outra) e visualize os sonhos na qual ela também está presente!`
@@ -216,63 +252,27 @@ export default function GetDreamScreen() {
                                             >
                                                 { dream.title }
                                             </CustomText>
-                                            <Pressable onPress={ () => router.navigate({ pathname: "/updateDream", params: { id: id, sleepDate: sleepDate } }) }>
-                                                <IconIon
-                                                    name="pencil-sharp"
-                                                    color={ systemStyle.iconColor }
-                                                    size={ systemStyle.largeIconSize }
-                                                />
-                                            </Pressable>
                                         </Box.Row>
                                         { renderDreamDate() }
                                     </Box.Column>
                                     <CustomText
                                         weight="thin"
-                                        style={ styles.dreamDescription }
+                                        style={{
+                                            ...styles.dreamDescription,
+                                            backgroundColor: systemStyle.quaternary,
+                                        }}
                                     >
                                         { dream.description }
                                     </CustomText>
-                                    <Box.Column
-                                        style={{
-                                            ...styles.tagsContainer,
-                                            backgroundColor: systemStyle.secondary,
-                                        }}
-                                    >
-                                        <Box.Row style={ styles.tagsInfoContainer }>
-                                            <Info
-                                                modalTitle="MAPEAMENTO DE TAGS"
-                                                modalDescription={ [...tagInfo] }
-                                                overrideInfoColor={ systemStyle.oppositeIconColor }
-                                            />
-                                            <CustomText
-                                                isOpposite
-                                                size="xl"
-                                                weight="bold"
-                                            >TAGS</CustomText>
-                                        </Box.Row>
-                                        <Box.Row style={ styles.tags }>
-                                            {
-                                                tags
-                                                    ? tags.length > 0
-                                                        ? tags.map((tag, i) => (
-                                                            <CustomText
-                                                                key={ i }
-                                                                isOpposite
-                                                                weight="bold"
-                                                                onPress={ () => router.navigate({ pathname: "/getTag", params: { title: tag.title, id: tag.id } }) }
-                                                            >
-                                                                { tag.title }
-                                                            </CustomText>
-                                                        ))
-                                                        : <CustomText isOpposite>Não há tags</CustomText>
-                                                    : <Loading onlyLoading={ false } text="Buscando Tags...." />
-                                            }
-                                        </Box.Row>
-                                    </Box.Column>
                                     {
                                         dream.personalAnalysis
                                             ? (
-                                                <Box.Column style={ styles.personalAnalysisContainer }>
+                                                <Box.Column
+                                                    style={{
+                                                        ...styles.personalAnalysisContainer,
+                                                        backgroundColor: systemStyle.quaternary,
+                                                    }}
+                                                >
                                                     <Box.Row style={ styles.iconAndMessageStyle }>
                                                         <IconIon
                                                             name="person-outline"
@@ -283,7 +283,7 @@ export default function GetDreamScreen() {
                                                             weight="bold"
                                                             size="l"
                                                         >
-                                                            Análise pessoal:
+                                                            Análise Pessoal
                                                         </CustomText>
                                                     </Box.Row>
                                                     <CustomText weight="thin">
@@ -293,103 +293,103 @@ export default function GetDreamScreen() {
                                             )
                                             : <></>
                                     }
-                                    <Box.Column style={ styles.dreamCharacteristicsContainer }>
+                                    {
+                                        tags
+                                            ? <>
+                                                <Info
+                                                    infoDescription="Tags do Sonho"
+                                                    modalTitle="MAPEAMENTO DE TAGS"
+                                                    modalDescription={ [tagInfo] }
+                                                />
+                                                <ShowTags
+                                                    tags={
+                                                        tags.map(tag => {
+                                                            return { id: tag.id, title: tag.title, quantity: 0 }
+                                                        }
+                                                    )}
+                                                />
+                                            </>
+                                            : <Loading onlyLoading={ false } text="Buscando Tags...." />
+                                    }
+                                    <Box.Column
+                                        style={{
+                                            ...styles.dreamCharacteristicsContainer,
+                                            backgroundColor: systemStyle.terciary
+                                        }}
+                                    >
                                         <Box.Row style={ styles.iconAndMessageStyle }>
                                             <IconIon
                                                 name="rainy-sharp"
-                                                color={ systemStyle.iconColor }
+                                                color={ systemStyle.oppositeIconColor }
                                                 size={ systemStyle.normalIconSize }
                                             />
                                             <Box.Row style={ styles.dreamClimates }>
-                                                <CustomText weight="bold">
-                                                    { `Climas: ` }
-                                                </CustomText>
-                                                <CustomText weight="thin">
-                                                    { renderClimates() }
-                                                </CustomText>
+                                                <CustomText weight="bold" isOpposite>{ `Climas: ` }</CustomText>
+                                                <CustomText weight="thin" isOpposite>{ renderClimates() }</CustomText>
                                             </Box.Row>
                                         </Box.Row>
                                         <Box.Row style={ styles.iconAndMessageStyle }>
                                             <IconIon
                                                 name="game-controller"
-                                                color={ systemStyle.iconColor }
+                                                color={ systemStyle.oppositeIconColor }
                                                 size={ systemStyle.normalIconSize }
                                             />
-                                            <CustomText weight="bold">{ `Sonho em ${ renderDreamPointOfView() } pessoa` }</CustomText>
+                                            <CustomText weight="bold" isOpposite>{ `Sonho em ${ renderDreamPointOfView() } pessoa` }</CustomText>
                                         </Box.Row>
                                         <Box.Row style={ styles.iconAndMessageStyle }>
                                             <IconFontisto
                                                 name="clock"
-                                                color={ systemStyle.iconColor }
+                                                color={ systemStyle.oppositeIconColor }
                                                 size={ systemStyle.normalIconSize }
                                             />
                                             <Box.Row>
-                                                <CustomText weight="bold">Horário: </CustomText>
-                                                <CustomText weight="thin">{ renderHour() }</CustomText>
+                                                <CustomText weight="bold" isOpposite>Horário: </CustomText>
+                                                <CustomText weight="thin" isOpposite>{ renderHour() }</CustomText>
                                             </Box.Row>
                                         </Box.Row>
                                         <Box.Row style={ styles.iconAndMessageStyle }>
                                             <IconIon
                                                 name="timer"
-                                                color={ systemStyle.iconColor }
+                                                color={ systemStyle.oppositeIconColor }
                                                 size={ systemStyle.normalIconSize }
                                             />
                                             <Box.Row>
-                                                <CustomText weight="bold">Duração: </CustomText>
-                                                <CustomText weight="thin">{ renderDuration() }</CustomText>
+                                                <CustomText weight="bold" isOpposite>Duração: </CustomText>
+                                                <CustomText weight="thin" isOpposite>{ renderDuration() }</CustomText>
                                             </Box.Row>
                                         </Box.Row>
                                         <Box.Row style={ styles.iconAndMessageStyle }>
                                             <IconEntypo
                                                 name="drink"
-                                                color={ systemStyle.iconColor }
+                                                color={ systemStyle.oppositeIconColor }
                                                 size={ systemStyle.normalIconSize }
                                             />
                                             <Box.Row>
-                                                <CustomText weight="bold">Nível de Lucidez: </CustomText>
-                                                <CustomText weight="thin">{ renderLucidityLevel() }</CustomText>
+                                                <CustomText weight="bold" isOpposite>Nível de Lucidez: </CustomText>
+                                                <CustomText weight="thin" isOpposite>{ renderLucidityLevel() }</CustomText>
                                             </Box.Row>
                                         </Box.Row>
                                         <Box.Row style={ styles.iconAndMessageStyle }>
                                             <IconFoundation
                                                 name="magnifying-glass"
-                                                color={ systemStyle.iconColor }
+                                                color={ systemStyle.oppositeIconColor }
                                                 size={ systemStyle.normalIconSize }
                                             />
                                             <Box.Row>
-                                                <CustomText weight="bold">Nível de Realidade: </CustomText>
-                                                <CustomText weight="thin">{ renderRealityLevel() }</CustomText>
+                                                <CustomText weight="bold" isOpposite>Nível de Realidade: </CustomText>
+                                                <CustomText weight="thin" isOpposite>{ renderRealityLevel() }</CustomText>
                                             </Box.Row>
                                         </Box.Row>
                                         <Box.Row style={ styles.iconAndMessageStyle }>
                                             <IconIon
                                                 name="information-circle"
-                                                color={ systemStyle.iconColor }
+                                                color={ systemStyle.oppositeIconColor }
                                                 size={ systemStyle.normalIconSize }
                                             />
-                                            <CustomText
-                                                weight="thin"
-                                                size="s"
-                                            >
-                                                { renderDreamOrigin() }
-                                            </CustomText>
+                                            <CustomText weight="thin" size="s"  isOpposite>{ renderDreamOrigin() }</CustomText>
                                         </Box.Row>
                                     </Box.Column>
-                                    <ConfirmRecordDeletion
-                                        deletionAction={ async () => {
-                                            setLoading(true)
-                                            await DreamService.DeleteDream(checkIsConnected(), { id: dream.id })
-                                                .then((response) => {
-                                                    if (response.Success) {
-                                                        alert(response.Data)
-                                                        router.navigate("/(tabs)/(dreams)/dreamsList")
-                                                        return
-                                                    }
-                                                    setLoading(false)
-                                                    alert(response.ErrorMessage)
-                                                })
-                                        }}
-                                    />
+                                    { renderButtons() }
                                 </Box.Column>
                             )
                             : (
@@ -413,10 +413,11 @@ const styles = StyleSheet.create({
         gap: 5,
     },
     dreamContainer: {
-        gap: 5,
+        width: "100%",
+        gap: 10,
     },
     iconAndMessageStyle: {
-        gap: 3,
+        gap: 5,
         alignItems: "center",
     },
     dreamUpperInfoContainer: {
@@ -431,34 +432,31 @@ const styles = StyleSheet.create({
         flexWrap: "wrap",
     },
     dreamDescription: {
-        paddingTop: 10,
-        paddingBottom: 10,
-    },
-    tagsContainer: {
-        paddingTop: 10,
-        paddingHorizontal: 20,
-        paddingBottom: 20,
+        padding: 10,
         borderRadius: 15,
     },
-    tags: {
-        flexWrap: "wrap",
-        gap: 10,
-    },
     personalAnalysisContainer: {
-        paddingVertical: 10,
-    },
-    tagsInfoContainer: {
-        alignItems: "center",
-        paddingBottom: 10,
-        gap: 5,
+        padding: 10,
+        gap: 10,
+        borderRadius: 15,
     },
     errorOnFetchDream: {
         paddingBottom: 15,
     },
     dreamCharacteristicsContainer: {
         gap: 5,
+        padding: 10,
+        borderRadius: 15,
     },
     dreamClimates: {
         flexWrap: "wrap",
+    },
+    btns: {
+        width: "100%",
+        gap: 5,
+    },
+    goBackAndUpdateBtnsContainer: {
+        width: "100%",
+        justifyContent: "space-between",
     },
 })
