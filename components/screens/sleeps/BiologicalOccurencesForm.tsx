@@ -31,7 +31,10 @@ export default function BiologicalOccurencesForm({
                 <CustomText
                     weight="bold"
                     size="s"
-                >Ocorrências biológicas durante o sono</CustomText>
+                    onPress={ () => setOpen(!open) }
+                >
+                    Ocorrências biológicas durante o sono
+                </CustomText>
             </Box.Row>
             {
                 open

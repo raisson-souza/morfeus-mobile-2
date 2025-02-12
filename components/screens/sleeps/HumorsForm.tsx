@@ -30,7 +30,10 @@ export default function HumorsForm({
                 <CustomText
                     weight="bold"
                     size="s"
-                >{ title }</CustomText>
+                    onPress={ () => setOpen(!open) }
+                >
+                    { title }
+                </CustomText>
             </Box.Row>
             {
                 open

@@ -1,10 +1,11 @@
+import { Alert, StyleSheet } from "react-native"
 import { DefaultDreamClimate } from "@/types/dreamClimate"
 import { DreamInSleepCycleModel } from "@/types/sleeps"
 import { StyleContextProvider } from "@/contexts/StyleContext"
-import { StyleSheet } from "react-native"
 import { useState } from "react"
 import AppendDream from "./AppendDream"
 import Box from "@/components/base/Box"
+import ConfirmRecordDeletion from "../general/ConfirmRecordDeletion"
 import CustomButton from "@/components/customs/CustomButton"
 import CustomText from "@/components/customs/CustomText"
 import IconAntDesign from "react-native-vector-icons/AntDesign"
@@ -53,6 +54,10 @@ export default function DreamAppender({
     }
 
     const saveDream = () => {
+        if (!newDream) {
+            Alert.alert("Sonho Inválido", "Por favor, preencha o título e a descrição do sonho ou apague-o.")
+            return
+        }
         setCreatingDream(false)
         const newDreamList = [ ...dreams, newDream! ]
         setDreams(newDreamList)
@@ -140,6 +145,7 @@ export default function DreamAppender({
                                 <IconAntDesign
                                     name={ dream.open ? "down" : "right" }
                                     size={ systemStyle.normalIconSize }
+                                    color={ systemStyle.iconColor }
                                 />
                                 <CustomText
                                     weight="bold"
@@ -153,9 +159,9 @@ export default function DreamAppender({
                                     />
                                     : <></>
                             }
-                            <CustomButton
-                                title="Excluir Sonho"
-                                onPress={ () => removeDream(dream.id) }
+                            <ConfirmRecordDeletion
+                                btnTitle="Excluir Sonho"
+                                deletionAction={ () => removeDream(dream.id) }
                             />
                         </Box.Column>
                     ))

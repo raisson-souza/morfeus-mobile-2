@@ -49,7 +49,7 @@ export default function SleepListedByUser({
         const fixedSleepTime = Number.parseFloat(sleepCycle.sleepTime.toFixed(2))
         return fixedSleepTime != 0
             ? <CustomText size="s">{ `${ fixedSleepTime } ${ fixedSleepTime === 1 ? "hora" : "horas" }` }</CustomText>
-            : <></>
+            : <CustomText size="s">-----</CustomText>
     }
 
     return (
@@ -64,25 +64,29 @@ export default function SleepListedByUser({
             }) }
         >
             <Box.Column
-                style={ styles.dayContainer }
+                style={{
+                    ...styles.dayContainer,
+                    width: "30%",
+                }}
             >
                 <Box.Row style={ styles.dayIconContainer }>
                     { renderIsNightSleep() }
-                    <CustomText
-                        weight="bold"
-                    >{ fixedDate }</CustomText>
+                    <CustomText weight="bold">{ fixedDate }</CustomText>
                 </Box.Row>
             </Box.Column>
-            <Box.Column style={ styles.sleepTimesContainer }>
+            <Box.Column
+                style={{
+                    ...styles.sleepTimesContainer,
+                    width: "40%",
+                }}
+            >
                 <Box.Row style={ styles.sleepTimeContainer }>
                     <IconFeather
                         name={ "sunset" }
                         size={ systemStyle.smallIconSize }
                         color={ systemStyle.iconColor }
                     />
-                    <CustomText
-                        size="s"
-                    >{ renderTime(sleepCycle.sleepStart) }</CustomText>
+                    <CustomText size="s">{ renderTime(sleepCycle.sleepStart) }</CustomText>
                 </Box.Row>
                 <Box.Row style={ styles.sleepTimeContainer }>
                     <IconFeather
@@ -90,12 +94,16 @@ export default function SleepListedByUser({
                         size={ systemStyle.smallIconSize }
                         color={ systemStyle.iconColor }
                     />
-                    <CustomText
-                        size="s"
-                    >{ renderTime(sleepCycle.sleepEnd) }</CustomText>
+                    <CustomText size="s">{ renderTime(sleepCycle.sleepEnd) }</CustomText>
                 </Box.Row>
             </Box.Column>
-            { renderSleepTime() }
+            <Box.Center
+                style={{
+                    width: "33%",
+                }}
+            >
+                { renderSleepTime() }
+            </Box.Center>
         </Box.Row>
     )
 }
@@ -115,6 +123,7 @@ const styles = StyleSheet.create({
         gap: 5,
     },
     sleepTimesContainer: {
+        alignItems: "center",
         gap: 5,
     },
     sleepTimeContainer: {

@@ -7,6 +7,15 @@ type Update = {
 
 const CHANGELOG: Update[] = [
     {
+        version: "1.6.0",
+        date: "13/02/2025",
+        title: "Compartilhamento de Sonhos",
+        description: [
+            "Implementado compartilhamento de sonhos",
+            "Interface de visualização de sonho melhorada",
+        ],
+    },
+    {
         version: "1.5.0",
         date: "12/02/2025",
         title: "Ações do Usuário",

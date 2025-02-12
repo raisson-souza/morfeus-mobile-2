@@ -43,6 +43,7 @@ export default function GetTagScreen() {
                 <CustomText
                     size="xl"
                     weight="bold"
+                    selectable
                 >
                     { `TAG ${ title }` }
                 </CustomText>

@@ -152,11 +152,17 @@ export default function GetSleepScreen() {
                 : `Humores ao ${ sleepPeriod }:`
 
         return (
-            <Box.Row style={ styles.humorsAndBiologicalOccurencesContainer }>
+            <Box.Row
+                style={{
+                    ...styles.humorsAndBiologicalOccurencesContainer,
+                    ...styles.sleepCharacteristicsContainer,
+                    backgroundColor: systemStyle.terciary,
+                }}
+            >
                 <IconFeather
                     name={ isWakeUpHumor ? "sunrise" : "sunset"}
                     size={ systemStyle.normalIconSize }
-                    color={ systemStyle.iconColor }
+                    color={ systemStyle.oppositeIconColor }
                 />
                 {
                     humors.length > 1
@@ -164,16 +170,25 @@ export default function GetSleepScreen() {
                             <CustomText
                                 size="s"
                                 weight="bold"
-                            >{ humorsStr }</CustomText>
+                                isOpposite
+                            >
+                                { humorsStr }
+                            </CustomText>
                             <CustomText
                                 size="s"
                                 weight="thin"
-                            >{ humors.join(", ") }</CustomText>
+                                isOpposite
+                            >
+                                { humors.join(", ") }
+                            </CustomText>
                         </>
                         : <CustomText
                             size="s"
                             weight="thin"
-                        >{ humorsStr }</CustomText>
+                            isOpposite
+                        >
+                            { humorsStr }
+                        </CustomText>
                 }
             </Box.Row>
         )
@@ -198,29 +213,43 @@ export default function GetSleepScreen() {
         if (sleep!.biologicalOccurences.polucao) biologicalOccurences.push("polução")
 
         return biologicalOccurences.length === 0
-            ? <Box.Row style={ styles.humorsAndBiologicalOccurencesContainer }>
+            ? <Box.Row
+                style={{
+                    ...styles.humorsAndBiologicalOccurencesContainer,
+                    ...styles.sleepCharacteristicsContainer,
+                    backgroundColor: systemStyle.terciary,
+                }}
+            >
                 <IconMaterialIcons
                     name="health-and-safety"
                     size={ systemStyle.normalIconSize }
+                    color={ systemStyle.oppositeIconColor }
                 />
-                <CustomText
-                >Nenhuma ocorrência biológica registrada.</CustomText>
+                <CustomText isOpposite>Nenhuma ocorrência biológica registrada.</CustomText>
             </Box.Row>
-            : <Box.Row style={ styles.humorsAndBiologicalOccurencesContainer }>
+            : <Box.Row
+                style={{
+                    ...styles.humorsAndBiologicalOccurencesContainer,
+                    ...styles.sleepCharacteristicsContainer,
+                    backgroundColor: systemStyle.terciary,
+                }}
+            >
                 <IconMaterialIcons
                     name="health-and-safety"
                     size={ systemStyle.normalIconSize }
-                    color={ systemStyle.iconColor }
+                    color={ systemStyle.oppositeIconColor }
                 />
                 <CustomText
                     size="s"
                     weight="bold"
+                    isOpposite
                 >
                     Ocorrências Biológicas:
                 </CustomText>
                 <CustomText
                     weight="thin"
                     size="s"
+                    isOpposite
                 >
                     { biologicalOccurences.join(", ") }
                 </CustomText>
@@ -319,10 +348,10 @@ export default function GetSleepScreen() {
                     >
                         { `Início:` }
                     </CustomText>
-                    <CustomText weight="thin">
+                    <CustomText weight="thin" selectable>
                         { sleepStartFormatted.date }
                     </CustomText>
-                    <CustomText weight="thin">
+                    <CustomText weight="thin" selectable>
                         { sleepStartFormatted.time }
                     </CustomText>
                 </Box.Row>
@@ -333,10 +362,10 @@ export default function GetSleepScreen() {
                     >
                         { `Fim:   ` }
                     </CustomText>
-                    <CustomText weight="thin">
+                    <CustomText weight="thin" selectable>
                         { sleepEndFormatted.date }
                     </CustomText>
-                    <CustomText weight="thin">
+                    <CustomText weight="thin" selectable>
                         { sleepEndFormatted.time }
                     </CustomText>
                 </Box.Row>
@@ -420,5 +449,9 @@ const styles = StyleSheet.create({
     },
     sleepPeriodIndividualContainer: {
         alignItems: "center",
+    },
+    sleepCharacteristicsContainer: {
+        padding: 10,
+        borderRadius: 15,
     },
 })

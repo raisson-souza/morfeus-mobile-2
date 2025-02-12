@@ -1,12 +1,12 @@
 import { PaginationConfig } from "@/types/pagination"
 import { Picker } from "@react-native-picker/picker"
-import { StyleSheet, Text } from "react-native"
+import { StyleContextProvider } from "@/contexts/StyleContext"
+import { StyleSheet } from "react-native"
 import AntDesignIcons from "react-native-vector-icons/AntDesign"
 import Box from "./Box"
 import CustomInput from "../customs/CustomInput"
-import React from "react"
-import { StyleContextProvider } from "@/contexts/StyleContext"
 import CustomText from "../customs/CustomText"
+import React from "react"
 
 type DatagridProps = {
     rows: JSX.Element[]
@@ -154,7 +154,7 @@ export default function Datagrid({
                                 showOrderByDirection
                                     ? (
                                         <>
-                                            <Text>Direção da ordenação</Text>
+                                            <CustomText isOpposite>Direção da ordenação</CustomText>
                                             <Picker
                                                 selectedValue={ pagination.orderByDirection === "asc" ? 1 : 2 }
                                                 onValueChange={ (e) => handleOrderByDirection(e === 1 ? "asc" : "desc") }

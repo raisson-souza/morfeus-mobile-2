@@ -109,6 +109,7 @@ const styles = StyleSheet.create({
     },
     sleepsCycleList: {
         paddingTop: 5,
+        width: '100%',
     },
     noSleepCycleFound: {
         alignSelf: "center",

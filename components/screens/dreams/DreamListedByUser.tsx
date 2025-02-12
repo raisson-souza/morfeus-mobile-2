@@ -1,7 +1,7 @@
 import { DateFormatter } from "@/utils/DateFormatter"
 import { DreamListedByUserType } from "@/types/dream"
 import { StyleContextProvider } from "@/contexts/StyleContext"
-import { Text, StyleSheet, StyleProp, ViewStyle } from "react-native"
+import { StyleSheet, StyleProp, ViewStyle } from "react-native"
 import { useRouter } from "expo-router"
 import Box from "@/components/base/Box"
 import CustomText from "@/components/customs/CustomText"
@@ -55,8 +55,8 @@ export default function DreamListedByUser({
                 style={ styles.hiddenOrEroticDreamContainer}
                 onPress={ () => setShowDream(true) }
             >
-                <IconEntypo name="eye-with-line" size={ 20 } />
-                <Text>( sonho oculto ou erótico )</Text>
+                <IconEntypo name="eye-with-line" size={ systemStyle.normalIconSize } />
+                <CustomText>( sonho oculto ou erótico )</CustomText>
             </Box.Row>
         )
     }
@@ -98,7 +98,8 @@ export default function DreamListedByUser({
 
 const styles = StyleSheet.create({
     tags: {
-        gap: 10,
+        columnGap: 10,
+        flexWrap: "wrap",
     },
     hiddenOrEroticDreamContainer: {
         gap: 3,
