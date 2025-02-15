@@ -1,11 +1,23 @@
-type Update = {
+export type Changelog = {
     version: string
     date: string
     title: string
     description: string[]
+    apk?: string
+    id: number
 }
 
-const CHANGELOG: Update[] = [
+const CHANGELOG: Changelog[] = [
+    {
+        version: "1.7.0",
+        date: "15/02/2025",
+        title: "Atualização do Changelog",
+        description: [
+            "Atualização do Changelog",
+        ],
+        apk: undefined,
+        id: 9,
+    },
     {
         version: "1.6.0",
         date: "13/02/2025",
@@ -14,6 +26,8 @@ const CHANGELOG: Update[] = [
             "Implementado compartilhamento de sonhos",
             "Interface de visualização de sonho melhorada",
         ],
+        apk: undefined,
+        id: 8,
     },
     {
         version: "1.5.0",
@@ -25,6 +39,8 @@ const CHANGELOG: Update[] = [
             "Exclusão de dados",
             "Recuperação de conta",
         ],
+        apk: undefined,
+        id: 7,
     },
     {
         version: "1.4.0",
@@ -34,6 +50,8 @@ const CHANGELOG: Update[] = [
             "Tema escuro",
             "Melhorias de interface",
         ],
+        apk: undefined,
+        id: 6,
     },
     {
         version: "1.3.0",
@@ -42,6 +60,8 @@ const CHANGELOG: Update[] = [
         description: [
             "Implementado tutorial de uso da aplicação",
         ],
+        apk: undefined,
+        id: 5,
     },
     {
         version: "1.2.1",
@@ -51,6 +71,8 @@ const CHANGELOG: Update[] = [
             "Ajuste do ícone e imagens da aplicação",
             "Correção de bugs",
         ],
+        apk: undefined,
+        id: 4,
     },
     {
         version: "1.2.0",
@@ -61,6 +83,8 @@ const CHANGELOG: Update[] = [
             "Listagem de sonhos ao visualizar um ciclo de sono",
             "Melhorias de interface e comportamento",
         ],
+        apk: undefined,
+        id: 3,
     },
     {
         version: "1.1.0",
@@ -71,6 +95,8 @@ const CHANGELOG: Update[] = [
             "Correção de bugs",
             "Melhorias de interface",
         ],
+        apk: undefined,
+        id: 2,
     },
     {
         version: "1.0.0",
@@ -79,6 +105,8 @@ const CHANGELOG: Update[] = [
         description: [
             "Aplicação base para testes internos",
         ],
+        apk: undefined,
+        id: 1,
     },
 ]
 

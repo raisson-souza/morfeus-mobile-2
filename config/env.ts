@@ -9,6 +9,18 @@ type envProps = {
     AppVersion: () => string
     /** Link da aplicação na google play */
     GooglePlayAppLink: () => string
+    /** Credenciais do Firebase */
+    FirebaseCredentials: () => FirebaseCredentialsType
+}
+
+type FirebaseCredentialsType = {
+    apiKey: string,
+    authDomain: string,
+    projectId: string,
+    storageBucket: string,
+    messagingSenderId: string,
+    appId: string,
+    measurementId: string,
 }
 
 /** Buscador de variáveis de ambiente */
@@ -50,6 +62,38 @@ const env : envProps = {
             throw new Error("EXPO_PUBLIC_GOOGLE_PLAY_APP_LINK não encontrado no ENV.")
         }
         return _
+    },
+    FirebaseCredentials: () => {
+        const apiKey = String(process.env["EXPO_PUBLIC_FIREBASE_API_KEY"])
+        const authDomain = String(process.env["EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN"])
+        const projectId = String(process.env["EXPO_PUBLIC_FIREBASE_PROJECT_ID"])
+        const storageBucket = String(process.env["EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET"])
+        const messagingSenderId = String(process.env["EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID"])
+        const appId = String(process.env["EXPO_PUBLIC_FIREBASE_APP_ID"])
+        const measurementId = String(process.env["EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID"])
+
+        if (
+            (apiKey === undefined || apiKey === null || apiKey === 'undefined' || apiKey === 'null') ||
+            (authDomain === undefined || authDomain === null || authDomain === 'undefined' || authDomain === 'null') ||
+            (projectId === undefined || projectId === null || projectId === 'undefined' || projectId === 'null') ||
+            (storageBucket === undefined || storageBucket === null || storageBucket === 'undefined' || storageBucket === 'null') ||
+            (messagingSenderId === undefined || messagingSenderId === null || messagingSenderId === 'undefined' || messagingSenderId === 'null') ||
+            (appId === undefined || appId === null || appId === 'undefined' || appId === 'null') ||
+            (measurementId === undefined || measurementId === null || measurementId === 'undefined' || measurementId === 'null')
+        ) {
+            console.error("Credenciais do firebase não encontradas no ENV.")
+            throw new Error("Credenciais do firebase não encontradas no ENV.")
+        }
+
+        return {
+            apiKey,
+            authDomain,
+            projectId,
+            storageBucket,
+            messagingSenderId,
+            appId,
+            measurementId,
+        }
     },
 }
 

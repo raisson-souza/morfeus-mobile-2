@@ -1,22 +1,21 @@
-// yarn add firebase
 import env from "@/config/env"
 import { initializeApp } from "firebase/app"
-import { getDatabase } from "firebase/database"
+// import { getAnalytics } from "firebase/analytics"
 
-const firebaseCredentials = env.FirebaseEnv()
+const firebaseCredentials = env.FirebaseCredentials()
 
 const firebaseConfig = {
     apiKey: firebaseCredentials.apiKey,
     authDomain: firebaseCredentials.authDomain,
-    databaseURL: firebaseCredentials.databaseURL,
     projectId: firebaseCredentials.projectId,
     storageBucket: firebaseCredentials.storageBucket,
     messagingSenderId: firebaseCredentials.messagingSenderId,
     appId: firebaseCredentials.appId,
+    measurementId: firebaseCredentials.measurementId,
 }
 
-const app = initializeApp(firebaseConfig)
+const firebaseApp = initializeApp(firebaseConfig)
+// const analytics = getAnalytics(firebaseApp)
 
-const db = getDatabase(app)
-
-export { db, app }
+// export { firebaseApp, analytics }
+export { firebaseApp }
