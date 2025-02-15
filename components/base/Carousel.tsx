@@ -1,10 +1,10 @@
+import { StyleContextProvider } from "@/contexts/StyleContext"
 import { StyleSheet } from "react-native"
 import Box from "./Box"
 import CustomButton from "../customs/CustomButton"
 import IconEntypo from "react-native-vector-icons/Entypo"
 import ModalBox from "./ModalBox"
 import React, { useState } from "react"
-import { StyleContextProvider } from "@/contexts/StyleContext"
 
 type CarouselProps = {
     visible: boolean
@@ -47,7 +47,7 @@ export default function Carousel({
     }
 
     const renderRemainingPages = () => {
-        if (finalPage >= 6) return <></>
+        if (finalPage >= 6 || finalPage === 1) return <></>
 
         const dots: JSX.Element[] = []
         for (let i = 0; i < finalPage; i++) {
