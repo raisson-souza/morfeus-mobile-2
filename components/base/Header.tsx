@@ -16,6 +16,7 @@ export default function Header({}: HeaderProps): JSX.Element {
     const { systemStyle } = StyleContextProvider()
     const { isLogged } = AuthContextProvider()
     const [ openChangelogModal, setOpenChangelogModal ] = useState<boolean>(false)
+    const [ showChangelogBadge, setShowChangelogBadge ] = useState<boolean>(false)
     // const [ openNotificationsModal, setOpenNotificationsModal ] = useState<boolean>(false)
     const [ openConfigModal, setOpenConfigModal ] = useState<boolean>(false)
 
@@ -30,6 +31,7 @@ export default function Header({}: HeaderProps): JSX.Element {
             <ChangelogModal
                 open={ openChangelogModal }
                 setOpen={ setOpenChangelogModal }
+                showChangelogBadge={ () => setShowChangelogBadge(true) }
             />
             <ConfigModal
                 open={ openConfigModal }
@@ -52,13 +54,21 @@ export default function Header({}: HeaderProps): JSX.Element {
                 </CustomText>
             </Box.Row>
             <Box.Row style={ styles.icons }>
-                <Pressable onPress={ () => setOpenChangelogModal(true) }>
+                <Box.Row
+                    onPress={ () => setOpenChangelogModal(true) }
+                    style={ styles.changelogContainer }
+                >
                     <IconIon
                         name="megaphone"
                         size={ systemStyle.largeIconSize }
                         color={ systemStyle.headerTextColor }
                     />
-                </Pressable>
+                    {
+                        showChangelogBadge
+                            ? <Box.Center style={ styles.changelogBadgeBox }><></></Box.Center>
+                            : <></>
+                    }
+                </Box.Row>
                 <Pressable onPress={ () => {} }>
                     <IconMaterialCommunityIcons
                         name="bell"
@@ -92,5 +102,19 @@ const styles = StyleSheet.create({
     icons: {
         alignItems: "center",
         gap: 15,
+    },
+    changelogContainer: {
+        position: 'relative',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    changelogBadgeBox: {
+        position: 'absolute',
+        top: -3,
+        right: -8,
+        backgroundColor: 'red',
+        borderRadius: 10,
+        width: 10,
+        height: 10,
     },
 })

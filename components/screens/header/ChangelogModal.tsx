@@ -14,16 +14,22 @@ import Loading from "@/components/base/Loading"
 type ChangelogModalProps = {
     open: boolean
     setOpen: React.Dispatch<React.SetStateAction<boolean>>
+    showChangelogBadge: () => void
 }
 
 export default function ChangelogModal({
     open,
     setOpen,
+    showChangelogBadge,
 }: ChangelogModalProps) {
     const { systemStyle } = StyleContextProvider()
     const [ loading, setLoading ] = useState<boolean>(true)
     const [ changelog, setChangelog ] = useState<Changelog[] | null>(null)
     const [ versionId, setVersionId ] = useState<number | null>(null)
+
+    const checkToggleShowChangelogBadge = (lastVersionId: number, _versionId: number) => {
+        if (lastVersionId > _versionId) showChangelogBadge()
+    }
 
     useEffect(() => {
         const fetchChangelog = async () => {
@@ -31,7 +37,10 @@ export default function ChangelogModal({
                 .then(response => {
                     setChangelog(response)
                     response.map((_changelog, i) => {
-                        if (_changelog.version === env.AppVersion()) setVersionId(response.length - i)
+                        if (_changelog.version === env.AppVersion()) {
+                            setVersionId(response.length - i)
+                            checkToggleShowChangelogBadge(response[0].id, response.length - i)
+                        }
                     })
                 })
                 .finally(() => setLoading(false))
