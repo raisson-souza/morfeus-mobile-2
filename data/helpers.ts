@@ -8,6 +8,7 @@ type HelperListType = {
     createDream: HelperType
     createSleepCycle: HelperType
     analysis: HelperType
+    exportData: HelperType
 }
 
 const HELPERS: HelperListType = {
@@ -36,6 +37,16 @@ const HELPERS: HelperListType = {
         infoDescription: "Análises?",
         modalDescription: [
             "Ao acessar as análises de ciclos de sono ou sonhos, todos os seus registros do mês selecionado são reunidos e estatísticas interessantes sobre eles são geradas.",
+        ],
+    },
+    exportData: {
+        modalTitle: "Exportação de Dados",
+        infoDescription: "Exportação de Dados",
+        modalDescription: [
+            "Com a exportação de dados, todos os seus registros dentro de um intervalo especificado de 1 ano serão agregados em um arquivo JSON.",
+            "Você poderá realizar o download deste arquivo para manter seus dados como backup, extração de seus registros para uso pessoal ou importação em um novo ambiente do Morfeus (caso necessário).",
+            "Você pode gerar apenas uma exportação por vez, então deverá sempre baixar sua exportação antes de solicitar uma nova caso possua registros feitos além de um período de 1 ano.",
+            "Em caso de dúvidas, entre em contato através do suporte na tela inicial.",
         ],
     },
 }

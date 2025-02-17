@@ -16,6 +16,14 @@ export default function RootLayout() {
                 name='accountRecovery'
                 options={{ title: "Recuperação de Conta" }}
             />
+            <Stack.Screen
+                name='userData'
+                options={{ title: "Exportação e Importação de Dados" }}
+            />
+            <Stack.Screen
+                name='userDataExport'
+                options={{ title: "Exportação de Dados" }}
+            />
         </Stack>
     )
 }

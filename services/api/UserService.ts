@@ -1,4 +1,4 @@
-import { CheckAccountRecoveryRequest, CheckAccountRecoveryResponse, CreateAccountRecoveryRequest, CreateAccountRecoveryResponse, FinishAccountRecoveryRequest, FinishAccountRecoveryResponse, UpdateUserRequest, UpdateUserResponse, UserDataDeletionResponse, UserModel } from "../../types/user"
+import { CheckAccountRecoveryRequest, CheckAccountRecoveryResponse, CreateAccountRecoveryRequest, CreateAccountRecoveryResponse, ExportUserDataRequest, ExportUserDataResponse, FinishAccountRecoveryRequest, FinishAccountRecoveryResponse, UpdateUserRequest, UpdateUserResponse, UserDataDeletionResponse, UserModel } from "../../types/user"
 import Endpoints from "./base/Endpoints"
 
 export default abstract class UserService extends Endpoints {
@@ -41,6 +41,14 @@ export default abstract class UserService extends Endpoints {
     static async FinishAccountRecovery(request: FinishAccountRecoveryRequest) {
         return await this.Post<FinishAccountRecoveryResponse>({
             url: `/users/account_recovery/finish`,
+            body: request,
+            authorization: await this.GetAuthorization(),
+        })
+    }
+
+    static async ExportUserData(request: ExportUserDataRequest) {
+        return await this.Post<ExportUserDataResponse>({
+            url: `/users/data/export`,
             body: request,
             authorization: await this.GetAuthorization(),
         })

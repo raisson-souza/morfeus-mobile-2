@@ -1,3 +1,4 @@
+import { ExportUserData } from "./userData"
 import { RegistryRequest } from "./registry"
 
 export type UpdateUserRequest = RegistryRequest
@@ -50,3 +51,10 @@ export type FinishAccountRecoveryRequest = {
 }
 
 export type FinishAccountRecoveryResponse = string
+
+export type ExportUserDataRequest = {
+    startDate: string
+    endDate: string
+}
+
+export type ExportUserDataResponse = ExportUserData

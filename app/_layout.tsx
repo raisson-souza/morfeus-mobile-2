@@ -3,6 +3,7 @@ import { SQLiteProvider } from "expo-sqlite"
 import { Stack } from "expo-router"
 import { StatusBar } from 'expo-status-bar'
 import AuthContextComponent from "@/contexts/AuthContext"
+import FileSystemContextComponent from "@/contexts/FileSystemContext"
 import env from "@/config/env"
 import InitialContextComponent from "@/contexts/InitialContext"
 import React from "react"
@@ -28,36 +29,38 @@ export default function RootLayout() {
           translucent={ false }
         />
           <AuthContextComponent>
-            <SyncContextComponent>
-              <Stack
-                initialRouteName='index'
-                screenOptions={{
+            <FileSystemContextComponent>
+              <SyncContextComponent>
+                <Stack
+                  initialRouteName='index'
+                  screenOptions={{
                   ...GetStackStyle(),
                   header: () => <StagingHeader />,
                 }}
-              >
-                <Stack.Screen
-                  name='index'
-                  options={{ headerShown: true /** alterado para true devido StagingHeader */ }}
-                />
-                <Stack.Screen
-                  name='(tabs)'
-                  options={{ headerShown: true /** alterado para true devido StagingHeader */ }}
-                />
-                <Stack.Screen
-                  name='login'
-                  options={{ title: "Login" }}
-                />
-                <Stack.Screen
-                  name='registry'
-                  options={{ title: "Registre-se" }}
-                />
-                <Stack.Screen
-                  name='(user)'
-                  options={{ headerShown: false }}
-                />
-              </Stack>
-            </SyncContextComponent>
+                >
+                  <Stack.Screen
+                    name='index'
+                    options={{ headerShown: true /** alterado para true devido StagingHeader */ }}
+                  />
+                  <Stack.Screen
+                    name='(tabs)'
+                    options={{ headerShown: true /** alterado para true devido StagingHeader */ }}
+                  />
+                  <Stack.Screen
+                    name='login'
+                    options={{ title: "Login" }}
+                  />
+                  <Stack.Screen
+                    name='registry'
+                    options={{ title: "Registre-se" }}
+                  />
+                  <Stack.Screen
+                    name='(user)'
+                    options={{ headerShown: false }}
+                  />
+                </Stack>
+              </SyncContextComponent>
+            </FileSystemContextComponent>
           </AuthContextComponent>
         </InitialContextComponent>
       </StyleContextComponent>

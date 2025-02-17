@@ -4,10 +4,23 @@ export type Changelog = {
     title: string
     description: string[]
     apk?: string
+    published: boolean
     id: number
 }
 
 const CHANGELOG: Changelog[] = [
+    {
+        version: "1.8.0",
+        date: "18/02/2025",
+        title: "Exportação de Registros",
+        description: [
+            "Exportação de registros",
+            "Ajustes no changelog",
+        ],
+        apk: undefined,
+        published: false,
+        id: 10,
+    },
     {
         version: "1.7.0",
         date: "15/02/2025",
@@ -16,6 +29,7 @@ const CHANGELOG: Changelog[] = [
             "Atualização do Changelog",
         ],
         apk: undefined,
+        published: true,
         id: 9,
     },
     {
@@ -27,6 +41,7 @@ const CHANGELOG: Changelog[] = [
             "Interface de visualização de sonho melhorada",
         ],
         apk: undefined,
+        published: true,
         id: 8,
     },
     {
@@ -40,6 +55,7 @@ const CHANGELOG: Changelog[] = [
             "Recuperação de conta",
         ],
         apk: undefined,
+        published: true,
         id: 7,
     },
     {
@@ -51,6 +67,7 @@ const CHANGELOG: Changelog[] = [
             "Melhorias de interface",
         ],
         apk: undefined,
+        published: true,
         id: 6,
     },
     {
@@ -61,6 +78,7 @@ const CHANGELOG: Changelog[] = [
             "Implementado tutorial de uso da aplicação",
         ],
         apk: undefined,
+        published: true,
         id: 5,
     },
     {
@@ -72,6 +90,7 @@ const CHANGELOG: Changelog[] = [
             "Correção de bugs",
         ],
         apk: undefined,
+        published: true,
         id: 4,
     },
     {
@@ -84,6 +103,7 @@ const CHANGELOG: Changelog[] = [
             "Melhorias de interface e comportamento",
         ],
         apk: undefined,
+        published: true,
         id: 3,
     },
     {
@@ -96,6 +116,7 @@ const CHANGELOG: Changelog[] = [
             "Melhorias de interface",
         ],
         apk: undefined,
+        published: true,
         id: 2,
     },
     {
@@ -106,6 +127,7 @@ const CHANGELOG: Changelog[] = [
             "Aplicação base para testes internos",
         ],
         apk: undefined,
+        published: true,
         id: 1,
     },
 ]
