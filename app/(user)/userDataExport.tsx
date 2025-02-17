@@ -1,8 +1,10 @@
+import { Alert, StyleSheet } from "react-native"
+import { DateFormatter } from "@/utils/DateFormatter"
 import { FileSystemContextProvider } from "@/contexts/FileSystemContext"
 import { Screen } from "@/components/base/Screen"
 import { StyleContextProvider } from "@/contexts/StyleContext"
-import { StyleSheet } from "react-native"
 import { useEffect, useState } from "react"
+import { useRouter } from "expo-router"
 import * as Sharing from 'expo-sharing'
 import Box from "@/components/base/Box"
 import ConfirmActionButton from "@/components/screens/general/ConfirmActionButton"
@@ -14,11 +16,14 @@ import Loading from "@/components/base/Loading"
 import ModalBox from "@/components/base/ModalBox"
 import MonthParser from "@/utils/MonthParser"
 import MonthYearExtractor from "@/components/customs/MonthYearExtractor"
+import UserService from "@/services/api/UserService"
 
 export default function UserDataExportScreen() {
+    const router = useRouter()
     const { systemStyle } = StyleContextProvider()
-    const { getFile } = FileSystemContextProvider()
+    const { getFile, createFile, deleteFile } = FileSystemContextProvider()
     const [ loading, setLoading ] = useState<boolean>(true)
+    const [ exporting, setExporting ] = useState<boolean>(false)
     const [ exportFileUri, setExportFileUri ] = useState<string | null>(null)
     const [ openDataExportModal, setOpenDataExportModal ] = useState<boolean>(false)
 
@@ -29,21 +34,45 @@ export default function UserDataExportScreen() {
     const [ endDate, setEndDate ] = useState<Date>(dateNow)
     const [ exportDataBtnActive, SetExportDataBtnActive ] = useState<boolean>(false)
 
+    const exportFileName = "exportacao_de_dados_usuario_morfeus.json"
+
+    const fetchExportFile = async () => {
+        const exportFile = await getFile(exportFileName)
+        if (exportFile.exists) setExportFileUri(exportFile.uri)
+    }
+
     useEffect(() => {
-        const fetchExportFile = async () => {
-            const exportFile = await getFile("morfeusExport.json")
-            if (exportFile.exists) setExportFileUri(exportFile.uri)
-            setLoading(false)
-        }
-        fetchExportFile()
+        fetchExportFile().finally(() => setLoading(false))
     }, [])
 
-    // useEffect para resetar states
+    const exportUserData = async () => {
+        setOpenDataExportModal(false)
+        setExporting(true)
+        await UserService.ExportUserData({
+            startDate: DateFormatter.forBackend.date(startDate.getTime()),
+            endDate: DateFormatter.forBackend.date(endDate.getTime()),
+        })
+            .then(async (response) => {
+                if (response.Success) {
+                    await createFile(exportFileName, JSON.stringify(response.Data))
+                    await fetchExportFile()
+                    return
+                }
+
+                Alert.alert("Erro na Exportação", response.ErrorMessage)
+            })
+            .finally(() => setExporting(false))
+    }
 
     const shareExportFile = () => {
         if (exportFileUri) {
             Sharing.shareAsync(exportFileUri, { dialogTitle:"Exportação de Dados do Morfeus" })
         }
+    }
+
+    const deleteExportFile = async () => {
+        await deleteFile(exportFileName)
+        setExportFileUri(null)
     }
 
     const info = (isOpposite: boolean = false) => <Info
@@ -56,23 +85,48 @@ export default function UserDataExportScreen() {
     return <Screen flex>
         <Box.Column style={ styles.container }>
             {
-                loading
-                    ? <Loading />
+                loading || exporting
+                    ? <Loading
+                        text={
+                            exporting
+                                ? "Realizando exportação de dados, isso pode levar alguns instantes..."
+                                : "Buscando exportação anterior..."
+                        }
+                        onlyLoading={ false }
+                    />
                     : <>
+                        { info() }
                         {
                             exportFileUri
-                                ? <CustomButton
-                                    title="Acessar Exportação"
-                                    onPress={ () => shareExportFile() }
-                                />
-                                : <CustomText>Nenhum arquivo de exportação encontrado.</CustomText>
+                                ? <>
+                                    <CustomButton
+                                        title="Baixar Exportação"
+                                        onPress={ () => shareExportFile() }
+                                        important
+                                    />
+                                    <ConfirmActionButton
+                                        btnTitle="Excluir Exportação"
+                                        description="Os dados exportados armazenados em seu dispositivo serão eliminados, você ainda pode baixá-los ou realizar uma nova exportação que irá sobrescrevê-los, tem certeza que deseja excluí-los?"
+                                        onConfirm={ async () => deleteExportFile() }
+                                        closeOnConfirm={ false }
+                                        btnColor={{ text: "red", border: "red" }}
+                                    />
+                                </>
+                                : <CustomText weight="thin">Nenhum arquivo de exportação encontrado.</CustomText>
                         }
-                        { info() }
                         <ConfirmActionButton
                             btnTitle="Exportar Dados"
-                            description="A seguir você configurará a exportação de seus dados, realize essa ação apenas quando necessário!"
+                            description={
+                                exportFileUri
+                                    ? "Ao realizar uma nova exportação de dados, a exportação antiga será sobrescrita, por favor, faça o download dela antes de prosseguir!"
+                                    : "A seguir você configurará a exportação de seus dados, realize essa ação apenas quando necessário!"
+                            }
                             onConfirm={ () => setOpenDataExportModal(true) }
                             closeOnConfirm={ false }
+                        />
+                        <CustomButton
+                            title="Voltar"
+                            onPress={ () => router.back() }
                         />
                     </>
             }
@@ -84,7 +138,7 @@ export default function UserDataExportScreen() {
                 if (!exportDataBtnActive) SetExportDataBtnActive(true)
                 setStartDate(date)
             }}
-            defaultMonth={ startDate.getMonth() }
+            defaultMonth={ startDate.getMonth() + 1 }
             defaultYear={ startDate.getFullYear() }
         />
         <MonthYearExtractor
@@ -127,9 +181,7 @@ export default function UserDataExportScreen() {
                     <Box.Column style={ styles.exportDataBtn }>
                         <CustomButton
                             title="Exportar Dados"
-                            onPress={ () => {
-                                console.log(`startDate ${ startDate } endDate ${ endDate }`)
-                            }}
+                            onPress={ async () => await exportUserData() }
                             active={ exportDataBtnActive }
                             btnTextColor={ exportDataBtnActive ? "orange" : systemStyle.inactiveTextColor }
                             btnColor={ exportDataBtnActive ? "orange" : systemStyle.inactiveTextColor }
