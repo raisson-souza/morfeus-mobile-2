@@ -168,11 +168,16 @@ export default function User() {
                                 btnWidth="90%"
                             />
                         </Box.Center>
-                        <Box.Center style={ styles.dataDeletionContainer }>
+                        <Box.Center style={ styles.userDataActionsBtns }>
+                            <CustomButton
+                                title="Exportação e Importação"
+                                onPress={ () => router.navigate("/(user)/userData") }
+                                btnWidth="100%"
+                            />
                             <CustomButton
                                 title="Excluir Dados"
                                 onPress={ () => setShowUserDataDeletionModal(true) }
-                                btnWidth="60%"
+                                btnWidth="100%"
                                 btnColor="red"
                                 btnTextColor="red"
                             />
@@ -206,8 +211,9 @@ const styles = StyleSheet.create({
         gap: 10,
         width: "100%",
     },
-    dataDeletionContainer: {
+    userDataActionsBtns: {
         width: "100%",
         paddingTop: 30,
+        gap: 10,
     },
 })
