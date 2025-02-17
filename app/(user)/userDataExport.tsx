@@ -140,6 +140,7 @@ export default function UserDataExportScreen() {
             }}
             defaultMonth={ startDate.getMonth() + 1 }
             defaultYear={ startDate.getFullYear() }
+            maxYear={ dateNow.getFullYear() }
         />
         <MonthYearExtractor
             open={ openEndDate }
@@ -150,6 +151,7 @@ export default function UserDataExportScreen() {
             }}
             defaultMonth={ endDate.getMonth() + 1 }
             defaultYear={ endDate.getFullYear() }
+            maxYear={ dateNow.getFullYear() }
         />
         <ModalBox
             visible={ openDataExportModal }
