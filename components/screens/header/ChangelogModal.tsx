@@ -24,7 +24,7 @@ export default function ChangelogModal({
 }: ChangelogModalProps) {
     const { systemStyle } = StyleContextProvider()
     const [ loading, setLoading ] = useState<boolean>(true)
-    const [ changelog, setChangelog ] = useState<Changelog[] | null>(null)
+    const [ changelogList, setChangelogList ] = useState<Changelog[] | null>(null)
     const [ versionId, setVersionId ] = useState<number | null>(null)
 
     const checkToggleShowChangelogBadge = (lastVersionId: number, _versionId: number) => {
@@ -35,9 +35,9 @@ export default function ChangelogModal({
         const fetchChangelog = async () => {
             await FirestoreDb.getChangelog()
                 .then(response => {
-                    setChangelog(response)
-                    response.map((_changelog, i) => {
-                        if (_changelog.version === env.AppVersion()) {
+                    setChangelogList(response)
+                    response.map((changelog, i) => {
+                        if (changelog.version === env.AppVersion()) {
                             setVersionId(response.length - i)
                             checkToggleShowChangelogBadge(response[0].id, response.length - i)
                         }
@@ -55,28 +55,30 @@ export default function ChangelogModal({
     const renderComponents = () => {
         if (loading) return [loadingComponent]
 
-        if (changelog && versionId) {
-            return changelog.map((_changelog, i) =>
+        if (changelogList && versionId) {
+            return changelogList.map((changelog, i) =>
                 <Box.Column
                     key={ i }
                     style={ styles.container }
                 >
                     {
-                        _changelog.id > versionId
-                            ? <Info
-                                overrideInfoColor="red"
-                                infoDescription="Nova Versão"
-                                modalTitle="Nova Versão"
-                                modalDescription={[
-                                    env.Environment() === "testing"
-                                        ? 'Faça o download da nova versão através do botão "Acessar APK".'
-                                        : "Atualize seu aplicativo na Play Store."
-                                ]}
-                                type="warn"
-                            />
-                            : _changelog.id == versionId
-                                ? <CustomText size="s" isOpposite weight="thin">Versão deste software</CustomText>
-                                : <></>
+                        changelog.published
+                            ? changelog.id > versionId
+                                ? <Info
+                                    overrideInfoColor="red"
+                                    infoDescription="Nova Versão"
+                                    modalTitle="Nova Versão"
+                                    modalDescription={[
+                                        env.Environment() === "testing"
+                                            ? 'Faça o download da nova versão através do botão "Acessar APK".'
+                                            : "Atualize seu aplicativo na Play Store."
+                                    ]}
+                                    type="warn"
+                                />
+                                : changelog.id == versionId
+                                    ? <CustomText size="s" isOpposite weight="thin">Versão deste software</CustomText>
+                                    : <></>
+                            : <CustomText size="s" isOpposite weight="bold" style={{ color: "red" }}>Próxima Versão</CustomText>
                     }
                     <Box.Column style={ styles.title }>
                         <CustomText
@@ -84,21 +86,39 @@ export default function ChangelogModal({
                             isOpposite
                             weight="bold"
                         >
-                            { _changelog.title }
+                            { changelog.title }
                         </CustomText>
-                        <Box.Row>
-                            <CustomText
-                                size="s"
-                                isOpposite
-                                weight="thin"
-                            >
-                                { `Versão ${ _changelog.version } - ${ _changelog.date }` }
-                            </CustomText>
-                        </Box.Row>
+                        {
+                            changelog.published
+                                ? <Box.Row>
+                                    <CustomText
+                                        size="s"
+                                        isOpposite
+                                        weight="thin"
+                                    >
+                                        { `Versão ${ changelog.version } - ${ changelog.date }` }
+                                    </CustomText>
+                                </Box.Row>
+                                : <Box.Column>
+                                    <CustomText
+                                        size="s"
+                                        isOpposite
+                                    >
+                                        { `Versão ${ changelog.version }` }
+                                    </CustomText>
+                                    <CustomText
+                                        size="s"
+                                        isOpposite
+                                        style={{ color: "orange" }}
+                                    >
+                                        { `Data esperada: ${ changelog.date }` }
+                                    </CustomText>
+                                </Box.Column>
+                        }
                     </Box.Column>
                     <Box.Column>
                         {
-                            _changelog.description.map((description, i) => (
+                            changelog.description.map((description, i) => (
                                 <CustomText
                                     key={ i }
                                     isOpposite
@@ -110,14 +130,16 @@ export default function ChangelogModal({
                     </Box.Column>
                     {
                         env.Environment() === "testing"
-                            ? <Box.Center style={ styles.btn }>
-                                <CustomButton
-                                    title="Acessar APK"
-                                    onPress={ () => Linking.openURL(_changelog.apk!) }
-                                    active={ !(_changelog.apk === undefined || _changelog.apk === "") }
-                                    btnTextColor={ systemStyle.oppositeTextColor  }
-                                />
-                            </Box.Center>
+                            ? changelog.published && changelog.apk
+                                ? <Box.Center style={ styles.btn }>
+                                    <CustomButton
+                                        title="Acessar APK"
+                                        onPress={ () => Linking.openURL(changelog.apk!) }
+                                        active={ !(changelog.apk === undefined || changelog.apk === "") }
+                                        btnTextColor={ systemStyle.oppositeTextColor  }
+                                    />
+                                </Box.Center>
+                                : <></>
                             : <></>
                     }
                     <Box.Center style={ styles.margin }><></></Box.Center>
