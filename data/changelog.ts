@@ -9,6 +9,17 @@ export type Changelog = {
 
 const CHANGELOG: Changelog[] = [
     {
+        version: "1.8.0",
+        date: "18/02/2025",
+        title: "Exportação de Registros",
+        description: [
+            "Exportação de registros",
+            "Ajustes no changelog",
+        ],
+        apk: undefined,
+        id: 10,
+    },
+    {
         version: "1.7.0",
         date: "15/02/2025",
         title: "Atualização do Changelog",
