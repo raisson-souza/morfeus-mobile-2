@@ -10,6 +10,17 @@ export type Changelog = {
 
 const CHANGELOG: Changelog[] = [
     {
+        version: "1.9.0",
+        date: "21/02/2025",
+        title: "Importação de Registros do Morfeus",
+        description: [
+            "Importação de registros de mesma origem",
+        ],
+        apk: undefined,
+        published: true,
+        id: 11,
+    },
+    {
         version: "1.8.0",
         date: "18/02/2025",
         title: "Exportação de Registros",
@@ -18,7 +29,7 @@ const CHANGELOG: Changelog[] = [
             "Ajustes no changelog",
         ],
         apk: undefined,
-        published: false,
+        published: true,
         id: 10,
     },
     {
