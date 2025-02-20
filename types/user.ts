@@ -62,11 +62,7 @@ export type ExportUserDataResponse = ExportUserData
 export type ImportUserDataRequest = {
     isSameOriginImport: boolean
     dreamsPath: string | null
-    file: {
-        uri: string
-        name: string
-        type: string
-    }
+    fileContent: string
 }
 
 export type ImportUserDataResponse = string

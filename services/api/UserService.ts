@@ -55,21 +55,9 @@ export default abstract class UserService extends Endpoints {
     }
 
     static async ImportUserData(request: ImportUserDataRequest) {
-        const formData = new FormData()
-        formData.append("isSameOriginImport", request.isSameOriginImport ? "true" : "false")
-        formData.append("dreamsPath", request.dreamsPath ?? "")
-        formData.append("file", {
-            uri: request.file.uri,
-            name: request.file.name,
-            type: request.file.type,
-        } as any)
-
         return await this.Post<ImportUserDataResponse>({
             url: `/users/data/import`,
-            body: formData,
-            headers: [],
-            // headers: [{Accept: 'application/json'}],
-            // headers: [{"Content-Type": "multipart/form-data"}],
+            body: request,
             authorization: await this.GetAuthorization(),
         })
     }

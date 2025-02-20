@@ -3,6 +3,7 @@ import { Screen } from "@/components/base/Screen"
 import { useRouter } from "expo-router"
 import { useState } from "react"
 import * as DocumentPicker from 'expo-document-picker'
+import * as FileSystem from 'expo-file-system'
 import Box from "@/components/base/Box"
 import ConfirmActionButton from "@/components/screens/general/ConfirmActionButton"
 import CustomButton from "@/components/customs/CustomButton"
@@ -12,36 +13,43 @@ import Info from "@/components/base/Info"
 import Loading from "@/components/base/Loading"
 import UserService from "@/services/api/UserService"
 
+type ImportFileType = {
+    name: string
+    uri: string
+}
+
 export default function UserDataImportSameOriginScreen() {
     const router = useRouter()
     const [ loading, setLoading ] = useState<boolean>(false)
-    const [ selectedFile, setSelectedFile ] = useState<DocumentPicker.DocumentPickerAsset | null>(null)
+    const [ file, setFile ] = useState<ImportFileType | null>(null)
 
     const importData = async () => {
-        if (!selectedFile) {
-            Alert.alert("Arquivo de Importação não Encontrado", "Por favor, informe um arquivo para realizar a importação.")
-            return
-        }
-
         setLoading(true)
-        await UserService.ImportUserData({
-            isSameOriginImport: true,
-            dreamsPath: null,
-            file: {
-                name: selectedFile.name,
-                type: selectedFile.mimeType ?? "",
-                uri: selectedFile.uri,
+        try {
+            if (!file) {
+                Alert.alert("Arquivo de Importação não Encontrado", "Por favor, informe um arquivo para realizar a importação.")
+                return
             }
-        })
-            .then(response => {
-                if (response.Success) {
-                    Alert.alert("Sucesso", response.Data)
-                    return
-                }
-
-                Alert.alert("Falha na Importação", response.ErrorMessage)
+            const fileContent = await FileSystem.readAsStringAsync(file.uri, { encoding: FileSystem.EncodingType.UTF8 })
+            await UserService.ImportUserData({
+                isSameOriginImport: true,
+                dreamsPath: null,
+                fileContent: fileContent,
             })
-            .finally(() => setLoading(false))
+                .then(response => {
+                    if (response.Success) {
+                        Alert.alert("Sucesso", response.Data)
+                        setFile(null)
+                        router.navigate("/(tabs)/home")
+                        return
+                    }
+                    Alert.alert("Falha na Importação", response.ErrorMessage)
+                })
+        }
+        catch { }
+        finally {
+            setLoading(false)
+        }
     }
 
     const pickFile = async () => {
@@ -53,10 +61,11 @@ export default function UserDataImportSameOriginScreen() {
 
             if (result.canceled) return
 
-            setSelectedFile(result.assets[0])
-        } catch (error) {
-            console.error(error)
-        }
+            setFile({
+                name: result.assets[0].name,
+                uri: result.assets[0].uri,
+            })
+        } catch { }
     }
 
     return <Screen flex>
@@ -75,13 +84,13 @@ export default function UserDataImportSameOriginScreen() {
                             weight="thin"
                         >
                             {
-                                selectedFile
-                                    ? `Arquivo selecionado: ${ selectedFile.name }`
+                                file
+                                    ? `Arquivo selecionado: ${ file.name }`
                                     : "Nenhum Arquivo Selecionado"
                             }
                         </CustomText>
                         {
-                            selectedFile
+                            file
                                 ? <ConfirmActionButton
                                     btnTitle="Realizar Importação"
                                     description="A importação levará alguns minutos para ser completada, você receberá um email com o resultado e possíveis problemas ocorridos durante a importação, verifique o email cadastrado, continuar?"
@@ -91,15 +100,15 @@ export default function UserDataImportSameOriginScreen() {
                                 : <></>
                         }
                         <CustomButton
-                            title={ selectedFile ? "Trocar Arquivo" : "Selecionar Arquivo" }
+                            title={ file ? "Trocar Arquivo" : "Selecionar Arquivo" }
                             onPress={ () => pickFile() }
                             important
                             btnWidth="80%"
                         />
                         <CustomButton
                             title={ "Remover Arquivo" }
-                            onPress={ () => setSelectedFile(null) }
-                            active={ selectedFile != null }
+                            onPress={ () => setFile(null) }
+                            active={ file != null }
                             btnColor="red"
                             btnTextColor="red"
                             btnWidth="80%"
