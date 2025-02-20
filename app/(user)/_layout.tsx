@@ -24,6 +24,10 @@ export default function RootLayout() {
                 name='userDataExport'
                 options={{ title: "Exportação de Dados" }}
             />
+            <Stack.Screen
+                name='userDataImportSameOrigin'
+                options={{ title: "Importação de Dados do Morfeus" }}
+            />
         </Stack>
     )
 }

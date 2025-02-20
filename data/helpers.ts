@@ -9,6 +9,7 @@ type HelperListType = {
     createSleepCycle: HelperType
     analysis: HelperType
     exportData: HelperType
+    importDataSameOrigin: HelperType
 }
 
 const HELPERS: HelperListType = {
@@ -47,6 +48,14 @@ const HELPERS: HelperListType = {
             "Você poderá realizar o download deste arquivo para manter seus dados como backup, extração de seus registros para uso pessoal ou importação em um novo ambiente do Morfeus (caso necessário).",
             "Você pode gerar apenas uma exportação por vez, então deverá sempre baixar sua exportação antes de solicitar uma nova caso possua registros feitos além de um período de 1 ano.",
             "Em caso de dúvidas, entre em contato através do suporte na tela inicial.",
+        ],
+    },
+    importDataSameOrigin: {
+        modalTitle: "Importação de Dados do Morfeus",
+        infoDescription: "Importação de Dados do Morfeus",
+        modalDescription: [
+            "Se você possui dados cadastrados em outra conta ou precisa importar dados de outro ambiente Morfeus, utilize a importação de dados do Morfeus para obter de volta tudo que você cadastrou anteriormente.",
+            "Para realizar essa importação é necessário realizar uma exportação de dados previamente e estar em posse do arquivo JSON gerado!",
         ],
     },
 }
