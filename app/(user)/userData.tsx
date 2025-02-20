@@ -14,8 +14,9 @@ export default function UserDataScreen() {
                 title="Exportar Dados"
                 onPress={ () => router.navigate("/(user)/userDataExport") }
             />
-            <FutureDevelopmentButton
-                btnTitle="Importar Dados do Morfeus"
+            <CustomButton
+                title="Importar Dados do Morfeus"
+                onPress={ () => router.navigate("/(user)/userDataImportSameOrigin") }
             />
             <FutureDevelopmentButton
                 btnTitle="Importar Dados Externos"

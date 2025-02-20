@@ -161,13 +161,6 @@ export default function User() {
                                     </>
                             }
                         </Box.Column>
-                        <Box.Center style={ styles.goBackBtn }>
-                            <CustomButton
-                                title="Voltar"
-                                onPress={ () => router.navigate("/(tabs)/home") }
-                                btnWidth="90%"
-                            />
-                        </Box.Center>
                         <Box.Center style={ styles.userDataActionsBtns }>
                             <CustomButton
                                 title="Exportação e Importação"
@@ -180,6 +173,12 @@ export default function User() {
                                 btnWidth="100%"
                                 btnColor="red"
                                 btnTextColor="red"
+                            />
+                            <CustomButton
+                                title="Voltar"
+                                onPress={ () => router.navigate("/(tabs)/home") }
+                                btnWidth="100%"
+                                important
                             />
                         </Box.Center>
                     </Box.Column>
@@ -199,9 +198,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         width: "100%",
     },
-    goBackBtn: {
-        width: "100%",
-    },
     userInfoIndividualContainer: {
         alignItems: "center",
         gap: 5,
@@ -213,7 +209,7 @@ const styles = StyleSheet.create({
     },
     userDataActionsBtns: {
         width: "100%",
-        paddingTop: 30,
+        paddingTop: 10,
         gap: 10,
     },
 })
