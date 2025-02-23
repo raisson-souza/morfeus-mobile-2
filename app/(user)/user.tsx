@@ -165,11 +165,13 @@ export default function User() {
                             <CustomButton
                                 title="Exportação e Importação"
                                 onPress={ () => router.navigate("/(user)/userData") }
+                                active={ !updating }
                                 btnWidth="100%"
                             />
                             <CustomButton
                                 title="Excluir Dados"
                                 onPress={ () => setShowUserDataDeletionModal(true) }
+                                active={ !updating }
                                 btnWidth="100%"
                                 btnColor="red"
                                 btnTextColor="red"
