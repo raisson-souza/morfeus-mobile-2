@@ -39,6 +39,7 @@ export default function IndexScreen() {
                                 title="Seus Dados"
                                 onPress={ () => router.navigate("/(user)/user") }
                                 important
+                                btnWidth="50%"
                             />
                             : <CustomText style={ styles.internetContainer }>Você está offline, nem todos os recursos estarão disponíveis!</CustomText>
                     }
@@ -78,6 +79,8 @@ const styles = StyleSheet.create({
         borderRadius: 10,
     },
     welcomeContainer: {
+        alignItems: "center",
+        width: "100%",
         gap: 5,
     },
 })
