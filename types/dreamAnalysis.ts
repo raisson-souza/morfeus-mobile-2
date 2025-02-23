@@ -2,13 +2,13 @@ type DreamAnalysisModel = {
     id: number
     month: number
     year: number
-    mostPointOfViewOccurence: number
-    mostClimateOccurence: string
-    mostHourOccurence: string
-    mostDurationOccurence: string
-    mostLucidityLevelOccurence: string
-    mostDreamTypeOccurence: string
-    mostRealityLevelOccurenceOccurence: string
+    mostPointOfViewOccurence: number | null
+    mostClimateOccurence: string | null
+    mostHourOccurence: string | null
+    mostDurationOccurence: string | null
+    mostLucidityLevelOccurence: string | null
+    mostDreamTypeOccurence: string | null
+    mostRealityLevelOccurenceOccurence: string | null
     eroticDreamsAverage: number
     tagPerDreamAverage: number
     longestDreamTitle: string
