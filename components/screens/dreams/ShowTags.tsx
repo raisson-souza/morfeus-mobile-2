@@ -96,6 +96,6 @@ const styles = StyleSheet.create({
         padding: 10,
         borderRadius: 15,
         flexWrap: "wrap",
-        gap: 5,
+        gap: 10,
     },
 })
