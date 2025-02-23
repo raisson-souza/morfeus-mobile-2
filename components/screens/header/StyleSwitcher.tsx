@@ -20,7 +20,12 @@ export default function StyleSwitcher() {
     }
 
     return (
-        <Box.Column style={ styles.container }>
+        <Box.Column
+            style={{
+                ...styles.container,
+                backgroundColor: systemStyle.terciary,
+            }}
+        >
             <Box.Column>
                 <CustomText
                     isOpposite
@@ -53,6 +58,8 @@ export default function StyleSwitcher() {
 const styles = StyleSheet.create({
     container: {
         alignItems: "center",
+        padding: 10,
+        borderRadius: 15,
     },
     switch: {
         alignItems: "center",
