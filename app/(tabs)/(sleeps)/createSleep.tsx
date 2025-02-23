@@ -11,6 +11,7 @@ import { useEffect, useRef, useState } from "react"
 import { useNavigation, useRouter } from "expo-router"
 import BiologicalOccurencesForm from "@/components/screens/sleeps/BiologicalOccurencesForm"
 import Box from "@/components/base/Box"
+import ConfirmActionButton from "@/components/screens/general/ConfirmActionButton"
 import CustomButton from "@/components/customs/CustomButton"
 import DreamAppender from "@/components/screens/sleeps/DreamAppender"
 import HELPERS from "@/data/helpers"
@@ -168,12 +169,19 @@ export default function CreateSleepScreen() {
                         active={ canCreateSleepCycle && !isHoursPending }
                         important
                     />
-                    <CustomButton
-                        title={ canExit ? "Voltar" : "Cancelar Ciclo de Sono" }
-                        onPress={ () => router.back() }
-                        btnColor={ !canExit ? "red" : undefined }
-                        btnTextColor={ !canExit ? "red" : undefined }
-                    />
+                    {
+                        canExit
+                            ? <CustomButton
+                                title="Voltar"
+                                onPress={ () => router.back() }
+                            />
+                            : <ConfirmActionButton
+                                btnTitle="Cancelar Ciclo de Sono"
+                                description="Certeza que deseja cancelar esse ciclo de sono?"
+                                onConfirm={ () => router.back() }
+                                btnColor={{ text: "red", border: "red" }}
+                            />
+                    }
                 </Box.Column>
             </Box.Column>
         </Screen>

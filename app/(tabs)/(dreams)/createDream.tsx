@@ -7,6 +7,7 @@ import { useCustomBackHandler } from "@/hooks/useHardwareBackPress"
 import { useEffect, useState } from "react"
 import { useNavigation, useRouter } from "expo-router"
 import Box from "@/components/base/Box"
+import ConfirmActionButton from "@/components/screens/general/ConfirmActionButton"
 import CreateCompleteDream from "@/components/screens/dreams/CreateCompleteDream"
 import CustomButton from "@/components/customs/CustomButton"
 import CustomText from "@/components/customs/CustomText"
@@ -150,13 +151,21 @@ export default function CreateDreamScreen() {
                             important
                         />
                 }
-                <CustomButton
-                    title={ canExit ? "Voltar" : "Cancelar Sonho" }
-                    onPress={ () => router.back() }
-                    btnColor={ !canExit ? "red" : undefined }
-                    btnTextColor={ !canExit ? "red" : undefined }
-                    active={ !loading }
-                />
+                {
+                    canExit
+                        ? <CustomButton
+                            title={ canExit ? "Voltar" : "Cancelar Sonho" }
+                            onPress={ () => router.back() }
+                            active={ !loading }
+                        />
+                        : <ConfirmActionButton
+                            btnTitle="Cancelar Sonho"
+                            description="Certeza que deseja cancelar esse sonho?"
+                            onConfirm={ () => router.back() }
+                            btnColor={{ text: "red", border: "red" }}
+                        />
+                }
+                
             </Box.Column>
         </Screen>
     )
