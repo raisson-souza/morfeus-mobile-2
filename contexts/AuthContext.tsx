@@ -1,4 +1,6 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react"
+import { EXPORT_USER_DATA_FILE_NAME } from "@/app/(user)/userDataExport"
+import { FileSystemContextProvider } from "./FileSystemContext"
 import { LocalStorage, LocalStorageCredentials } from "@/utils/LocalStorage"
 import { LoginRequest } from "@/types/login"
 import { RegistryRequest } from "@/types/registry"
@@ -32,6 +34,7 @@ const AuthContext = createContext<AuthContext | null>(null)
 /** Context de autenticação, realiza o refresh do token de autenticação e valida credenciais no localStorage */
 export default function AuthContextComponent({ children }: AuthContextProps) {
     const router = useRouter()
+    const { deleteFile } = FileSystemContextProvider()
     const [ loading, setLoading ] = useState<boolean>(true)
     const [ isLogged, setIsLogged ] = useState<boolean>(false)
     const userInfo = useRef<UserDataLocalStorage>({
@@ -120,6 +123,9 @@ export default function AuthContextComponent({ children }: AuthContextProps) {
         await LocalStorage.logoff()
         setIsLogged(false)
         setLoading(false)
+        try {
+            await deleteFile(EXPORT_USER_DATA_FILE_NAME)
+        } catch { }
     }
 
     const manageAuth = async () => {

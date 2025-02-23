@@ -22,8 +22,8 @@ export default function RootLayout() {
           backgroundColor="darkblue"
           translucent={ false }
         />
-          <AuthContextComponent>
-            <FileSystemContextComponent>
+          <FileSystemContextComponent>
+            <AuthContextComponent>
               <SyncContextComponent>
                 <Stack
                   initialRouteName='index'
@@ -51,8 +51,8 @@ export default function RootLayout() {
                   />
                 </Stack>
               </SyncContextComponent>
-            </FileSystemContextComponent>
-          </AuthContextComponent>
+            </AuthContextComponent>
+          </FileSystemContextComponent>
         </InitialContextComponent>
       </StyleContextComponent>
     </SQLiteProvider>
