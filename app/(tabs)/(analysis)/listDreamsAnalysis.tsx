@@ -323,5 +323,6 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
         gap: 5,
         alignItems: "center",
+        flexWrap: "wrap",
     },
 })
