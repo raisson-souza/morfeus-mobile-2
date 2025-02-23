@@ -52,22 +52,26 @@ export default function SleepListedByUser({
             : <CustomText size="s">-----</CustomText>
     }
 
+    const redirectToSleepCycle = () => {
+        router.navigate({
+            pathname: "/(tabs)/(sleeps)/getSleep",
+            params: { "id": sleepCycle.id },
+        })
+    }
+
     return (
         <Box.Row
             style={{
                 ...styles.container,
                 borderTopColor: systemStyle.textColor,
             }}
-            onPress={ () => router.navigate({
-                pathname: "/(tabs)/(sleeps)/getSleep",
-                params: { "id": sleepCycle.id },
-            }) }
         >
             <Box.Column
                 style={{
                     ...styles.dayContainer,
                     width: "30%",
                 }}
+                onPress={ () => redirectToSleepCycle() }
             >
                 <Box.Row style={ styles.dayIconContainer }>
                     { renderIsNightSleep() }
@@ -79,6 +83,7 @@ export default function SleepListedByUser({
                     ...styles.sleepTimesContainer,
                     width: "40%",
                 }}
+                onPress={ () => redirectToSleepCycle() }
             >
                 <Box.Row style={ styles.sleepTimeContainer }>
                     <IconFeather
