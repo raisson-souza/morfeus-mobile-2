@@ -5,6 +5,7 @@ import { useRouter } from "expo-router"
 import { useState } from "react"
 import AppInfo from "./AppInfo"
 import Box from "@/components/base/Box"
+import ConfirmActionButton from "../general/ConfirmActionButton"
 import CustomButton from "@/components/customs/CustomButton"
 import CustomModal from "@/components/customs/CustomModal"
 import StyleSwitcher from "./StyleSwitcher"
@@ -77,10 +78,11 @@ export default function ConfigModal({
                     btnTextColor={ systemStyle.oppositeTextColor }
                     btnWidth={ btnWidth }
                 />
-                <CustomButton
-                    title="SAIR DA CONTA"
-                    onPress={ () => logoffAction() }
-                    btnTextColor={ systemStyle.oppositeTextColor }
+                <ConfirmActionButton
+                    btnTitle="SAIR DA CONTA"
+                    description="Ao sair da conta, registros não sincronizados e o arquivo de exportação serão eliminados, você deverá fazer login novamente, tem certeza?"
+                    onConfirm={ () => logoffAction() }
+                    btnColor={{ text: "red", border: "red" }}
                     btnWidth={ btnWidth }
                 />
                 <CustomButton
