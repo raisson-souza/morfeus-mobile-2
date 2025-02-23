@@ -76,7 +76,7 @@ export default function TutorialModal({
             "Ciclos de Sono",
             [
                 "Em Morfeus você poderá cadastrar todos os períodos de sono que teve, sejam durante o dia ou a noite, assim como outras informações sobre eles",
-                'Nesta aplicação, todo ciclo de sono que ocorre entre 18 e 12 horas torna-se um ciclo de sono "da noite anterior", portanto, sua data será do dia anterior para fins de organização',
+                'Nesta aplicação, todo ciclo de sono que ocorre entre 18:00 até 23:59 e 00:00 até 12:00 horas torna-se um ciclo de sono "da noite anterior", portanto, sua data será do dia anterior para fins de organização',
                 "Se você dormiu ontem as 21 horas e acordou hoje às 7 horas, seu ciclo de sono é noturno e tem a data definida como ontem, pois se refere a noite anterior",
                 "Se você dormiu hoje entre 13 e 14 horas, seu ciclo de sono é diurno e tem a data definida como hoje, pois ocorreu durante o dia de hoje",
                 'Você pode encontrar todas as funcionalidades relacionadas aos ciclos de sono na aba "CICLOS DE SONO"',
