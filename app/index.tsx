@@ -35,10 +35,7 @@ export default function InfoScreen() {
                     <Box.Column style={ styles.btns }>
                         {
                             isLogged
-                                ? <>
-                                    <CustomButton btnWidth={ btnWidth } title="Entrar" onPress={ () => router.navigate("/home") } important />
-                                    <CustomButton btnWidth={ btnWidth } title="Sair" onPress={ async () => await logoff() } />
-                                </>
+                                ? <CustomButton btnWidth={ btnWidth } title="Entrar" onPress={ () => router.navigate("/home") } important />
                                 : <>
                                     <CustomButton btnWidth={ btnWidth } title="Login" onPress={ () => router.navigate("/login") } important />
                                     <CustomButton btnWidth={ btnWidth } title="Cadastre-se" onPress={ () => router.navigate("/registry") } />
