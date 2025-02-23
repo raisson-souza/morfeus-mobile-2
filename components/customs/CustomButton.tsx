@@ -63,7 +63,11 @@ export default function CustomButton({
 }: CustomButtonProps) {
     const { systemStyle } = StyleContextProvider()
     btnColor = btnColor ? btnColor : systemStyle.btnOutlineColor
-    btnTextColor = btnTextColor ? btnTextColor : systemStyle.textColor
+    btnTextColor = active
+        ? btnTextColor
+            ? btnTextColor
+            : systemStyle.textColor
+        : systemStyle.inactiveTextColor
     titleStyle = titleStyle
         ? titleStyle
         : {
@@ -83,11 +87,9 @@ export default function CustomButton({
         height: btnHeight,
         borderRadius: 30,
         borderWidth: 1,
-        borderColor: active
-            ? important
-                ? importantOverride.color
-                : btnColor
-            : systemStyle.inactiveIconColor,
+        borderColor: important
+            ? importantOverride.color
+            : btnColor,
         borderStyle: "solid",
         justifyContent: "center",
         alignItems: "center",
