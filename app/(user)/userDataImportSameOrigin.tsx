@@ -2,18 +2,17 @@ import { Alert, StyleSheet } from "react-native"
 import { Screen } from "@/components/base/Screen"
 import { useRouter } from "expo-router"
 import { useState } from "react"
-import * as DocumentPicker from 'expo-document-picker'
 import * as FileSystem from 'expo-file-system'
 import Box from "@/components/base/Box"
 import ConfirmActionButton from "@/components/screens/general/ConfirmActionButton"
 import CustomButton from "@/components/customs/CustomButton"
-import CustomText from "@/components/customs/CustomText"
+import FileSelector from "@/components/screens/general/FileSelector"
 import HELPERS from "@/data/helpers"
 import Info from "@/components/base/Info"
 import Loading from "@/components/base/Loading"
 import UserService from "@/services/api/UserService"
 
-type ImportFileType = {
+export type ImportFileType = {
     name: string
     uri: string
 }
@@ -52,22 +51,6 @@ export default function UserDataImportSameOriginScreen() {
         }
     }
 
-    const pickFile = async () => {
-        try {
-            const result = await DocumentPicker.getDocumentAsync({
-                type: 'application/json',
-                multiple: false,
-            })
-
-            if (result.canceled) return
-
-            setFile({
-                name: result.assets[0].name,
-                uri: result.assets[0].uri,
-            })
-        } catch { }
-    }
-
     return <Screen flex>
         <Box.Column style={ styles.container }>
             {
@@ -79,40 +62,20 @@ export default function UserDataImportSameOriginScreen() {
                             modalTitle={ HELPERS.importDataSameOrigin.modalTitle }
                             modalDescription={ HELPERS.importDataSameOrigin.modalDescription }
                         />
-                        <CustomText
-                            style={ styles.fileText }
-                            weight="thin"
-                        >
-                            {
-                                file
-                                    ? `Arquivo selecionado: ${ file.name }`
-                                    : "Nenhum Arquivo Selecionado"
-                            }
-                        </CustomText>
+                        <FileSelector
+                            fileType="application/json"
+                            onChange={ (e) => setFile(e) }
+                        />
                         {
                             file
                                 ? <ConfirmActionButton
                                     btnTitle="Realizar Importação"
                                     description="A importação levará alguns minutos para ser completada, você receberá um email com o resultado e possíveis problemas ocorridos durante a importação, verifique o email cadastrado, continuar?"
                                     onConfirm={ async () => await importData() }
-                                    btnWidth="90%"
+                                    btnWidth="80%"
                                 />
                                 : <></>
                         }
-                        <CustomButton
-                            title={ file ? "Trocar Arquivo" : "Selecionar Arquivo" }
-                            onPress={ () => pickFile() }
-                            important
-                            btnWidth="80%"
-                        />
-                        <CustomButton
-                            title={ "Remover Arquivo" }
-                            onPress={ () => setFile(null) }
-                            active={ file != null }
-                            btnColor="red"
-                            btnTextColor="red"
-                            btnWidth="80%"
-                        />
                         <CustomButton
                             title={ "Voltar" }
                             onPress={ () => router.back() }
@@ -129,8 +92,5 @@ const styles = StyleSheet.create({
         gap: 10,
         alignItems: 'center',
         width: "100%",
-    },
-    fileText: {
-        marginVertical: 10,
     },
 })

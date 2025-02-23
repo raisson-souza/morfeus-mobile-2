@@ -3,7 +3,6 @@ import { StyleSheet } from "react-native"
 import { useRouter } from "expo-router"
 import Box from "@/components/base/Box"
 import CustomButton from "@/components/customs/CustomButton"
-import FutureDevelopmentButton from "@/components/utils/FutureDevelopmentButton"
 
 export default function UserDataScreen() {
     const router = useRouter()
@@ -18,8 +17,9 @@ export default function UserDataScreen() {
                 title="Importar Dados do Morfeus"
                 onPress={ () => router.navigate("/(user)/userDataImportSameOrigin") }
             />
-            <FutureDevelopmentButton
-                btnTitle="Importar Dados Externos"
+            <CustomButton
+                title="Importar Dados Externos"
+                onPress={ () => router.navigate("/(user)/userDataImportDreams") }
             />
             <CustomButton
                 title="Voltar"

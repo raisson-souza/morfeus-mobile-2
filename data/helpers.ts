@@ -10,6 +10,8 @@ type HelperListType = {
     analysis: HelperType
     exportData: HelperType
     importDataSameOrigin: HelperType
+    importDataExternal: HelperType
+    importDataExternalDreamsPath: HelperType
 }
 
 const HELPERS: HelperListType = {
@@ -56,6 +58,25 @@ const HELPERS: HelperListType = {
         modalDescription: [
             "Se você possui dados cadastrados em outra conta ou precisa importar dados de outro ambiente Morfeus, utilize a importação de dados do Morfeus para obter de volta tudo que você cadastrou anteriormente.",
             "Para realizar essa importação é necessário realizar uma exportação de dados previamente e estar em posse do arquivo JSON gerado!",
+        ],
+    },
+    importDataExternal: {
+        modalTitle: "Importação de Dados Externos",
+        infoDescription: "Importação de Dados Externos",
+        modalDescription: [
+            "Se você possui um aplicativo de gerenciamento de sonhos e pode exportar seus dados dele, utilize a importação de dados externos do Morfeus para trazer para cá esses registros.",
+            "Morfeus permite importar registros externos através de um arquivo JSON fornecido pelo usuário, incluindo aqueles gerados por outros apps, como Dream Catcher.",
+            "Morfeus não possui parceria ou integração com nenhum outro aplicativo de gerenciamento de sonhos, essa funcionalidade importa de maneira genérica dados fornecidos pelo usuário."
+        ],
+    },
+    importDataExternalDreamsPath: {
+        modalTitle: "Caminho (chave) dos Sonhos",
+        infoDescription: "Caminho dos Sonhos",
+        modalDescription: [
+            "Os registros de sonhos dentro do arquivo de importação escolhido por você possuem um caminho através do JSON, é necessário informá-lo no processo de importação.",
+            'Exemplo 1: { "dreams": [] }, se seu arquivo de importação for similar ao exemplo, informe apenas "dreams" como caminho, pois é ele que levará à listagem dos sonhos.',
+            'Exemplo 2: { "data": { "dreams": [] } }, para o exemplo 2 será necessário informar "data" e "dreams", conforme a profundidade do caminho, em ordem.',
+            "Apenas JSONs válidos serão aceitos neste processo, em caso de dúvidas, solicite suporte.",
         ],
     },
 }

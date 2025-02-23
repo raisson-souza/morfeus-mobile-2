@@ -10,6 +10,29 @@ export type Changelog = {
 
 const CHANGELOG: Changelog[] = [
     {
+        version: "1.10.0",
+        date: "24/02/2025",
+        title: "Importação de Sonhos Externos",
+        description: [
+            "Importação de sonhos de origem externa",
+            "Correção de bugs",
+        ],
+        apk: undefined,
+        published: true,
+        id: 13,
+    },
+    {
+        version: "1.9.1",
+        date: "21/02/2025",
+        title: "Incidente na listagem de sonhos de uma tag",
+        description: [
+            "Corrigida falha de segurança ao acessar listagem de sonhos de uma tag e poder visualizar sonhos de outros usuários",
+        ],
+        apk: undefined,
+        published: true,
+        id: 12,
+    },
+    {
         version: "1.9.0",
         date: "21/02/2025",
         title: "Importação de Registros do Morfeus",
