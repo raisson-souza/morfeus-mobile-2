@@ -55,7 +55,7 @@ export default function DreamListedByUser({
                 style={ styles.hiddenOrEroticDreamContainer}
                 onPress={ () => setShowDream(true) }
             >
-                <IconEntypo name="eye-with-line" size={ systemStyle.normalIconSize } />
+                <IconEntypo name="eye-with-line" size={ systemStyle.normalIconSize } color={ systemStyle.iconColor } />
                 <CustomText>( sonho oculto ou erótico )</CustomText>
             </Box.Row>
         )
@@ -102,6 +102,7 @@ const styles = StyleSheet.create({
         flexWrap: "wrap",
     },
     hiddenOrEroticDreamContainer: {
-        gap: 3,
+        gap: 10,
+        alignItems: "center",
     },
 })
