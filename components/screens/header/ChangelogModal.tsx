@@ -27,8 +27,11 @@ export default function ChangelogModal({
     const [ changelogList, setChangelogList ] = useState<Changelog[] | null>(null)
     const [ versionId, setVersionId ] = useState<number | null>(null)
 
-    const checkToggleShowChangelogBadge = (lastVersionId: number, _versionId: number) => {
-        if (lastVersionId > _versionId) showChangelogBadge()
+    const checkToggleShowChangelogBadge = (_changelogList: Changelog[], _versionId: number) => {
+        const thereIsNewPublishedVersion = _changelogList.filter(changelog => {
+            return changelog.id > _versionId && changelog.published
+        }).length > 0
+        if (thereIsNewPublishedVersion) showChangelogBadge()
     }
 
     useEffect(() => {
@@ -39,7 +42,7 @@ export default function ChangelogModal({
                     response.map((changelog, i) => {
                         if (changelog.version === env.AppVersion()) {
                             setVersionId(response.length - i)
-                            checkToggleShowChangelogBadge(response[0].id, response.length - i)
+                            checkToggleShowChangelogBadge(response, response.length - i)
                         }
                     })
                 })
@@ -62,23 +65,25 @@ export default function ChangelogModal({
                     style={ styles.container }
                 >
                     {
-                        changelog.published
-                            ? changelog.id > versionId
-                                ? <Info
-                                    overrideInfoColor="red"
-                                    infoDescription="Nova Versão"
-                                    modalTitle="Nova Versão"
-                                    modalDescription={[
-                                        env.Environment() === "testing"
-                                            ? 'Faça o download da nova versão através do botão "Acessar APK".'
-                                            : "Atualize seu aplicativo na Play Store."
-                                    ]}
-                                    type="warn"
-                                />
-                                : changelog.id == versionId
-                                    ? <CustomText size="s" isOpposite weight="thin">Versão deste software</CustomText>
-                                    : <></>
-                            : <CustomText size="s" isOpposite weight="bold" style={{ color: "red" }}>Próxima Versão</CustomText>
+                        changelog.id === versionId
+                            ? <CustomText size="s" isOpposite weight="thin">Versão deste software</CustomText>
+                            : changelog.id > versionId
+                                ? changelog.published
+                                    ? <Info
+                                        overrideInfoColor="red"
+                                        infoDescription="Nova Versão"
+                                        modalTitle="Nova Versão"
+                                        modalDescription={[
+                                            env.Environment() === "testing"
+                                                ? 'Faça o download da nova versão através do botão "Acessar APK".'
+                                                : "Atualize seu aplicativo na Play Store."
+                                        ]}
+                                        type="warn"
+                                    />
+                                    : changelog.id > (versionId + 1)
+                                        ? <CustomText size="s" isOpposite weight="bold" style={{ color: "red" }}>Versão Futura</CustomText>
+                                        : <CustomText size="s" isOpposite weight="bold" style={{ color: "red" }}>Próxima Versão</CustomText>
+                                : <></>
                     }
                     <Box.Column style={ styles.title }>
                         <CustomText

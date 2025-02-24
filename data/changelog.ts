@@ -11,11 +11,12 @@ export type Changelog = {
 const CHANGELOG: Changelog[] = [
     {
         version: "1.10.0",
-        date: "24/02/2025",
+        date: "25/02/2025",
         title: "Importação de Sonhos Externos",
         description: [
             "Importação de sonhos de origem externa",
             "Correção de bugs",
+            "Melhorias de interface",
         ],
         apk: undefined,
         published: true,
