@@ -1,4 +1,5 @@
 import { DateFormatter } from "@/utils/DateFormatter"
+import { DateTime } from "luxon"
 import { SleepListedByUserType } from "@/types/sleeps"
 import { StyleContextProvider } from "@/contexts/StyleContext"
 import { StyleSheet } from "react-native"
@@ -7,6 +8,7 @@ import Box from "@/components/base/Box"
 import CustomText from "@/components/customs/CustomText"
 import IconFeather from "react-native-vector-icons/Feather"
 import React from "react"
+import WeekDayParser from "@/utils/WeekDayParser"
 
 type SleepListedByUserProps = {
     sleepCycle: SleepListedByUserType
@@ -52,33 +54,52 @@ export default function SleepListedByUser({
             : <CustomText size="s">-----</CustomText>
     }
 
+    const redirectToSleepCycle = () => {
+        router.navigate({
+            pathname: "/(tabs)/(sleeps)/getSleep",
+            params: { "id": sleepCycle.id },
+        })
+    }
+
+    const renderWeekDay = (): string | null => {
+        try {
+            const dateParsed = DateTime.fromISO(sleepCycle.date)
+            return WeekDayParser(dateParsed.weekday, true)
+        }
+        catch { return null }
+    }
+    const weekDay = renderWeekDay()
+
     return (
         <Box.Row
             style={{
                 ...styles.container,
                 borderTopColor: systemStyle.textColor,
             }}
-            onPress={ () => router.navigate({
-                pathname: "/(tabs)/(sleeps)/getSleep",
-                params: { "id": sleepCycle.id },
-            }) }
         >
             <Box.Column
                 style={{
                     ...styles.dayContainer,
                     width: "30%",
                 }}
+                onPress={ () => redirectToSleepCycle() }
             >
                 <Box.Row style={ styles.dayIconContainer }>
                     { renderIsNightSleep() }
                     <CustomText weight="bold">{ fixedDate }</CustomText>
                 </Box.Row>
+                {
+                    weekDay
+                        ? <CustomText size="s" weight="thin">{ weekDay }</CustomText>
+                        : <></>
+                }
             </Box.Column>
             <Box.Column
                 style={{
                     ...styles.sleepTimesContainer,
                     width: "40%",
                 }}
+                onPress={ () => redirectToSleepCycle() }
             >
                 <Box.Row style={ styles.sleepTimeContainer }>
                     <IconFeather
@@ -114,7 +135,7 @@ const styles = StyleSheet.create({
         width: '100%',
         justifyContent: "space-around",
         alignItems: "center",
-        padding: 3,
+        padding: 5,
     },
     dayContainer: {
         alignItems: "center",

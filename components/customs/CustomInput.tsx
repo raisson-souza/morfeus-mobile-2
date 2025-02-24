@@ -54,9 +54,10 @@ export default function CustomInput({
                         ? systemStyle.primary
                         : systemStyle.btnOutlineColor
                     : systemStyle.btnOutlineColor,
-                paddingVertical: 3,
-                paddingHorizontal: 8,
+                paddingVertical: 5,
+                paddingHorizontal: 10,
                 backgroundColor: systemStyle.oppositeTextColor,
+                fontSize: systemStyle.smallTextSize,
                 ...inputStyle as any,
             }}
             onFocus={ () => setOnFocus(true) }
@@ -69,7 +70,7 @@ export default function CustomInput({
             <View style={ styles.container }>
                 <CustomText
                     style={{
-                        fontSize: 14,
+                        fontSize: systemStyle.smallTextSize,
                         color: animationOnFocus
                             ? onFocus
                                 ? systemStyle.styleName === "dark"

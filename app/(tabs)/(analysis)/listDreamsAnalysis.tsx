@@ -183,7 +183,9 @@ export default function ListDreamsAnalysisScreen() {
             else if (mostClimateOccurence === "indefinido")
                 return renderIndividualAnalysis(mostClimateOccurence, "Clima indefinido", "cloud-sun-rain")
             else {
-                const message = `Clima: ${ mostClimateOccurence.charAt(0).toUpperCase() }${ mostClimateOccurence.slice(1) }`
+                const message = mostClimateOccurence
+                    ? `Clima: ${ mostClimateOccurence.charAt(0).toUpperCase() }${ mostClimateOccurence.slice(1) }`
+                    : ""
                 return renderIndividualAnalysis(mostClimateOccurence, message, "cloud-sun-rain")
             }
         }
@@ -321,5 +323,6 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
         gap: 5,
         alignItems: "center",
+        flexWrap: "wrap",
     },
 })

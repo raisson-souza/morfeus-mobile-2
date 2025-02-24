@@ -25,6 +25,10 @@ export default function RootLayout() {
                 options={{ title: "Exportação de Dados" }}
             />
             <Stack.Screen
+                name='userDataImportDreams'
+                options={{ title: "Importação de Dados Externos" }}
+            />
+            <Stack.Screen
                 name='userDataImportSameOrigin'
                 options={{ title: "Importação de Dados do Morfeus" }}
             />

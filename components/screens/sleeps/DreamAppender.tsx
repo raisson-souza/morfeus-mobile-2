@@ -5,6 +5,7 @@ import { StyleContextProvider } from "@/contexts/StyleContext"
 import { useState } from "react"
 import AppendDream from "./AppendDream"
 import Box from "@/components/base/Box"
+import ConfirmActionButton from "../general/ConfirmActionButton"
 import ConfirmRecordDeletion from "../general/ConfirmRecordDeletion"
 import CustomButton from "@/components/customs/CustomButton"
 import CustomText from "@/components/customs/CustomText"
@@ -118,12 +119,13 @@ export default function DreamAppender({
                     onChange={ (e) => { updateDream(e) }}
                 />
                 <CustomButton
-                    title="Cancelar Sonho"
-                    onPress={ () => cancelDreamCreation() }
-                />
-                <CustomButton
                     title="Salvar Sonho"
                     onPress={ () => saveDream() }
+                />
+                <ConfirmActionButton
+                    btnTitle="Cancelar Sonho"
+                    description="Certeza que deseja cancelar esse sonho?"
+                    onConfirm={ () => cancelDreamCreation() }
                 />
             </Box.Column>
         )

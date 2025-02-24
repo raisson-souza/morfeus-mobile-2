@@ -18,6 +18,8 @@ import MonthParser from "@/utils/MonthParser"
 import MonthYearExtractor from "@/components/customs/MonthYearExtractor"
 import UserService from "@/services/api/UserService"
 
+export const EXPORT_USER_DATA_FILE_NAME = "exportacao_de_dados_usuario_morfeus.json"
+
 export default function UserDataExportScreen() {
     const router = useRouter()
     const { systemStyle } = StyleContextProvider()
@@ -34,10 +36,8 @@ export default function UserDataExportScreen() {
     const [ endDate, setEndDate ] = useState<Date>(dateNow)
     const [ exportDataBtnActive, SetExportDataBtnActive ] = useState<boolean>(false)
 
-    const exportFileName = "exportacao_de_dados_usuario_morfeus.json"
-
     const fetchExportFile = async () => {
-        const exportFile = await getFile(exportFileName)
+        const exportFile = await getFile(EXPORT_USER_DATA_FILE_NAME)
         if (exportFile.exists) setExportFileUri(exportFile.uri)
     }
 
@@ -54,7 +54,7 @@ export default function UserDataExportScreen() {
         })
             .then(async (response) => {
                 if (response.Success) {
-                    await createFile(exportFileName, JSON.stringify(response.Data))
+                    await createFile(EXPORT_USER_DATA_FILE_NAME, JSON.stringify(response.Data))
                     await fetchExportFile()
                     return
                 }
@@ -71,7 +71,7 @@ export default function UserDataExportScreen() {
     }
 
     const deleteExportFile = async () => {
-        await deleteFile(exportFileName)
+        await deleteFile(EXPORT_USER_DATA_FILE_NAME)
         setExportFileUri(null)
     }
 
