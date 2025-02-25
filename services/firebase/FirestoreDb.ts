@@ -13,7 +13,6 @@ export default abstract class FirestoreDb {
     }
 
     static async getChangelog() {
-        return CHANGELOG
         try {
             const changelog = await this.getMorfeusDocuments().then(result => result["changelog"] as Changelog[])
             return changelog.reverse()

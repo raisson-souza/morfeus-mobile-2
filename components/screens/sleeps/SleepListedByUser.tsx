@@ -63,8 +63,8 @@ export default function SleepListedByUser({
 
     const renderWeekDay = (): string | null => {
         try {
-            const dateParsed = DateTime.fromISO(sleepCycle.date)
-            return WeekDayParser(dateParsed.weekday, true)
+            const weekDay = DateTime.fromISO(sleepCycle.date).weekday
+            return WeekDayParser(weekDay, true)
         }
         catch { return null }
     }

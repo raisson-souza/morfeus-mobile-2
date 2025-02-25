@@ -1,5 +1,6 @@
 import { DateFormatter } from "@/utils/DateFormatter"
 import { ListedDreamBySleepCycle } from "@/types/dream"
+import { DateTime } from "luxon"
 import { Screen } from "@/components/base/Screen"
 import { SleepHumorType } from "@/types/sleepHumor"
 import { SleepModel } from "@/types/sleeps"
@@ -23,6 +24,7 @@ import isNil from "@/utils/IsNill"
 import Loading from "@/components/base/Loading"
 import React from "react"
 import SleepService from "@/services/api/SleepService"
+import WeekDayParser from "@/utils/WeekDayParser"
 
 type GetSleepCycleParams = {
     id: string
@@ -318,6 +320,16 @@ export default function GetSleepScreen() {
         const wakeUpHumorsRendered = renderHumors(true, wakeUpHumors)
         const layDownHumorsRendered = renderHumors(false, layDownHumors)
 
+        const renderWeekDay = () => {
+            try {
+                const weekDay = DateTime.fromISO(sleep!.date).weekday
+                return WeekDayParser(weekDay, true)
+            }
+            catch {
+                return "Data referente"
+            }
+        }
+
         return <>
             { renderIsNightSleep() }
             <Box.Column
@@ -328,7 +340,7 @@ export default function GetSleepScreen() {
                 }}
             >
                 <Info
-                    infoDescription={ `Data referente ${ sleep!.date }` }
+                    infoDescription={ `${ renderWeekDay() } ${ sleep!.date }` }
                     type="question"
                     modalTitle="Data do Sono"
                     modalDescription={[
