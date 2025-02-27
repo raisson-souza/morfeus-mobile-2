@@ -42,6 +42,7 @@ export default function AnalysisIndexScreen() {
                         ? undefined
                         : <CustomText
                             style={ styles.offlineText }
+                            size="s"
                             weight="bold"
                         >
                             As funcionalidades de análise não estão disponíveis offline, conecte-se a internet!
@@ -49,12 +50,16 @@ export default function AnalysisIndexScreen() {
                 }
             />
             <Box.Center style={ styles.infoContainer }>
-                <Info
-                    infoDescription={ HELPERS.analysis.infoDescription }
-                    modalTitle={ HELPERS.analysis.modalTitle }
-                    modalDescription={ HELPERS.analysis.modalDescription }
-                    type="question"
-                />
+                {
+                    isConnected
+                        ? <Info
+                            infoDescription={ HELPERS.analysis.infoDescription }
+                            modalTitle={ HELPERS.analysis.modalTitle }
+                            modalDescription={ HELPERS.analysis.modalDescription }
+                            type="question"
+                        />
+                        : <></>
+                }
             </Box.Center>
         </Screen>
     )

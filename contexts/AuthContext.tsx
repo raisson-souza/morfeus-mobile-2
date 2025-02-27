@@ -131,31 +131,22 @@ export default function AuthContextComponent({ children }: AuthContextProps) {
     const manageAuth = async () => {
         const loginCredentials = await LocalStorage.loginCredentials.get()
         const tokenInfo = await LocalStorage.tokenInfo.get()
+        const isOnline = await InternetInfo().then(result => result?.isConnected ?? false)
         let tokenExpirationMilis = 0
         let loggedIn = false
 
         // Há token
         if (tokenInfo) {
-            const nowSeconds = new Date().getTime() / 1000
-            // Token válido
-            if (nowSeconds < tokenInfo.tokenExpirationDateMilis) {
-                loggedIn = true
+            loggedIn = true
 
+            if (isOnline) {
+                const nowSeconds = new Date().getTime() / 1000
                 const tokenExpirationDiff = tokenInfo.tokenExpirationDateMilis - nowSeconds
                 // Se o tempo de expiração for maior que um minuto, o refresh será feito
                 // quando 75% do tempo de expiração for atingido, se não,  imediatamente
                 tokenExpirationMilis = tokenExpirationDiff >= 60
                     ? tokenExpirationDiff * 0.75
                     : 1
-            }
-            // Token inválido
-            else {
-                // Verifica conexão
-                const hasInternetConnection = await InternetInfo()
-                    .then(internetInfo => { return internetInfo?.isConnected ?? false })
-
-                // Caso token inválido e sem internet, login offline
-                if (!hasInternetConnection) loggedIn = true
             }
         }
         // Há credenciais e o usuário continua não logado
@@ -181,10 +172,12 @@ export default function AuthContextComponent({ children }: AuthContextProps) {
         if (tokenExpirationMilis != 0) {
             // Timeout para refresh quando token com tempo de expiração incerta
             setTimeout(async () => {
-                await refreshToken(loginCredentials!)
-
-                // Interval quando token com expiração conhecida
-                await refreshTokenIntervalAction(loginCredentials!)
+                const isOnline = await InternetInfo()
+                if (isOnline?.isConnected ?? false) {
+                    await refreshToken(loginCredentials!)
+                    // Interval quando token com expiração conhecida
+                    await refreshTokenIntervalAction(loginCredentials!)
+                }
 
             }, tokenExpirationMilis * 1000)
         }

@@ -48,7 +48,11 @@ export default function IndexScreen() {
                     filePathByRequire={ require("../../assets/images/home_background.jpg") }
                     style={ styles.image }
                 />
-                <SimpleSleep />
+                {
+                    isConnected
+                        ? <SimpleSleep />
+                        : <></>
+                }
                 <CustomButton
                     title="Criar Sonho"
                     onPress={ () => router.navigate("/createDream") }
