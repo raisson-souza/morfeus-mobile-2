@@ -65,6 +65,33 @@ export type DreamModel = {
 	dreamTypeId: number
 	dreamRealityLevelId: number
 	sleepId: number
+	/** Chave existente apenas offline */
+    synchronized?: boolean
+	/** Chave existente apenas offline */
+    dreamTags?: string[]
+}
+
+export type DreamDbModel = {
+	id?: number
+	title: string
+	description: string
+	climate: DreamClimateModel
+	eroticDream: boolean
+	hiddenDream: boolean
+	personalAnalysis: string | null
+	isComplete: boolean
+	dreamOriginId: number
+	dreamPointOfViewId: number
+	dreamHourId: number
+	dreamDurationId: number
+	dreamLucidityLevelId: number
+	dreamTypeId: number
+	dreamRealityLevelId: number
+	sleepId: number
+	/** Chave existente apenas offline */
+    synchronized?: boolean
+	/** Chave existente apenas offline */
+    dreamTags?: string[]
 }
 
 export type CreateDreamModel = {

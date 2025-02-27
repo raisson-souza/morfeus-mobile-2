@@ -9,16 +9,24 @@ import CustomText from "@/components/customs/CustomText"
 import React, { useState } from "react"
 import TutorialEnclosure from "@/components/screens/enclosures/TutorialEnclosure"
 import TutorialModal from "@/components/screens/general/TutorialModal"
+import { useSQLiteContext } from "expo-sqlite" // TESTE
 
 export default function InfoScreen() {
+    const db = useSQLiteContext()
     const router = useRouter()
-    const { isLogged, logoff } = AuthContextProvider()
+    const { isLogged } = AuthContextProvider()
     const [ tutorialModalOpen, setTutorialModalOpen ] = useState<boolean>(false)
     const btnWidth = 150
 
     return (
         <TutorialEnclosure openTutorialAction={ () => setTutorialModalOpen(true) }>
             <Screen flex>
+                {/* // TESTE */}
+                <CustomButton btnWidth={ btnWidth } title="dreams" onPress={ async () => { await db.execAsync("DROM TABLE dreams") } } important />
+                <CustomButton btnWidth={ btnWidth } title="dream TRUNC" onPress={ async () => { await db.execAsync("DELETE FROM dreams") } } important />
+                <CustomButton btnWidth={ btnWidth } title="sleeps" onPress={ async () => { await db.execAsync("DROM TABLE sleeps") } } important />
+                <CustomButton btnWidth={ btnWidth } title="sleeps TRUNC" onPress={ async () => { await db.execAsync("DELETE FROM sleeps") } } important />
+                {/* // TESTE */}
                 <TutorialModal
                     open={ tutorialModalOpen }
                     setOpen={ setTutorialModalOpen }

@@ -29,6 +29,22 @@ export type SleepModel = {
     createdAt: string
     updatedAt: string
     userId: number
+	/** Chave existente apenas offline */
+    synchronized?: boolean
+}
+
+export type SleepDbModel = {
+    id: number
+    date: string
+    sleepTime: number
+    sleepStart: string
+    sleepEnd: string
+    isNightSleep: boolean
+    wakeUpHumor: SleepHumorType
+    layDownHumor: SleepHumorType
+    biologicalOccurences: BiologicalOccurencesType
+	/** Chave existente apenas offline */
+    synchronized?: boolean
 }
 
 export type GetSleepRequest = {

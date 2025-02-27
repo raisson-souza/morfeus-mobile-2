@@ -66,3 +66,9 @@ export type ImportUserDataRequest = {
 }
 
 export type ImportUserDataResponse = string
+
+export type SyncRecordsRequest = {
+    date: string
+}
+
+export type SyncRecordsResponse = ExportUserDataResponse

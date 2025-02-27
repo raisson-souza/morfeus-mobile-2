@@ -37,6 +37,8 @@ type LocalStorageProps = {
     login: (tokenInfo: LocalStorageToken, credentials: LocalStorageCredentials) => Promise<void>
     /** Ações no AsyncStorage quando logoff */
     logoff: () => Promise<void>
+    /** Último processo de sincronização de dados */
+    syncCloudDataLastSync: LocalStorageDefiners<number>
 }
 
 export const LocalStorage: LocalStorageProps = {
@@ -94,6 +96,19 @@ export const LocalStorage: LocalStorageProps = {
         async remove() {
             await AsyncStorage.removeItem("user_id")
             await AsyncStorage.removeItem("user_name")
+        },
+    },
+    syncCloudDataLastSync: {
+        async get() {
+            const syncCloudDataLastSync = await AsyncStorage.getItem("sync_cloud_data_last_sync")
+            if (!syncCloudDataLastSync) return null
+            return Number.parseInt(syncCloudDataLastSync)
+        },
+        async set(dateMilis) {
+            await AsyncStorage.setItem("sync_cloud_data_last_sync", dateMilis.toString())
+        },
+        async remove() {
+            await AsyncStorage.removeItem("sync_cloud_data_last_sync")
         },
     },
 }

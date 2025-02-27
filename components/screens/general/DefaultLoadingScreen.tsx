@@ -4,12 +4,16 @@ import { StyleSheet } from "react-native"
 import Box from "@/components/base/Box"
 import Loading from "@/components/base/Loading"
 
-export default function DefaultLoadingScreen() {
+type DefaultLoadingScreenProps = {
+    message?: string
+}
+
+export default function DefaultLoadingScreen({ message }: DefaultLoadingScreenProps) {
     return (
         <Screen flex>
             <Box.Column style={ styles.container }>
                 <CustomImage.Local filePathByRequire={ require('../../../assets/images/morfeus_logo.png') } />
-                <Loading />
+                <Loading onlyLoading={ message ? false : true } text={ message } />
             </Box.Column>
         </Screen>
     )

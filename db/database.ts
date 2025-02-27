@@ -6,7 +6,7 @@ export default async function SqliteDbManager(db: SQLiteDatabase): Promise<void>
     // Derrubar todas as tabelas da aplicação
     // await db.execAsync("DROP TABLE xxx")
     // Setar a versão do usuário para 0, simulando primeiro acesso
-    // await db.execAsync("PRAGMA user_version = 0")
+    // await db.execAsync("PRAGMA user_version = 1")
     // Conforme SqliteDbManager, todas as tabelas serão recriadas
     // TESTE DEV
 
@@ -14,7 +14,7 @@ export default async function SqliteDbManager(db: SQLiteDatabase): Promise<void>
      * Versão atual do banco de dados  
      * É necessário atualizar a cada nova modificação no banco
      */
-    const DATABASE_VERSION = 1
+    const DATABASE_VERSION = 2
 
     try {
         /** Busca-se a versão atual do banco de dados */
@@ -29,7 +29,7 @@ export default async function SqliteDbManager(db: SQLiteDatabase): Promise<void>
         let newUserVersion = userVersion
 
         if (newUserVersion === 0) {
-            db.execAsync(`
+            await db.execAsync(`
                 CREATE TABLE IF NOT EXISTS PARAMS (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     tutorial_read BOOLEAN NOT NULL DEFAULT 0,
@@ -45,8 +45,50 @@ export default async function SqliteDbManager(db: SQLiteDatabase): Promise<void>
         }
 
         if (newUserVersion === 1) {
-            /// ...
-            // newUserVersion = 2
+            await db.execAsync(`
+                CREATE TABLE IF NOT EXISTS sleeps (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    date DATETIME NOT NULL,
+                    sleepTime INTEGER NOT NULL,
+                    sleepStart DATETIME NOT NULL,
+                    sleepEnd DATETIME NOT NULL,
+                    isNightSleep BOOLEAN NOT NULL,
+                    wakeUpHumor TEXT NOT NULL, -- JSON armazenado como TEXT
+                    layDownHumor TEXT NOT NULL, -- JSON armazenado como TEXT
+                    biologicalOccurences TEXT NOT NULL, -- JSON armazenado como TEXT
+                    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    synchronized BOOLEAN NOT NULL DEFAULT 0
+                );
+            `)
+
+            await db.execAsync(`
+                CREATE TABLE IF NOT EXISTS dreams (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    title TEXT NOT NULL,
+                    description TEXT NOT NULL,
+                    climate TEXT NOT NULL, -- JSON armazenado como TEXT
+                    eroticDream BOOLEAN NOT NULL DEFAULT 0,
+                    hiddenDream BOOLEAN NOT NULL DEFAULT 0,
+                    personalAnalysis TEXT, -- Pode ser NULL
+                    isComplete BOOLEAN NOT NULL DEFAULT 0,
+                    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    dreamOriginId INTEGER NOT NULL,
+                    dreamPointOfViewId INTEGER NOT NULL,
+                    dreamHourId INTEGER NOT NULL,
+                    dreamDurationId INTEGER NOT NULL,
+                    dreamLucidityLevelId INTEGER NOT NULL,
+                    dreamTypeId INTEGER NOT NULL,
+                    dreamRealityLevelId INTEGER NOT NULL,
+                    sleepId INTEGER NOT NULL,
+                    dreamTags TEXT NOT NULL, -- JSON armazenado como TEXT
+                    synchronized BOOLEAN NOT NULL DEFAULT 0,
+                    FOREIGN KEY (sleepId) REFERENCES sleeps(id) ON DELETE CASCADE
+                );
+            `)
+
+            newUserVersion = 2
         }
 
         // Nova versão do banco do usuário é aplicada
