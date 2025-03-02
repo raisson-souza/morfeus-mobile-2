@@ -1,4 +1,4 @@
-import { CheckAccountRecoveryRequest, CheckAccountRecoveryResponse, CreateAccountRecoveryRequest, CreateAccountRecoveryResponse, ExportUserDataRequest, ExportUserDataResponse, FinishAccountRecoveryRequest, FinishAccountRecoveryResponse, ImportUserDataRequest, ImportUserDataResponse, SyncRecordsRequest, SyncRecordsResponse, UpdateUserRequest, UpdateUserResponse, UserDataDeletionResponse, UserModel } from "../../types/user"
+import { CheckAccountRecoveryRequest, CheckAccountRecoveryResponse, CheckSynchronizedRecordRequest, CheckSynchronizedRecordResponse, CreateAccountRecoveryRequest, CreateAccountRecoveryResponse, ExportUserDataRequest, ExportUserDataResponse, FinishAccountRecoveryRequest, FinishAccountRecoveryResponse, ImportUserDataRequest, ImportUserDataResponse, SyncRecordsRequest, SyncRecordsResponse, UpdateUserRequest, UpdateUserResponse, UserDataDeletionResponse, UserModel } from "../../types/user"
 import Endpoints from "./base/Endpoints"
 
 export default abstract class UserService extends Endpoints {
@@ -65,6 +65,14 @@ export default abstract class UserService extends Endpoints {
     static async SyncRecords(request: SyncRecordsRequest) {
         return await this.Post<SyncRecordsResponse>({
             url: `/users/data/sync_records`,
+            body: request,
+            authorization: await this.GetAuthorization(),
+        })
+    }
+
+    static async CheckSynchronizedRecord(request: CheckSynchronizedRecordRequest) {
+        return await this.Post<CheckSynchronizedRecordResponse>({
+            url: `/users/data/check_synchronized_record`,
             body: request,
             authorization: await this.GetAuthorization(),
         })

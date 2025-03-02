@@ -61,4 +61,22 @@ export default abstract class SleepsDb {
     static async GetAllNotSyncronized(db: SQLiteDatabase): Promise<SleepDbModel[]> {
         return await db.getAllAsync<SleepDbModel>("SELECT * FROM sleeps WHERE synchronized = 0")
     }
+
+    static async UpdateId(db: SQLiteDatabase, model: SleepDbModel, newId: number) {
+        await db.execAsync(`
+            UPDATE sleeps
+            SET 
+                id = ${ newId },
+                date = '${ model.date }',
+                sleepTime = ${ model.sleepTime },
+                sleepStart = '${ model.sleepStart }',
+                sleepEnd = '${ model.sleepEnd }',
+                isNightSleep = ${ model.isNightSleep ? 1 : 0 },
+                wakeUpHumor = '${ JSON.stringify(model.wakeUpHumor) }',
+                layDownHumor = '${ JSON.stringify(model.layDownHumor) }',
+                biologicalOccurences = '${ JSON.stringify(model.biologicalOccurences) }',
+                synchronized = ${ model.synchronized ? 1 : 0 }
+            WHERE id = ${ model.id };
+        `)
+    }
 }

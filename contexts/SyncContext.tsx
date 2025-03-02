@@ -2,14 +2,13 @@ import { AuthContextProvider } from "./AuthContext"
 import { createContext, useContext, useEffect, useRef, useState } from "react"
 import { DateFormatter } from "@/utils/DateFormatter"
 import { DateTime } from "luxon"
+import { ExportUserData } from "@/types/userData"
 import { LocalStorage } from "@/utils/LocalStorage"
 import { useSQLiteContext } from "expo-sqlite"
 import DefaultLoadingScreen from "@/components/screens/general/DefaultLoadingScreen"
 import DreamsDb from "@/db/dreamsDb"
-import DreamService from "@/services/api/DreamService"
 import InternetInfo from "../utils/InternetInfo"
 import SleepsDb from "@/db/sleepsDb"
-import SleepService from "@/services/api/SleepService"
 import UserService from "@/services/api/UserService"
 
 type SyncContextProps = {
@@ -71,31 +70,81 @@ export default function SyncContextComponent({ children }: SyncContextProps) {
 
         try {
             const dreams = await DreamsDb.GetAllNotSyncronized(db)
+            const sleeps = await SleepsDb.GetAllNotSyncronized(db)
+
+            if (dreams.length === 0 && sleeps.length === 0)
+                throw new Error("Nenhum registro para sincronizar.")
 
             for (const dream of dreams) {
                 try {
-                    await DreamService.Create(true, {
-                        ...dream,
-                        tags: dream.dreamTags ?? [],
-                        dreamNoSleepDateKnown: null,
-                        dreamNoSleepTimeKnown: null,
+                    const newIdResponse = await UserService.CheckSynchronizedRecord({
+                        dreamTitle: dream.title,
+                        sleepCycle: null,
                     })
-                }
-                catch (ex) {
-                }
-            }
 
-            const sleeps = await SleepsDb.GetAllNotSyncronized(db)
+                    if (newIdResponse.Success) {
+                        if (newIdResponse.Data === dream.id)
+                            continue
+
+                        await DreamsDb.UpdateId(db, dream, newIdResponse.Data)
+                        dream.synchronized = true
+                    }
+                }
+                catch { }
+            }
 
             for (const sleep of sleeps) {
                 try {
-                    await SleepService.Create(true, {
-                        ...sleep,
-                        dreams: [],
+                    const newIdResponse = await UserService.CheckSynchronizedRecord({
+                        dreamTitle: null,
+                        sleepCycle: {
+                            date: sleep.date,
+                            sleepStart: sleep.sleepStart,
+                            sleepEnd: sleep.sleepEnd,
+                        },
+                    })
+
+                    if (newIdResponse.Success) {
+                        if (newIdResponse.Data === sleep.id)
+                            continue
+
+                        await SleepsDb.UpdateId(db, sleep, newIdResponse.Data)
+                        sleep.synchronized = true
+                    }
+                }
+                catch { }
+            }
+
+            const importData: ExportUserData = {
+                dreams: [],
+                sleeps: [],
+            }
+
+            dreams.map(dream => {
+                if (!dream.synchronized) {
+                    importData.dreams.push({
+                        ...dream,
+                        dreamTags: dream.dreamTags ?? [],
                     })
                 }
-                catch (ex) {
+            })
+
+            sleeps.map(sleep => {
+                if (!sleep.synchronized) {
+                    importData.sleeps.push(sleep)
                 }
+            })
+
+            dreams.length = 0
+            sleeps.length = 0
+
+            if (importData.dreams.length > 0 && importData.sleeps.length > 0) {
+                await UserService.ImportUserData({
+                    dreamsPath: null,
+                    fileContent: JSON.stringify(importData),
+                    isSameOriginImport: true,
+                    sendEmailOnFinish: false,
+                })
             }
 
             setLoadingLocalSyncProcess(false)
@@ -103,6 +152,8 @@ export default function SyncContextComponent({ children }: SyncContextProps) {
             setLoadingLocalSyncProcess(false)
         }
     }
+
+    // TODO: Para syncCloudData, func primeira para sincronização cloud e func segunda para uso externo
 
     /** realiza a sincronização de dados em nuvem com dados locais */
     const syncCloudData = async (): Promise<void> => {

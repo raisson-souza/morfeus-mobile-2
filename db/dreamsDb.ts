@@ -85,4 +85,30 @@ export default abstract class DreamsDb {
     static async GetAllNotSyncronized(db: SQLiteDatabase) {
         return await db.getAllAsync<DreamDbModel>("SELECT * FROM dreams WHERE synchronized = 0")
     }
+
+    static async UpdateId(db: SQLiteDatabase, model: DreamDbModel, newId: number) {
+        await db.execAsync(`
+            UPDATE dreams
+            SET
+                id = ${ newId },
+                title = '${ model.title }',
+                description = '${ model.description }',
+                climate = '${ JSON.stringify(model.climate) }',
+                eroticDream = ${ model.eroticDream ? 1 : 0 },
+                hiddenDream = ${ model.hiddenDream ? 1 : 0 },
+                personalAnalysis = '${ model.personalAnalysis }',
+                isComplete = ${ model.isComplete ? 1 : 0 },
+                dreamOriginId = ${ model.dreamOriginId },
+                dreamPointOfViewId = ${ model.dreamPointOfViewId },
+                dreamHourId = ${ model.dreamHourId },
+                dreamDurationId = ${ model.dreamDurationId },
+                dreamLucidityLevelId = ${ model.dreamLucidityLevelId },
+                dreamTypeId = ${ model.dreamTypeId },
+                dreamRealityLevelId = ${ model.dreamRealityLevelId },
+                sleepId = ${ model.sleepId },
+                synchronized = ${ model.synchronized ? 1 : 0 },
+                dreamTags = '${ model.dreamTags ? JSON.stringify(model.dreamTags) : "" }'
+            WHERE id = ${ model.id }
+        `)
+    }
 }

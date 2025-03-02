@@ -73,3 +73,14 @@ export type SyncRecordsRequest = {
 }
 
 export type SyncRecordsResponse = ExportUserDataResponse
+
+export type CheckSynchronizedRecordRequest = {
+    dreamTitle: string | null
+    sleepCycle: {
+        date: string
+        sleepStart: string
+        sleepEnd: string
+    } | null
+}
+
+export type CheckSynchronizedRecordResponse = number
