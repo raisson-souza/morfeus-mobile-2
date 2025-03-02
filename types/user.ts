@@ -63,12 +63,13 @@ export type ImportUserDataRequest = {
     isSameOriginImport: boolean
     dreamsPath: string | null
     fileContent: string
+    sendEmailOnFinish: boolean
 }
 
 export type ImportUserDataResponse = string
 
 export type SyncRecordsRequest = {
-    date: string
+    monthDate: string | null
 }
 
 export type SyncRecordsResponse = ExportUserDataResponse

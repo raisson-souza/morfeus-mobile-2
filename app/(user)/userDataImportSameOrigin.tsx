@@ -34,6 +34,7 @@ export default function UserDataImportSameOriginScreen() {
                 isSameOriginImport: true,
                 dreamsPath: null,
                 fileContent: fileContent,
+                sendEmailOnFinish: true,
             })
                 .then(response => {
                     if (response.Success) {

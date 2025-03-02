@@ -1,3 +1,4 @@
+import { AppState, AppStateStatus } from "react-native"
 import { createContext, useContext, useEffect, useRef, useState } from "react"
 import { EXPORT_USER_DATA_FILE_NAME } from "@/app/(user)/userDataExport"
 import { FileSystemContextProvider } from "./FileSystemContext"
@@ -44,11 +45,35 @@ export default function AuthContextComponent({ children }: AuthContextProps) {
         password: "",
     })
     const refreshInterval = useRef<NodeJS.Timeout | null>(null)
+    const checkIsOnline = () => InternetInfo().then(result => result?.isConnected ?? false)
 
     useEffect(() => {
         if (!isLogged)
             manageAuth()
+
+        const appStateListener = AppState.addEventListener("change", manageAppState)
+        return () => appStateListener.remove()
     }, [])
+
+    const manageAppState = async (appState: AppStateStatus) => {
+        if (appState === "active") {
+            const loginCredentials = await LocalStorage.loginCredentials.get()
+            const isTokenExpiring = await checkIsTokenExpiring()
+
+            if (isTokenExpiring && loginCredentials && await checkIsOnline()) {
+                await refreshToken(loginCredentials)
+            }
+        }
+    }
+
+    const checkIsTokenExpiring = async (): Promise<boolean> => {
+        const tokenInfo = await LocalStorage.tokenInfo.get()
+        if (!tokenInfo) return true
+
+        const nowSeconds = new Date().getTime() / 1000
+        const tokenExpirationDiff = (tokenInfo.tokenExpirationDateMilis - nowSeconds) / 60
+        return tokenExpirationDiff <= 20
+    }
 
     const login = async (credentials: LoginRequest) => {
         const loginResponse = await AuthService.Login({
@@ -94,7 +119,6 @@ export default function AuthContextComponent({ children }: AuthContextProps) {
 
             setIsLogged(true)
             router.navigate("/home")
-            await refreshTokenIntervalAction(credentials)
             return
         }
 
@@ -131,23 +155,14 @@ export default function AuthContextComponent({ children }: AuthContextProps) {
     const manageAuth = async () => {
         const loginCredentials = await LocalStorage.loginCredentials.get()
         const tokenInfo = await LocalStorage.tokenInfo.get()
-        const isOnline = await InternetInfo().then(result => result?.isConnected ?? false)
-        let tokenExpirationMilis = 0
         let loggedIn = false
 
         // Há token
         if (tokenInfo) {
             loggedIn = true
 
-            if (isOnline) {
-                const nowSeconds = new Date().getTime() / 1000
-                const tokenExpirationDiff = tokenInfo.tokenExpirationDateMilis - nowSeconds
-                // Se o tempo de expiração for maior que um minuto, o refresh será feito
-                // quando 75% do tempo de expiração for atingido, se não,  imediatamente
-                tokenExpirationMilis = tokenExpirationDiff >= 60
-                    ? tokenExpirationDiff * 0.75
-                    : 1
-            }
+            if (await checkIsOnline() && await checkIsTokenExpiring() && loginCredentials)
+                await refreshToken(loginCredentials)
         }
         // Há credenciais e o usuário continua não logado
         if (loginCredentials && !loggedIn) {
@@ -167,19 +182,6 @@ export default function AuthContextComponent({ children }: AuthContextProps) {
                 password: loginCredentials?.password ?? "",
             }
             setIsLogged(true)
-        }
-
-        if (tokenExpirationMilis != 0) {
-            // Timeout para refresh quando token com tempo de expiração incerta
-            setTimeout(async () => {
-                const isOnline = await InternetInfo()
-                if (isOnline?.isConnected ?? false) {
-                    await refreshToken(loginCredentials!)
-                    // Interval quando token com expiração conhecida
-                    await refreshTokenIntervalAction(loginCredentials!)
-                }
-
-            }, tokenExpirationMilis * 1000)
         }
 
         setLoading(false)
@@ -210,13 +212,6 @@ export default function AuthContextComponent({ children }: AuthContextProps) {
         return {
             isLogged: false,
         }
-    }
-
-    const refreshTokenIntervalAction = async (loginCredentials: LocalStorageCredentials) => {
-        const _refreshInterval = setInterval(async () => {
-            await refreshToken(loginCredentials!)
-        }, 1800000) // <- 30 minutos
-        refreshInterval.current = _refreshInterval
     }
 
     if (loading) return <DefaultLoadingScreen />

@@ -37,12 +37,12 @@ export default function UserDataImportDreamsScreen() {
 
             const fileContent = await FileSystem.readAsStringAsync(file.uri, { encoding: FileSystem.EncodingType.UTF8 })
             const formattedDreamsPath = dreamsPath.join("/")
-            console.log("formattedDreamsPath", formattedDreamsPath)
 
             await UserService.ImportUserData({
                 isSameOriginImport: false,
                 dreamsPath: formattedDreamsPath,
                 fileContent: fileContent,
+                sendEmailOnFinish: true,
             })
                 .then(response => {
                     if (response.Success) {

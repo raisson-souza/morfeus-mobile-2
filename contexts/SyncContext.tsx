@@ -1,3 +1,4 @@
+import { AuthContextProvider } from "./AuthContext"
 import { createContext, useContext, useEffect, useRef, useState } from "react"
 import { DateFormatter } from "@/utils/DateFormatter"
 import { DateTime } from "luxon"
@@ -27,6 +28,7 @@ const SyncContext = createContext<SyncContext | null>(null)
 /** Context especializado na verificação de conectividade e sincronização dos dados da aplicação */
 export default function SyncContextComponent({ children }: SyncContextProps) {
     const db = useSQLiteContext()
+    const { isLogged } = AuthContextProvider()
     const isConnectedRef = useRef<boolean>(false)
     const [ loadingInternetInfo, setLoadingInternetInfo ] = useState<boolean>(true)
     const [ loadingLocalSyncProcess, setLoadingLocalSyncProcess ] = useState<boolean>(true)
@@ -39,8 +41,14 @@ export default function SyncContextComponent({ children }: SyncContextProps) {
                 isConnectedRef.current = result ? result.isConnected : false
                 setLoadingInternetInfo(false)
 
-                await syncLocalData()
-                await syncCloudData()
+                if (isLogged) {
+                    await syncLocalData()
+                    await syncCloudData()
+                }
+                else {
+                    setLoadingLocalSyncProcess(false)
+                    setLoadingCloudSyncProcess(false)
+                }
             })
 
         /** Intervalo de verificação de conectividade */
@@ -66,7 +74,6 @@ export default function SyncContextComponent({ children }: SyncContextProps) {
 
             for (const dream of dreams) {
                 try {
-                    console.log("sincronizando sonho", dream.id, dream.title, dream.synchronized)
                     await DreamService.Create(true, {
                         ...dream,
                         tags: dream.dreamTags ?? [],
@@ -75,7 +82,6 @@ export default function SyncContextComponent({ children }: SyncContextProps) {
                     })
                 }
                 catch (ex) {
-                    console.log("erro local sonho", (ex as Error).message)
                 }
             }
 
@@ -83,20 +89,17 @@ export default function SyncContextComponent({ children }: SyncContextProps) {
 
             for (const sleep of sleeps) {
                 try {
-                    console.log("sincronizando ciclo de sono", sleep.id, sleep.date, sleep.synchronized)
                     await SleepService.Create(true, {
                         ...sleep,
                         dreams: [],
                     })
                 }
                 catch (ex) {
-                    console.log("erro local ciclo de sono", (ex as Error).message)
                 }
             }
 
             setLoadingLocalSyncProcess(false)
         } catch (ex) {
-            console.error("Houve um erro ao atualizar os dados locais:", (ex as Error).message)
             setLoadingLocalSyncProcess(false)
         }
     }
@@ -120,8 +123,7 @@ export default function SyncContextComponent({ children }: SyncContextProps) {
                 return
             }
 
-            const syncRecordsResponse = await UserService.SyncRecords({ date: DateFormatter.forBackend.date(new Date().getTime()) })
-            console.log("novo registros locais", syncRecordsResponse.Data.dreams.length, syncRecordsResponse.Data.sleeps.length)
+            const syncRecordsResponse = await UserService.SyncRecords({ monthDate: null })
 
             if (!syncRecordsResponse.Success)
                 throw new Error(syncRecordsResponse.ErrorMessage)
@@ -146,7 +148,6 @@ export default function SyncContextComponent({ children }: SyncContextProps) {
                     }
                 }
                 catch (ex) {
-                    console.log("erro cloud sonho", (ex as Error).message)
                 }
             }
 
@@ -168,7 +169,6 @@ export default function SyncContextComponent({ children }: SyncContextProps) {
                     }
                 }
                 catch (ex) {
-                    console.log("erro cloud ciclo de sono", (ex as Error).message)
                 }
             }
 
