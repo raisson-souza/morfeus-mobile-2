@@ -2,7 +2,7 @@ import { CreateDreamRequest, CreateDreamResponse, DeleteDreamRequest, DeleteDrea
 import Endpoints from "./base/Endpoints"
 
 export default abstract class DreamService extends Endpoints {
-    static async Create(online: boolean, request: CreateDreamRequest) {
+    static async Create(request: CreateDreamRequest) {
         return await this.Post<CreateDreamResponse>({
             url: "/dreams",
             authorization: await this.GetAuthorization(),
@@ -10,15 +10,7 @@ export default abstract class DreamService extends Endpoints {
         })
     }
 
-    // static async CreateUncomplete(online: boolean, request: CreateDreamUncompleteRequest) {
-    //     return await this.Post<CreateDreamUncompleteResponse>({
-    //         url: "/dreams/uncomplete",
-    //         authorization: await this.GetAuthorization(),
-    //         body: request
-    //     })
-    // }
-
-    static async Update(online: boolean, request: UpdateDreamRequest) {
+    static async Update(request: UpdateDreamRequest) {
         return await this.Put<UpdateDreamResponse>({
             url: "/dreams",
             authorization: await this.GetAuthorization(),
@@ -26,21 +18,21 @@ export default abstract class DreamService extends Endpoints {
         })
     }
 
-    static async GetDream(online: boolean, request: GetDreamRequest) {
+    static async GetDream(request: GetDreamRequest) {
         return await this.Get<GetDreamResponse>({
             url: `/dreams/${ request.id }`,
             authorization: await this.GetAuthorization()
         })
     }
 
-    static async DeleteDream(online: boolean, request: DeleteDreamRequest) {
+    static async DeleteDream(request: DeleteDreamRequest) {
         return await this.Delete<DeleteDreamResponse>({
             url: `/dreams/${ request.id }`,
             authorization: await this.GetAuthorization(),
         })
     }
 
-    static async ListByUser(online: boolean, body: ListDreamsByUserRequest) {
+    static async ListByUser(body: ListDreamsByUserRequest) {
         return await this.Post<ListDreamByUserResponse>({
             url: "/users/dreams/list",
             authorization: await this.GetAuthorization(),
@@ -48,7 +40,7 @@ export default abstract class DreamService extends Endpoints {
         })
     }
 
-    static async ListBySleep(online: boolean, request: ListDreamsBySleepCycleRequest) {
+    static async ListBySleep(request: ListDreamsBySleepCycleRequest) {
         return await this.Get<ListDreamsBySleepCycleResponse>({
             url: `/dreams/listBySleep?sleep_id=${ request.sleepId }`,
             authorization: await this.GetAuthorization()

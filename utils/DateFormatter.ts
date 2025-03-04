@@ -49,4 +49,9 @@ export const DateFormatter = {
         const rawDateString = `${ DateFormatter.removeTime(date.toISOString()) }T${ DateFormatter.removeDate(time.toISOString()) }.000-03:00`
         return DateFormatter.fixUTC(new Date(rawDateString).getTime())
     },
+    restoreFromBackend: {
+        date: (date: string) => {
+            return DateTime.fromISO(`${ date.replaceAll("/", "-") }T00:00:01.000-03:00`) as DateTime<true>
+        },
+    },
 }

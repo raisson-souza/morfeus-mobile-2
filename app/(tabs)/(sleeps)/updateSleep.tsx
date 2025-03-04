@@ -1,7 +1,6 @@
 import { DateFormatter } from "@/utils/DateFormatter"
 import { Screen } from "@/components/base/Screen"
 import { StyleSheet } from "react-native"
-import { SyncContextProvider } from "@/contexts/SyncContext"
 import { UpdateSleepCycleModel } from "@/types/sleeps"
 import { useEffect, useState } from "react"
 import { useLocalSearchParams, useRouter } from "expo-router"
@@ -22,13 +21,12 @@ type UpdateSleepParams = {
 export default function UpdateSleepScreen() {
     const router = useRouter()
     const { id } = useLocalSearchParams<UpdateSleepParams>()
-    const { checkIsConnected } = SyncContextProvider()
     const [ loading, setLoading ] = useState<boolean>(true)
     const [ sleep, setSleep ] = useState<UpdateSleepCycleModel | null>(null)
     const [ errorOnFetch, setErrorOnFetch ] = useState<boolean>(false)
 
     const fetchSleep = async () => {
-        await SleepService.GetSleep(checkIsConnected(), { id: Number.parseInt(id) })
+        await SleepService.GetSleep({ id: Number.parseInt(id) })
             .then(response => {
                 if (response.Success) {
                     setSleep({
@@ -49,7 +47,7 @@ export default function UpdateSleepScreen() {
     }
 
     const updateSleep = async () => {
-        await SleepService.Update(checkIsConnected(), {
+        await SleepService.Update({
             id: Number.parseInt(id),
             sleep: {
                 sleepStart: DateFormatter.forBackend.timestamp(sleep!.sleepStart.getTime()),

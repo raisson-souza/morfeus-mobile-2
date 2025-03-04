@@ -24,17 +24,11 @@ export default function RootLayout() {
           name='dreamsList'
           options={{ title: "Listagem de Sonhos" }} />
         <Stack.Screen
-          name='exportDreams'
-          options={{ title: "Exportar Sonhos" }} />
-        <Stack.Screen
           name='getDream'
           options={{ title: "Sonho" }} />
         <Stack.Screen
           name='getTag'
           options={{ title: "Tag de Sonho" }} />
-        <Stack.Screen
-          name='importDreams'
-          options={{ title: "Importar Sonhos" }} />
         <Stack.Screen
           name='updateDream'
           options={{ title: "Atualizar Sonho" }} />

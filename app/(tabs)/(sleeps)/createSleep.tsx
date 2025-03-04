@@ -71,16 +71,14 @@ export default function CreateSleepScreen() {
             return
         }
 
-        const response = await SleepService.Create(checkIsConnected(),
-            {
-                sleepStart: DateFormatter.forBackend.timestamp(sleepCycleModel.sleepStart.getTime()),
-                sleepEnd: DateFormatter.forBackend.timestamp(sleepCycleModel.sleepEnd.getTime()),
-                wakeUpHumor: sleepCycleModel.wakeUpHumor,
-                layDownHumor: sleepCycleModel.layDownHumor,
-                biologicalOccurences: sleepCycleModel.biologicalOccurences,
-                dreams: sleepCycleModel.dreams,
-            }
-        )
+        const response = await SleepService.Create({
+            sleepStart: DateFormatter.forBackend.timestamp(sleepCycleModel.sleepStart.getTime()),
+            sleepEnd: DateFormatter.forBackend.timestamp(sleepCycleModel.sleepEnd.getTime()),
+            wakeUpHumor: sleepCycleModel.wakeUpHumor,
+            layDownHumor: sleepCycleModel.layDownHumor,
+            biologicalOccurences: sleepCycleModel.biologicalOccurences,
+            dreams: sleepCycleModel.dreams,
+        })
 
         if (response.Success) {
             alert("Ciclo de sono criado com sucesso.")

@@ -48,16 +48,16 @@ export default async function SqliteDbManager(db: SQLiteDatabase): Promise<void>
             await db.execAsync(`
                 CREATE TABLE IF NOT EXISTS sleeps (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    date DATETIME NOT NULL,
+                    date TEXT NOT NULL,
                     sleepTime INTEGER NOT NULL,
-                    sleepStart DATETIME NOT NULL,
-                    sleepEnd DATETIME NOT NULL,
+                    sleepStart TEXT NOT NULL,
+                    sleepEnd TEXT NOT NULL,
                     isNightSleep BOOLEAN NOT NULL,
                     wakeUpHumor TEXT NOT NULL, -- JSON armazenado como TEXT
                     layDownHumor TEXT NOT NULL, -- JSON armazenado como TEXT
                     biologicalOccurences TEXT NOT NULL, -- JSON armazenado como TEXT
-                    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-                    updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
+                    updatedAt TEXT DEFAULT CURRENT_TIMESTAMP,
                     synchronized BOOLEAN NOT NULL DEFAULT 0
                 );
             `)
@@ -72,8 +72,8 @@ export default async function SqliteDbManager(db: SQLiteDatabase): Promise<void>
                     hiddenDream BOOLEAN NOT NULL DEFAULT 0,
                     personalAnalysis TEXT, -- Pode ser NULL
                     isComplete BOOLEAN NOT NULL DEFAULT 0,
-                    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-                    updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
+                    updatedAt TEXT DEFAULT CURRENT_TIMESTAMP,
                     dreamOriginId INTEGER NOT NULL,
                     dreamPointOfViewId INTEGER NOT NULL,
                     dreamHourId INTEGER NOT NULL,

@@ -40,7 +40,7 @@ export default function GetDreamScreen() {
 
     useEffect(() => {
         const fetchDream = async () => {
-            await DreamService.GetDream(checkIsConnected(), { id: Number.parseInt(id) })
+            await DreamService.GetDream({ id: Number.parseInt(id) })
                 .then(response => {
                     if (response.Success) {
                         setDream(response.Data)
@@ -212,7 +212,7 @@ export default function GetDreamScreen() {
                     btnWidth="50%"
                     deletionAction={ async () => {
                         setLoading(true)
-                        await DreamService.DeleteDream(checkIsConnected(), { id: dream!.id })
+                        await DreamService.DeleteDream({ id: dream!.id })
                             .then((response) => {
                                 if (response.Success) {
                                     alert(response.Data)

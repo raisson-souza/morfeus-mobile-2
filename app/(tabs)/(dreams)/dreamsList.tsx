@@ -6,11 +6,13 @@ import { StyleSheet, View } from "react-native"
 import { SyncContextProvider } from "@/contexts/SyncContext"
 import { useEffect, useState } from "react"
 import { useRouter } from "expo-router"
+import { useSQLiteContext } from "expo-sqlite"
 import Box from "@/components/base/Box"
 import CustomButton from "@/components/customs/CustomButton"
 import CustomText from "@/components/customs/CustomText"
 import DreamListedByUser from "@/components/screens/dreams/DreamListedByUser"
 import DreamService from "@/services/api/DreamService"
+import DreamServiceOffline from "@/services/offline/DreamServiceOffline"
 import DreamsListEspecificFilters from "@/components/screens/dreams/DreamsListEspecificFilters"
 import DreamsListObjectiveFilters from "@/components/screens/dreams/DreamsListObjetiveFilters"
 import Loading from "@/components/base/Loading"
@@ -18,6 +20,7 @@ import MonthExtractorHeader from "@/components/screens/general/MonthExtractorHea
 import React from "react"
 
 export default function DreamsList() {
+    const db = useSQLiteContext()
     const { systemStyle } = StyleContextProvider()
     const router = useRouter()
     const [ loading, setLoading ] = useState<boolean>(true)
@@ -55,19 +58,29 @@ export default function DreamsList() {
     const fetchDreams = async (newDate?: Date) => {
         setLoading(true)
         setDreamList(null)
-        await DreamService.ListByUser(checkIsConnected(), {
-            ...listDreamsByUserForm,
-            date: newDate
-                ? DateFormatter.forBackend.date(newDate.getTime())
-                : DateFormatter.forBackend.date(date.getTime())
-        })
-            .then(response => {
-                if (response.Success) {
-                    setDreamList(response.Data)
-                    return
-                }
-                alert(response.ErrorMessage)
+        if (checkIsConnected()) {
+            await DreamService.ListByUser({
+                ...listDreamsByUserForm,
+                date: newDate
+                    ? DateFormatter.forBackend.date(newDate.getTime())
+                    : DateFormatter.forBackend.date(date.getTime())
             })
+                .then(response => {
+                    if (response.Success) {
+                        setDreamList(response.Data)
+                        return
+                    }
+                    alert(response.ErrorMessage)
+                })
+        }
+        else {
+            setDreamList(await DreamServiceOffline.List(db, {
+                ...listDreamsByUserForm,
+                date: newDate
+                    ? DateFormatter.forBackend.date(newDate.getTime())
+                    : DateFormatter.forBackend.date(date.getTime())
+            }))
+        }
         setLoading(false)
     }
 
@@ -151,10 +164,14 @@ export default function DreamsList() {
                                     listDreamsByUserForm={ listDreamsByUserForm }
                                     setListDreamsByUserForm={ setListDreamsByUserForm }
                                 />
-                                <DreamsListEspecificFilters
-                                    listDreamsByUserForm={ listDreamsByUserForm }
-                                    setListDreamsByUserForm={ setListDreamsByUserForm }
-                                />
+                                {
+                                    checkIsConnected()
+                                        ? <DreamsListEspecificFilters
+                                            listDreamsByUserForm={ listDreamsByUserForm }
+                                            setListDreamsByUserForm={ setListDreamsByUserForm }
+                                        />
+                                        : <></>
+                                }
                             </Box.Column>
                         )
                         : <></>

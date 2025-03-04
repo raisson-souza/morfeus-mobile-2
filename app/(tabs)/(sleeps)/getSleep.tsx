@@ -6,7 +6,6 @@ import { SleepHumorType } from "@/types/sleepHumor"
 import { SleepModel } from "@/types/sleeps"
 import { StyleContextProvider } from "@/contexts/StyleContext"
 import { StyleSheet } from "react-native"
-import { SyncContextProvider } from "@/contexts/SyncContext"
 import { useEffect, useState } from "react"
 import { useLocalSearchParams, useRouter } from "expo-router"
 import BiologicalOccurencesInfoModal from "@/components/screens/sleeps/biologicalOccurencesInfoModal"
@@ -33,7 +32,6 @@ type GetSleepCycleParams = {
 export default function GetSleepScreen() {
     const { systemStyle } = StyleContextProvider()
     const router = useRouter()
-    const { checkIsConnected } = SyncContextProvider()
     const { id } = useLocalSearchParams<GetSleepCycleParams>()
     const [ sleep, setSleep ] = useState<SleepModel | null>(null)
     const [ loading, setLoading ] = useState<boolean>(true)
@@ -43,7 +41,7 @@ export default function GetSleepScreen() {
     const [ sleepDreams, setSleepDreams ] = useState<ListedDreamBySleepCycle[]>([])
 
     const fetchSleep = async () => {
-        await SleepService.GetSleep(checkIsConnected(), { id: Number.parseInt(id) })
+        await SleepService.GetSleep({ id: Number.parseInt(id) })
             .then(response => {
                 if (response.Success) {
                     setSleep(response.Data)
@@ -55,7 +53,7 @@ export default function GetSleepScreen() {
     }
 
     const fetchSleepDreams = async () => {
-        await DreamService.ListBySleep(checkIsConnected(), { sleepId: Number.parseInt(id) })
+        await DreamService.ListBySleep({ sleepId: Number.parseInt(id) })
             .then(response => {
                 if (response.Success) setSleepDreams(response.Data)
             })
@@ -64,7 +62,7 @@ export default function GetSleepScreen() {
 
     const deleteSleepCycleAction = async () => {
         setLoading(true)
-        await SleepService.DeleteSleep(checkIsConnected(), { id: sleep!.id })
+        await SleepService.DeleteSleep({ id: sleep!.id })
             .then(response => {
                 if (response.Success) {
                     alert(response.Data)

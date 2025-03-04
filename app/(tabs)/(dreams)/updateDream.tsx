@@ -34,7 +34,7 @@ export default function UpdateDreamScreen() {
     const [ errorOnFetch, setErrorOnFetch ] = useState<boolean>(false)
 
     const fetchDream = async () => {
-        await DreamService.GetDream(checkIsConnected(), { id: Number.parseInt(id) })
+        await DreamService.GetDream({ id: Number.parseInt(id) })
             .then(async (response) => {
                 if (response.Success) {
                     setDream({
@@ -61,7 +61,7 @@ export default function UpdateDreamScreen() {
     }
 
     const fetchSleep = async (sleepId: number) => {
-        await SleepService.GetSleep(checkIsConnected(), { id: sleepId })
+        await SleepService.GetSleep({ id: sleepId })
             .then(response => {
                 if (response.Success) {
                     setSleepInfo({
@@ -80,7 +80,7 @@ export default function UpdateDreamScreen() {
 
     const updateDream = async () => {
         setLoading(true)
-        await DreamService.Update(checkIsConnected(), {
+        await DreamService.Update({
             ...dream!,
             tags: tags,
         })

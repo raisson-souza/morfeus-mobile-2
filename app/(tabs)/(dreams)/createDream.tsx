@@ -76,7 +76,7 @@ export default function CreateDreamScreen() {
 
     const createDream = async () => {
         setLoading(true)
-        await DreamService.Create(checkIsConnected(), {
+        await DreamService.Create({
             ...dreamModel,
             sleepId: sleepId,
             dreamNoSleepDateKnown: completeDreamModel.dreamNoSleepDateKnown

@@ -5,6 +5,7 @@ import { StyleSheet } from "react-native"
 import { SyncContextProvider } from "@/contexts/SyncContext"
 import { useEffect, useState } from "react"
 import { useRouter } from "expo-router"
+import { useSQLiteContext } from "expo-sqlite"
 import Box from "@/components/base/Box"
 import CustomButton from "@/components/customs/CustomButton"
 import CustomText from "@/components/customs/CustomText"
@@ -13,8 +14,10 @@ import MonthExtractorHeader from "@/components/screens/general/MonthExtractorHea
 import React from "react"
 import SleepListedByUser from "@/components/screens/sleeps/SleepListedByUser"
 import SleepService from "@/services/api/SleepService"
+import SleepServiceOffline from "@/services/offline/SleepServiceOffline"
 
 export default function SleepsListScreen() {
+    const db = useSQLiteContext()
     const router = useRouter()
     const [ loading, setLoading ] = useState<boolean>(true)
     const [ sleeps, setSleeps ] = useState<SleepListedByUserType[] | null>(null)
@@ -25,18 +28,21 @@ export default function SleepsListScreen() {
     const fetchSleeps = async () => {
         setLoading(true)
         setSleeps(null)
-        await SleepService.ListByUser(checkIsConnected(), {
-            date: DateFormatter.forBackend.date(date.getTime())
-        })
-            .then(response => {
-                if (response.Success) {
-                    setSleeps(response.Data)
-                }
-                else {
-                    setErrorMessage(response.ErrorMessage ?? "")
-                }
-                setLoading(false)
-            })
+        if (checkIsConnected()) {
+            await SleepService.ListByUser({ date: DateFormatter.forBackend.date(date.getTime()) })
+                .then(response => {
+                    if (response.Success) {
+                        setSleeps(response.Data)
+                    }
+                    else {
+                        setErrorMessage(response.ErrorMessage ?? "")
+                    }
+                })
+        }
+        else {
+            setSleeps(await SleepServiceOffline.List(db, { date: DateFormatter.forBackend.date(date.getTime()) }))
+        }
+        setLoading(false)
     }
 
     useEffect(() => {
