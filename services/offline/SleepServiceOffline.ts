@@ -8,19 +8,7 @@ export default abstract class SleepServiceOffline {
 
     }
 
-    static async Get() {
-
-    }
-
-    static async Delete() {
-
-    }
-
-    static async Update() {
-
-    }
-
-    static async GetSleepDreams() {
+    static async GetDreams() {
         
     }
 
