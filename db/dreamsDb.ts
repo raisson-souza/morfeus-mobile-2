@@ -48,6 +48,15 @@ export default abstract class DreamsDb {
 
     static async Get(db: SQLiteDatabase, dreamId: number) {
         return await db.getFirstAsync<DreamModel>(`SELECT * FROM dreams WHERE id = ${ dreamId }`)
+            .then(result => {
+                if (result) {
+                    return {
+                        ...result,
+                        dreamTags: DreamsDb.FixDreamTags(result.dreamTags ?? []),
+                    }
+                }
+                return null
+            })
     }
 
     static async Update(db: SQLiteDatabase, model: DreamDbModel) {
@@ -110,5 +119,14 @@ export default abstract class DreamsDb {
                 dreamTags = '${ model.dreamTags ? JSON.stringify(model.dreamTags) : "" }'
             WHERE id = ${ model.id }
         `)
+    }
+
+    static FixDreamTags(dreamTags: string[]): string[] {
+        try {
+            return JSON.parse(dreamTags as any)
+        }
+        catch {
+            return []
+        }
     }
 }

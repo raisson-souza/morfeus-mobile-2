@@ -6,10 +6,12 @@ import { SyncContextProvider } from "@/contexts/SyncContext"
 import { TagModel } from "@/types/tag"
 import { useEffect, useState } from "react"
 import { useLocalSearchParams, useRouter } from "expo-router"
+import { useSQLiteContext } from "expo-sqlite"
 import Box from "@/components/base/Box"
 import ConfirmRecordDeletion from "@/components/screens/general/ConfirmRecordDeletion"
 import CustomButton from "@/components/customs/CustomButton"
 import CustomText from "@/components/customs/CustomText"
+import DreamsDb from "@/db/dreamsDb"
 import DreamService from "@/services/api/DreamService"
 import IconEntypo from "react-native-vector-icons/Entypo"
 import IconFontisto from "react-native-vector-icons/Fontisto"
@@ -29,9 +31,10 @@ type GetDreamParams = {
 
 export default function GetDreamScreen() {
     const { systemStyle } = StyleContextProvider()
+    const { checkIsConnected } = SyncContextProvider()
+    const db = useSQLiteContext()
     const router = useRouter()
     const { id, sleepDate } = useLocalSearchParams<GetDreamParams>()
-    const { checkIsConnected } = SyncContextProvider()
     const [ dream, setDream ] = useState<DreamModel | null>(null)
     const [ tags, setTags ] = useState<TagModel[] | null>(null)
     const [ loading, setLoading ] = useState<boolean>(true)
@@ -40,27 +43,44 @@ export default function GetDreamScreen() {
 
     useEffect(() => {
         const fetchDream = async () => {
-            await DreamService.GetDream({ id: Number.parseInt(id) })
-                .then(response => {
-                    if (response.Success) {
-                        setDream(response.Data)
-                        return
-                    }
-                    setErrorMessage(response.ErrorMessage ?? "")
-                })
-                .finally(() => {
-                    setLoading(false)
-                })
+            if (checkIsConnected()) {
+                await DreamService.GetDream({ id: Number.parseInt(id) })
+                    .then(response => {
+                        if (response.Success) {
+                            setDream(response.Data)
+                            return
+                        }
+                        setErrorMessage(response.ErrorMessage ?? "")
+                    })
+            }
+            else {
+                await DreamsDb.Get(db, Number.parseInt(id))
+                    .then(result => {
+                        if (result) {
+                            setDream(result)
+                            setTags(result.dreamTags.map(dreamTag => {
+                                return {
+                                    id: 0,
+                                    title: dreamTag,
+                                }
+                            }))
+                        }
+                        setErrorMessage("Sonho não encontrado.")
+                    })
+            }
+            setLoading(false)
         }
         const fetchTags = async () => {
-            await TagService.ListByDream(checkIsConnected(), { dreamId: Number.parseInt(id) })
-                .then(response => {
-                    if (response.Success) {
-                        setTags(response.Data)
-                        return
-                    }
-                    setTags([])
-                })
+            if (checkIsConnected()) {
+                await TagService.ListByDream(checkIsConnected(), { dreamId: Number.parseInt(id) })
+                    .then(response => {
+                        if (response.Success) {
+                            setTags(response.Data)
+                            return
+                        }
+                        setTags([])
+                    })
+            }
         }
         fetchDream()
         fetchTags()

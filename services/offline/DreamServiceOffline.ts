@@ -80,10 +80,10 @@ export default abstract class DreamServiceOffline {
                     return result.map(dream => {
                         const tags = (dream.tags as any) == 1
                             ? []
-                            : DreamServiceOffline.fixDreamTags(dream.tags)
+                            : JSON.parse(dream.tags as any)
                         return {
                             ...dream,
-                            tags: tags.map(tag => {
+                            tags: tags.map((tag: any) => {
                                 return {
                                     id: 0,
                                     title: tag
@@ -97,15 +97,6 @@ export default abstract class DreamServiceOffline {
                 const dreamDateFormatted = DateTime.fromISO(dream.date)
                 return dreamDateFormatted.year === formattedDate.year && dreamDateFormatted.month === formattedDate.month
             })
-        }
-        catch {
-            return []
-        }
-    }
-
-    static fixDreamTags(dreamTags: any): string[] {
-        try {
-            return JSON.parse(dreamTags)
         }
         catch {
             return []

@@ -1,8 +1,9 @@
+import { StyleContextProvider } from "@/contexts/StyleContext"
+import { StyleSheet } from "react-native"
+import { SyncContextProvider } from "@/contexts/SyncContext"
+import { useRouter } from "expo-router"
 import Box from "@/components/base/Box"
 import CustomText from "@/components/customs/CustomText"
-import { StyleContextProvider } from "@/contexts/StyleContext"
-import { useRouter } from "expo-router"
-import { StyleSheet } from "react-native"
 
 type ShowTag = {
     id?: number
@@ -17,6 +18,7 @@ type ShowTagsProps = {
 export default function ShowTags({
     tags,
 }: ShowTagsProps) {
+    const { checkIsConnected } = SyncContextProvider()
     const { systemStyle } = StyleContextProvider()
     const router = useRouter()
 
@@ -59,7 +61,9 @@ export default function ShowTags({
     }
 
     const onTagPress = (tagTitle: string, tagId?: number) => {
-        if (tagId) router.navigate({ pathname: "/(tabs)/(dreams)/getTag", params: { "id": tagId, "title": tagTitle }})
+        if (checkIsConnected()) {
+            if (tagId) router.navigate({ pathname: "/(tabs)/(dreams)/getTag", params: { "id": tagId, "title": tagTitle }})
+        }
     }
 
     return <Box.Row
