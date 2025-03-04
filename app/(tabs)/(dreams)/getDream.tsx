@@ -64,6 +64,7 @@ export default function GetDreamScreen() {
                                     title: dreamTag,
                                 }
                             }))
+                            return
                         }
                         setErrorMessage("Sonho não encontrado.")
                     })
@@ -312,7 +313,7 @@ export default function GetDreamScreen() {
                                         { dream.description }
                                     </CustomText>
                                     {
-                                        dream.personalAnalysis
+                                        dream.personalAnalysis && dream.personalAnalysis != "null"
                                             ? (
                                                 <Box.Column
                                                     style={{

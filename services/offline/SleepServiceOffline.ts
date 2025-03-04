@@ -1,15 +1,38 @@
 import { DateFormatter } from "@/utils/DateFormatter"
 import { DateTime } from "luxon"
+import { ListedDreamBySleepCycle } from "@/types/dream"
 import { ListSleepByUserRequest, ListSleepByUserResponse, SleepListedByUserType } from "@/types/sleeps"
 import { SQLiteDatabase } from "expo-sqlite"
+import DreamsDb from "@/db/dreamsDb"
 
 export default abstract class SleepServiceOffline {
     static async Create() {
 
     }
 
-    static async GetDreams() {
-        
+    static async GetDreams(db: SQLiteDatabase, sleepId: number): Promise<ListedDreamBySleepCycle[]> {
+        try {
+            return await db.getAllAsync<{
+                id: number,
+                title: string,
+                eroticDream: boolean,
+                hiddenDream: boolean,
+                dreamTags: string
+            }>(`SELECT id, title, eroticDream, hiddenDream, dreamTags FROM dreams WHERE sleepId = ${ sleepId }`)
+                .then(result => {
+                    return result.map(dream => {
+                        return {
+                            id: dream.id,
+                            title: dream.title,
+                            tags: DreamsDb.FixDreamTags(dream.dreamTags as any),
+                            isHiddenOrErotic: dream.eroticDream || dream.hiddenDream,
+                        }
+                    })
+                })
+        }
+        catch {
+            return []
+        }
     }
 
     static async List(db: SQLiteDatabase, request: ListSleepByUserRequest): Promise<ListSleepByUserResponse> {

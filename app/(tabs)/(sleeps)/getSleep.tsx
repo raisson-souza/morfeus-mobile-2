@@ -1,13 +1,15 @@
 import { DateFormatter } from "@/utils/DateFormatter"
-import { ListedDreamBySleepCycle } from "@/types/dream"
 import { DateTime } from "luxon"
+import { ListedDreamBySleepCycle } from "@/types/dream"
 import { Screen } from "@/components/base/Screen"
 import { SleepHumorType } from "@/types/sleepHumor"
 import { SleepModel } from "@/types/sleeps"
 import { StyleContextProvider } from "@/contexts/StyleContext"
 import { StyleSheet } from "react-native"
+import { SyncContextProvider } from "@/contexts/SyncContext"
 import { useEffect, useState } from "react"
 import { useLocalSearchParams, useRouter } from "expo-router"
+import { useSQLiteContext } from "expo-sqlite"
 import BiologicalOccurencesInfoModal from "@/components/screens/sleeps/biologicalOccurencesInfoModal"
 import Box from "@/components/base/Box"
 import ConfirmRecordDeletion from "@/components/screens/general/ConfirmRecordDeletion"
@@ -22,7 +24,9 @@ import Info from "@/components/base/Info"
 import isNil from "@/utils/IsNill"
 import Loading from "@/components/base/Loading"
 import React from "react"
+import SleepsDb from "@/db/sleepsDb"
 import SleepService from "@/services/api/SleepService"
+import SleepServiceOffline from "@/services/offline/SleepServiceOffline"
 import WeekDayParser from "@/utils/WeekDayParser"
 
 type GetSleepCycleParams = {
@@ -30,6 +34,8 @@ type GetSleepCycleParams = {
 }
 
 export default function GetSleepScreen() {
+    const db = useSQLiteContext()
+    const { checkIsConnected } = SyncContextProvider()
     const { systemStyle } = StyleContextProvider()
     const router = useRouter()
     const { id } = useLocalSearchParams<GetSleepCycleParams>()
@@ -41,23 +47,45 @@ export default function GetSleepScreen() {
     const [ sleepDreams, setSleepDreams ] = useState<ListedDreamBySleepCycle[]>([])
 
     const fetchSleep = async () => {
-        await SleepService.GetSleep({ id: Number.parseInt(id) })
-            .then(response => {
-                if (response.Success) {
-                    setSleep(response.Data)
-                    return
-                }
-                setErrorMessage(response.ErrorMessage ?? "")
-            })
-            .finally(() => setLoading(false))
+        if (checkIsConnected()) {
+            await SleepService.GetSleep({ id: Number.parseInt(id) })
+                .then(response => {
+                    if (response.Success) {
+                        setSleep(response.Data)
+                        return
+                    }
+                    setErrorMessage(response.ErrorMessage ?? "")
+                })
+        }
+        else {
+            await SleepsDb.Get(db, Number.parseInt(id))
+                .then(result => {
+                    if (result) {
+                        setSleep({
+                            ...result,
+                            createdAt: "",
+                            updatedAt: "",
+                            userId: 0,
+                        })
+                        return
+                    }
+                    setErrorMessage("Ciclo de sono não encontrado.")
+                })
+        }
+        setLoading(false)
     }
 
     const fetchSleepDreams = async () => {
-        await DreamService.ListBySleep({ sleepId: Number.parseInt(id) })
-            .then(response => {
-                if (response.Success) setSleepDreams(response.Data)
-            })
-            .finally(() => setLoadingSleepDreams(false))
+        if (checkIsConnected()) {
+            await DreamService.ListBySleep({ sleepId: Number.parseInt(id) })
+                .then(response => {
+                    if (response.Success) setSleepDreams(response.Data)
+                })
+        }
+        else {
+            setSleepDreams(await SleepServiceOffline.GetDreams(db, Number.parseInt(id)))
+        }
+        setLoadingSleepDreams(false)
     }
 
     const deleteSleepCycleAction = async () => {

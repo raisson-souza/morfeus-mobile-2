@@ -13,31 +13,43 @@ type ShowTag = {
 
 type ShowTagsProps = {
     tags: ShowTag[]
+    useQuantity?: boolean
 }
 
 export default function ShowTags({
     tags,
+    useQuantity = false,
 }: ShowTagsProps) {
     const { checkIsConnected } = SyncContextProvider()
     const { systemStyle } = StyleContextProvider()
     const router = useRouter()
 
-    const smallestTagSize = tags.reduce((smallerTagSize, currentTag) => {
-        return currentTag.quantity ?? 0 < smallerTagSize
-            ? currentTag.quantity ?? 0
-            : smallerTagSize
-    }, tags[0].quantity ?? 0)
+    const defineSmallestTagSize = () => {
+        return tags.length > 0 && useQuantity
+            ? tags.reduce((smallerTagSize, currentTag) => {
+                return currentTag.quantity ?? 0 < smallerTagSize
+                    ? currentTag.quantity ?? 0
+                    : smallerTagSize
+            }, tags[0].quantity ?? 0)
+            : 0
+    }
+    const smallestTagSize = defineSmallestTagSize()
 
-    const biggestTagSize = tags.reduce((smallerTagSize, currentTag) => {
-        return currentTag.quantity ?? 0 > smallerTagSize
-            ? currentTag.quantity ?? 0
-            : smallerTagSize
-    }, tags[0].quantity ?? 0)
+    const defineBiggestTagSize = () => {
+        return tags.length > 0 && useQuantity
+            ? tags.reduce((smallerTagSize, currentTag) => {
+                return currentTag.quantity ?? 0 > smallerTagSize
+                    ? currentTag.quantity ?? 0
+                    : smallerTagSize
+            }, tags[0].quantity ?? 0)
+            : 0
+    }
+    const biggestTagSize = defineBiggestTagSize()
 
     const mediumTagSize = (smallestTagSize + biggestTagSize) / 2
 
     const averageTagsSizeSetter = () => {
-        if (smallestTagSize === 0 && biggestTagSize === 0) return 0
+        if ((smallestTagSize === 0 && biggestTagSize === 0) || !useQuantity) return 0
 
         const tagSizeDiff = biggestTagSize - mediumTagSize
 
@@ -50,7 +62,7 @@ export default function ShowTags({
     const tagSizeDiffGap = averageTagsSizeSetter()
 
     const defineTagSize = (tagSize?: number) => {
-        if (tagSize) {
+        if (tagSize && useQuantity) {
             if (tagSize === smallestTagSize) return "s"
             if (tagSize > smallestTagSize && tagSize < (mediumTagSize - tagSizeDiffGap)) return "m"
             if (tagSize >= (mediumTagSize - tagSizeDiffGap) && tagSize <= (mediumTagSize + tagSizeDiffGap)) return "l"
@@ -88,7 +100,7 @@ export default function ShowTags({
                         </CustomText>
                     </Box.Center>
                 )
-                : <CustomText>Não há Tags</CustomText>
+                : <CustomText isOpposite>Não há Tags</CustomText>
         }
     </Box.Row>
 }

@@ -30,8 +30,8 @@ export default abstract class SleepsDb {
         `)
     }
 
-    static async Get(db: SQLiteDatabase, dreamId: number) {
-        return await db.getFirstAsync<SleepDbModel>(`SELECT * FROM sleeps WHERE id = ${ dreamId }`)
+    static async Get(db: SQLiteDatabase, sleepId: number) {
+        return await db.getFirstAsync<SleepDbModel>(`SELECT * FROM sleeps WHERE id = ${ sleepId }`)
     }
 
     static async Update(db: SQLiteDatabase, model: SleepDbModel) {
@@ -51,10 +51,10 @@ export default abstract class SleepsDb {
         `)
     }
 
-    static async Delete(db: SQLiteDatabase, dreamId: number) {
+    static async Delete(db: SQLiteDatabase, sleepId: number) {
         await db.execAsync(`
             DELETE FROM sleeps
-            WHERE id = ${ dreamId }
+            WHERE id = ${ sleepId }
         `)
     }
 
