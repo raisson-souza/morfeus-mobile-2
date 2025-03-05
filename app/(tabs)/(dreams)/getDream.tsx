@@ -73,7 +73,7 @@ export default function GetDreamScreen() {
         }
         const fetchTags = async () => {
             if (checkIsConnected()) {
-                await TagService.ListByDream(checkIsConnected(), { dreamId: Number.parseInt(id) })
+                await TagService.ListByDream({ dreamId: Number.parseInt(id) })
                     .then(response => {
                         if (response.Success) {
                             setTags(response.Data)

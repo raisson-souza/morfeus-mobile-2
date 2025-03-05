@@ -1,9 +1,11 @@
 import { DateFormatter } from "@/utils/DateFormatter"
 import { DateTime } from "luxon"
-import { DreamListedByUserType, ListDreamByUserResponse, ListDreamsByUserRequest } from "@/types/dream"
+import { DefaultDreamClimate } from "@/types/dreamClimate"
+import { DreamListedByUserType, DreamModel, ListDreamByUserResponse, ListDreamsByUserRequest } from "@/types/dream"
 import { ListedSleepForDreamCreation, ListSleepsForDreamCreationRequest } from "@/types/sleeps"
 import { PaginationResponse } from "@/types/pagination"
 import { SQLiteDatabase } from "expo-sqlite"
+import DreamsDb from "@/db/dreamsDb"
 
 export default abstract class DreamServiceOffline {
     static async Create() {
@@ -137,5 +139,54 @@ export default abstract class DreamServiceOffline {
     static async CheckIsSynchronized(db: SQLiteDatabase, id: number): Promise<boolean> {
         return await db.getFirstAsync<{ synchronized: boolean }>(`SELECT synchronized FROM dreams WHERE id = ${ id }`)
             .then(result => result ? result.synchronized : false)
+    }
+
+    static async ListDreamsByTag(db: SQLiteDatabase, tagTitle: string): Promise<DreamModel[]> { // ListDreamsByTag retorna DreamModel pois é requerido em getTag
+        try {
+            return await db.getAllAsync<{ id: number, title: string, dreamTags: string }>(`SELECT id, title, dreamTags FROM dreams`)
+                .then(result => {
+                    const dreams: DreamModel[] = []
+
+                    for (const dream of result) {
+                        try {
+                            if (dream.dreamTags === "1" || dream.dreamTags === "[]") continue
+
+                            const parsedTags = DreamsDb.FixDreamTags(dream.dreamTags)
+                            parsedTags.map(tag => {
+                                if (tag == tagTitle) {
+                                    dreams.push({
+                                        id: dream.id,
+                                        title: dream.title,
+                                        description: "",
+                                        climate: DefaultDreamClimate,
+                                        eroticDream: false,
+                                        hiddenDream: false,
+                                        personalAnalysis: "",
+                                        isComplete: true,
+                                        createdAt: "",
+                                        updatedAt: "",
+                                        dreamOriginId: 0,
+                                        dreamPointOfViewId: 0,
+                                        dreamHourId: 0,
+                                        dreamDurationId: 0,
+                                        dreamLucidityLevelId: 0,
+                                        dreamTypeId: 0,
+                                        dreamRealityLevelId: 0,
+                                        sleepId: 0,
+                                        synchronized: true,
+                                        dreamTags: [],
+                                    })
+                                }
+                            })
+                        }
+                        catch { }
+                    }
+
+                    return dreams
+                })
+        }
+        catch {
+            return []
+        }
     }
 }

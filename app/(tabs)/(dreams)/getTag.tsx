@@ -4,10 +4,12 @@ import { StyleSheet } from "react-native"
 import { SyncContextProvider } from "@/contexts/SyncContext"
 import { useEffect, useState } from "react"
 import { useLocalSearchParams, useRouter } from "expo-router"
+import { useSQLiteContext } from "expo-sqlite"
 import Box from "@/components/base/Box"
 import CustomButton from "@/components/customs/CustomButton"
 import CustomText from "@/components/customs/CustomText"
 import DreamListedByUser from "@/components/screens/dreams/DreamListedByUser"
+import DreamServiceOffline from "@/services/offline/DreamServiceOffline"
 import Loading from "@/components/base/Loading"
 import TagService from "@/services/api/TagService"
 
@@ -18,6 +20,7 @@ type GetTagParams = {
 
 export default function GetTagScreen() {
     const router = useRouter()
+    const db = useSQLiteContext()
     const { id, title } = useLocalSearchParams<GetTagParams>()
     const { checkIsConnected } = SyncContextProvider()
     const [ dreams, setDreams ] = useState<DreamModel[] | null>(null)
@@ -25,14 +28,20 @@ export default function GetTagScreen() {
 
     useEffect(() => {
         const fetchTag = async () => {
-            await TagService.ListDreamsByTag(checkIsConnected(), { tagId: Number.parseInt(id) })
-                .then(response => {
-                    if (response.Success) {
-                        setDreams(response.Data)
-                        return
-                    }
-                    setErrorMessage(response.ErrorMessage ?? "")
-                })
+            if (checkIsConnected()) {
+                await TagService.ListDreamsByTag({ tagId: Number.parseInt(id) })
+                    .then(response => {
+                        if (response.Success) {
+                            setDreams(response.Data)
+                            return
+                        }
+                        setErrorMessage(response.ErrorMessage ?? "")
+                    })
+            }
+            else {
+                await DreamServiceOffline.ListDreamsByTag(db, title)
+                    .then(result => setDreams(result as any))
+            }
         }
         fetchTag()
     }, [])

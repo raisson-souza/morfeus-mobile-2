@@ -50,7 +50,7 @@ export default function UpdateDreamScreen() {
     }
 
     const fetchTags = async () => {
-        await TagService.ListByDream(checkIsConnected(), { dreamId: Number.parseInt(id) })
+        await TagService.ListByDream({ dreamId: Number.parseInt(id) })
             .then(response => {
                 if (response.Success) {
                     setTags(response.Data.map(tag => tag.title))

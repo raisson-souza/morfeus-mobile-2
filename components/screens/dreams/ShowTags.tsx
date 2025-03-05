@@ -73,9 +73,7 @@ export default function ShowTags({
     }
 
     const onTagPress = (tagTitle: string, tagId?: number) => {
-        if (checkIsConnected()) {
-            if (tagId) router.navigate({ pathname: "/(tabs)/(dreams)/getTag", params: { "id": tagId, "title": tagTitle }})
-        }
+        router.navigate({ pathname: "/(tabs)/(dreams)/getTag", params: { "id": tagId, "title": tagTitle }})
     }
 
     return <Box.Row

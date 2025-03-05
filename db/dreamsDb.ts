@@ -121,7 +121,7 @@ export default abstract class DreamsDb {
         `)
     }
 
-    static FixDreamTags(dreamTags: string[]): string[] {
+    static FixDreamTags(dreamTags: any): string[] {
         try {
             return JSON.parse(dreamTags as any)
         }
