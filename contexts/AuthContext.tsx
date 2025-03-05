@@ -7,6 +7,7 @@ import { LoginRequest } from "@/types/login"
 import { RegistryRequest } from "@/types/registry"
 import { UserDataLocalStorage } from "@/types/user"
 import { useRouter } from "expo-router"
+import { useSQLiteContext } from "expo-sqlite"
 import AuthService from "@/services/api/AuthService"
 import DefaultLoadingScreen from "@/components/screens/general/DefaultLoadingScreen"
 import InternetInfo from "@/utils/InternetInfo"
@@ -34,6 +35,7 @@ const AuthContext = createContext<AuthContext | null>(null)
 
 /** Context de autenticação, realiza o refresh do token de autenticação e valida credenciais no localStorage */
 export default function AuthContextComponent({ children }: AuthContextProps) {
+    const db = useSQLiteContext()
     const router = useRouter()
     const { deleteFile } = FileSystemContextProvider()
     const [ loading, setLoading ] = useState<boolean>(true)
@@ -149,6 +151,8 @@ export default function AuthContextComponent({ children }: AuthContextProps) {
         setLoading(false)
         try {
             await deleteFile(EXPORT_USER_DATA_FILE_NAME)
+            await db.execAsync("DELETE FROM dreams")
+            await db.execAsync("DELETE FROM sleeps")
         } catch { }
     }
 
