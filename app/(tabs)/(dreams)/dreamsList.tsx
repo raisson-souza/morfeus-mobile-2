@@ -118,6 +118,7 @@ export default function DreamsList() {
                                         <DreamListedByUser
                                             dream={ dream }
                                             containerStyle={ styles.dreamContainer }
+                                            useSync
                                         />
                                     </Box.Center>
                                 ))

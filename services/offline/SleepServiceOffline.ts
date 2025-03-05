@@ -54,4 +54,9 @@ export default abstract class SleepServiceOffline {
             return []
         }
     }
+
+    static async CheckIsSynchronized(db: SQLiteDatabase, id: number): Promise<boolean> {
+        return await db.getFirstAsync<{ synchronized: boolean }>(`SELECT synchronized FROM sleeps WHERE id = ${ id }`)
+            .then(result => result ? result.synchronized : false)
+    }
 }

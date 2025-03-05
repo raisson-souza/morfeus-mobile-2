@@ -4,21 +4,37 @@ import { SleepListedByUserType } from "@/types/sleeps"
 import { StyleContextProvider } from "@/contexts/StyleContext"
 import { StyleSheet } from "react-native"
 import { useRouter } from "expo-router"
+import { useSQLiteContext } from "expo-sqlite"
 import Box from "@/components/base/Box"
 import CustomText from "@/components/customs/CustomText"
 import IconFeather from "react-native-vector-icons/Feather"
-import React from "react"
+import IconMaterialIcons from "react-native-vector-icons/MaterialIcons"
+import React, { useEffect, useState } from "react"
+import SleepServiceOffline from "@/services/offline/SleepServiceOffline"
 import WeekDayParser from "@/utils/WeekDayParser"
 
 type SleepListedByUserProps = {
     sleepCycle: SleepListedByUserType
+    useSync?: boolean
 }
 
 export default function SleepListedByUser({
     sleepCycle,
+    useSync = false,
 }: SleepListedByUserProps) {
-    const { systemStyle } = StyleContextProvider()
+    const db = useSQLiteContext()
     const router = useRouter()
+    const { systemStyle } = StyleContextProvider()
+    const [ synchronizedRecord, setSynchronizedRecord ] = useState<boolean>(false)
+
+    const checkSynchronizedRecord = async () => {
+        if (useSync) {
+            await SleepServiceOffline.CheckIsSynchronized(db, sleepCycle.id)
+                .then(result => setSynchronizedRecord(result))
+        }
+    }
+
+    useEffect(() => { checkSynchronizedRecord() })
 
     const fixDate = () => {
         const splitedFormattedDate = DateFormatter
@@ -80,11 +96,22 @@ export default function SleepListedByUser({
             <Box.Column
                 style={{
                     ...styles.dayContainer,
-                    width: "30%",
+                    width: "35%",
                 }}
                 onPress={ () => redirectToSleepCycle() }
             >
                 <Box.Row style={ styles.dayIconContainer }>
+                    {
+                        useSync
+                            ? synchronizedRecord
+                                ? <></>
+                                :<IconMaterialIcons
+                                    name="sync-problem"
+                                    color="red"
+                                    size={ systemStyle.largeIconSize }
+                                />
+                            : <></>
+                    }
                     { renderIsNightSleep() }
                     <CustomText weight="bold">{ fixedDate }</CustomText>
                 </Box.Row>
@@ -118,11 +145,7 @@ export default function SleepListedByUser({
                     <CustomText size="s">{ renderTime(sleepCycle.sleepEnd) }</CustomText>
                 </Box.Row>
             </Box.Column>
-            <Box.Center
-                style={{
-                    width: "33%",
-                }}
-            >
+            <Box.Center style={{ width: "25%" }}>
                 { renderSleepTime() }
             </Box.Center>
         </Box.Row>
@@ -142,6 +165,7 @@ const styles = StyleSheet.create({
     },
     dayIconContainer: {
         gap: 5,
+        alignItems: "center",
     },
     sleepTimesContainer: {
         alignItems: "center",

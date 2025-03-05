@@ -3,10 +3,13 @@ import { DreamListedByUserType } from "@/types/dream"
 import { StyleContextProvider } from "@/contexts/StyleContext"
 import { StyleSheet, StyleProp, ViewStyle } from "react-native"
 import { useRouter } from "expo-router"
+import { useSQLiteContext } from "expo-sqlite"
 import Box from "@/components/base/Box"
 import CustomText from "@/components/customs/CustomText"
+import DreamServiceOffline from "@/services/offline/DreamServiceOffline"
 import IconEntypo from "react-native-vector-icons/Entypo"
-import React, { useState } from "react"
+import IconMaterialIcons from "react-native-vector-icons/MaterialIcons"
+import React, { useEffect, useState } from "react"
 
 type DreamListedByUserProps = {
     dream: DreamListedByUserType
@@ -16,6 +19,7 @@ type DreamListedByUserProps = {
     sleepId?: number
     redirectToTag?: boolean
     isHiddenOrErotic?: boolean
+    useSync?: boolean
 }
 
 export default function DreamListedByUser({
@@ -26,12 +30,24 @@ export default function DreamListedByUser({
     sleepId = undefined,
     redirectToTag = true,
     isHiddenOrErotic = false,
+    useSync = false,
 }: DreamListedByUserProps) {
+    const db = useSQLiteContext()
     const { systemStyle } = StyleContextProvider()
     titleSize = titleSize ? titleSize : systemStyle.largeTextSize
 
     const [ showDream, setShowDream ] = useState<boolean>(!isHiddenOrErotic)
+    const [ synchronizedRecord, setSynchronizedRecord ] = useState<boolean>(false)
     const router = useRouter()
+
+    const checkSynchronizedRecord = async () => {
+        if (useSync) {
+            await DreamServiceOffline.CheckIsSynchronized(db, dream.id)
+                .then(result => setSynchronizedRecord(result))
+        }
+    }
+
+    useEffect(() => { checkSynchronizedRecord() })
 
     const treatDate = () => {
         const dateFormatted = DateFormatter.removeTime(dream.date).split("-")
@@ -63,13 +79,27 @@ export default function DreamListedByUser({
 
     return (
         <Box.Column style={{ ...containerStyle as any }}>
-            <CustomText
-                onPress={ () => router.navigate({ pathname: "/getDream", params: { id: dream.id, sleepDate: treatedDate } }) }
-                size="xxl"
-                weight="bold"
-            >
-                { dream.title }
-            </CustomText>
+            <Box.Row style={ styles.titleContainer }>
+                {
+                    useSync
+                        ? synchronizedRecord
+                            ? <></>
+                            :<IconMaterialIcons
+                                name="sync-problem"
+                                color="red"
+                                size={ systemStyle.largeIconSize }
+                                style={ styles.syncIcon }
+                            />
+                        : <></>
+                }
+                <CustomText
+                    onPress={ () => router.navigate({ pathname: "/getDream", params: { id: dream.id, sleepDate: treatedDate } }) }
+                    size="xxl"
+                    weight="bold"
+                >
+                    { dream.title }
+                </CustomText>
+            </Box.Row>
             {
                 showDate
                     ? <CustomText
@@ -104,5 +134,12 @@ const styles = StyleSheet.create({
     hiddenOrEroticDreamContainer: {
         gap: 10,
         alignItems: "center",
+    },
+    titleContainer: {
+        alignItems: "center",
+        gap: 5,
+    },
+    syncIcon: {
+        marginTop: 5,
     },
 })

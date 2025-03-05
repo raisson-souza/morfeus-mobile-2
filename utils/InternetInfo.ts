@@ -21,7 +21,7 @@ export default async function InternetInfo(): Promise<InternetInfoReturn | null>
                     internalIp: (state.details as any)["ipAddress"],
                     subnet: (state.details as any)["subnet"],
                     speedMbps: (state.details as any)["linkSpeed"],
-                    isConnected: state.isConnected ?? false,
+                    isConnected: true,
                     isWifiEnabled: state.isWifiEnabled ?? false,
                     internetType: state.type,
                 }

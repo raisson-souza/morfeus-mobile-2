@@ -62,7 +62,7 @@ export default function SleepsListScreen() {
                 return (
                     <>
                         <Box.Column style={ styles.sleepsCycleList }>
-                            { sleeps.map((sleepCycle, i) => <SleepListedByUser sleepCycle={ sleepCycle } key={ i } />) }
+                            { sleeps.map((sleepCycle, i) => <SleepListedByUser sleepCycle={ sleepCycle } key={ i } useSync />) }
                         </Box.Column>
                         {
                             sleeps.length >= 10

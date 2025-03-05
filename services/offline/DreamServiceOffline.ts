@@ -133,4 +133,9 @@ export default abstract class DreamServiceOffline {
             return []
         }
     }
+
+    static async CheckIsSynchronized(db: SQLiteDatabase, id: number): Promise<boolean> {
+        return await db.getFirstAsync<{ synchronized: boolean }>(`SELECT synchronized FROM dreams WHERE id = ${ id }`)
+            .then(result => result ? result.synchronized : false)
+    }
 }
