@@ -1,6 +1,8 @@
 import { DateFormatter } from "@/utils/DateFormatter"
 import { DateTime } from "luxon"
 import { DreamListedByUserType, ListDreamByUserResponse, ListDreamsByUserRequest } from "@/types/dream"
+import { ListedSleepForDreamCreation, ListSleepsForDreamCreationRequest } from "@/types/sleeps"
+import { PaginationResponse } from "@/types/pagination"
 import { SQLiteDatabase } from "expo-sqlite"
 
 export default abstract class DreamServiceOffline {
@@ -8,8 +10,49 @@ export default abstract class DreamServiceOffline {
 
     }
 
-    static async ListSleepCycles() {
-        
+    static async ListSleepCycles(db: SQLiteDatabase, request: ListSleepsForDreamCreationRequest): Promise<PaginationResponse<ListedSleepForDreamCreation>> {
+        try {
+            const total = await db.getFirstAsync<{ count: number }>("SELECT COUNT(id) as count FROM sleeps").then(result => result ? result.count : 0)
+            return await db.getAllAsync<ListedSleepForDreamCreation>(`SELECT id, date, sleepStart, sleepEnd FROM sleeps ORDER BY date DESC LIMIT 5 OFFSET ${ (request.pageNumber - 1) * 5 }`)
+                .then(result => {
+                    return {
+                        data: result.map(sleepCycle => {
+                            return {
+                                ...sleepCycle,
+                                // horário tratado
+                                date: DateFormatter.removeTime(sleepCycle.date as any) as any
+                            }
+                        }),
+                        meta: {
+                            currentPage: request.pageNumber,
+                            firstPage: 1,
+                            firstPageUrl: "",
+                            lastPage: (request.pageNumber * 5) < total ? request.pageNumber + 1 : request.pageNumber,
+                            lastPageUrl: "",
+                            nextPageUrl: "",
+                            perPage: 5,
+                            previousPageUrl: "",
+                            total: total,
+                        },
+                    }
+                })
+        }
+        catch {
+            return {
+                data: [],
+                meta: {
+                    currentPage: request.pageNumber,
+                    firstPage: 1,
+                    firstPageUrl: "",
+                    lastPage: 1,
+                    lastPageUrl: "",
+                    nextPageUrl: "",
+                    perPage: 5,
+                    previousPageUrl: "",
+                    total: 1,
+                },
+            }
+        }
     }
 
     static async List(db: SQLiteDatabase, request: ListDreamsByUserRequest): Promise<ListDreamByUserResponse> {

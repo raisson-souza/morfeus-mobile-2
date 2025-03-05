@@ -39,7 +39,7 @@ export default function Datagrid({
                     size={ systemStyle.extraLargeIconSize }
                     color={
                         canRewindPage
-                            ? systemStyle.textColor
+                            ? systemStyle.oppositeTextColor
                             : systemStyle.inactiveTextColor
                     }
                     onPress={ () => canRewindPage ? handlePage(pagination.page - 1) : {} }
@@ -56,8 +56,8 @@ export default function Datagrid({
                     name="right"
                     size={ systemStyle.extraLargeIconSize }
                     color={
-                        canRewindPage
-                            ? systemStyle.textColor
+                        canAdvancePage
+                            ? systemStyle.oppositeTextColor
                             : systemStyle.inactiveTextColor
                     }
                     onPress={ () => canAdvancePage ? handlePage(pagination.page + 1) : {} }

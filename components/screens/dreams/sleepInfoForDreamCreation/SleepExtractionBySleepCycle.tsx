@@ -1,13 +1,16 @@
+import { Alert, StyleSheet } from "react-native"
 import { DateFormatter } from "@/utils/DateFormatter"
 import { ListedSleepForDreamCreation } from "@/types/sleeps"
 import { PaginationConfig } from "@/types/pagination"
 import { StyleContextProvider } from "@/contexts/StyleContext"
-import { StyleSheet } from "react-native"
+import { SyncContextProvider } from "@/contexts/SyncContext"
 import { useEffect, useState } from "react"
+import { useSQLiteContext } from "expo-sqlite"
 import Box from "@/components/base/Box"
 import CustomButton from "@/components/customs/CustomButton"
 import CustomText from "@/components/customs/CustomText"
 import Datagrid from "@/components/base/Datagrid"
+import DreamServiceOffline from "@/services/offline/DreamServiceOffline"
 import Loading from "@/components/base/Loading"
 import ModalBox from "@/components/base/ModalBox"
 import React from "react"
@@ -26,6 +29,8 @@ export default function SleepExtractionBySleepCycle({
     textColor,
     showSleep = true,
 }: SleepExtractionBySleepCycleProps) {
+    const db = useSQLiteContext()
+    const { checkIsConnected } = SyncContextProvider()
     const { systemStyle } = StyleContextProvider()
     textColor = textColor ? textColor : systemStyle.oppositeTextColor
 
@@ -40,25 +45,41 @@ export default function SleepExtractionBySleepCycle({
 
     const fetchSleeps = async (newPagination?: PaginationConfig) => {
         setLoading(true)
-        await SleepService.ListSleepsForDreamCreation({
-            pageNumber: newPagination
-                ? newPagination.page
-                : pagination.page
-        })
-            .then(response => {
-                if (response.Success) {
-                    setSleeps(response.Data.data)
-                    setPagination({
-                        page: response.Data.meta.currentPage,
-                        limit: 5,
-                        meta: { ...response.Data.meta },
-                    })
-                }
-                else {
-                    alert(response.ErrorMessage)
-                }
-                setLoading(false)
+        if (checkIsConnected()) {
+            await SleepService.ListSleepsForDreamCreation({
+                pageNumber: newPagination
+                    ? newPagination.page
+                    : pagination.page
             })
+                .then(response => {
+                    if (response.Success) {
+                        setSleeps(response.Data.data)
+                        setPagination({
+                            page: response.Data.meta.currentPage,
+                            limit: 5,
+                            meta: { ...response.Data.meta },
+                        })
+                        return
+                    }
+                    Alert.alert("Erro ao buscar ciclos de sono", response.ErrorMessage)
+                })
+        }
+        else {
+            await DreamServiceOffline.ListSleepCycles(db, {
+                pageNumber: newPagination
+                    ? newPagination.page
+                    : pagination.page
+            })
+                .then(result => {
+                    setSleeps(result.data)
+                    setPagination({
+                        page: result.meta.currentPage,
+                        limit: 5,
+                        meta: { ...result.meta },
+                    })
+                })
+        }
+        setLoading(false)
     }
 
     useEffect(() => {

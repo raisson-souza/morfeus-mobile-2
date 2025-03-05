@@ -2,6 +2,7 @@ import { CreateCompleteDreamModel } from "@/types/dream"
 import { DateFormatter } from "@/utils/DateFormatter"
 import { StyleContextProvider } from "@/contexts/StyleContext"
 import { StyleSheet } from "react-native"
+import { SyncContextProvider } from "@/contexts/SyncContext"
 import { useEffect, useState } from "react"
 import { useNavigation } from "expo-router"
 import Box from "@/components/base/Box"
@@ -24,6 +25,7 @@ export default function DefineDreamSleep({
     sleepId,
     setSleepId,
 }: DefineDreamSleepProps) {
+    const { checkIsConnected } = SyncContextProvider()
     const { systemStyle } = StyleContextProvider()
     const navigation = useNavigation()
     const [ sleepExtractionType, setSleepExtractionType ] = useState<"sleep" | "date" | "time">("sleep")
@@ -78,28 +80,35 @@ export default function DefineDreamSleep({
             }}
         >
             <Box.Row style={ styles.sleepCycleExtractionQuestionContainer }>
-                <Info
-                    modalTitle="Data do Sonho"
-                    modalDescription={[
-                        "Defina a data de ocorreência de seu sonho.",
-                        "A) Selecione um ciclo de sono já cadastrado como sono de seu sonho;",
-                        "B) Determine uma data e período do ciclo de sono na qual o sonho ocorreu;",
-                        "C) Determine uma data e horários do ciclo de sono na qual o sonho ocorreu;",
-                    ]}
-                    overrideInfoColor={ systemStyle.oppositeIconColor }
-                    type="question"
-                />
-                <CustomButton
-                    title={
-                        sleepExtractionType === "sleep"
-                            ? "Eu sei em qual sono meu sonho ocorreu"
-                            : sleepExtractionType === "date"
-                                ? "Eu sei em qual data meu sonho ocorreu"
-                                : "Eu sei em qual horário meu sonho ocorreu"
-                    }
-                    btnTextColor={ systemStyle.oppositeTextColor }
-                    onPress={ () => switchSleepExtraction() }
-                />
+                
+                {
+                    checkIsConnected()
+                        ? <>
+                            <Info
+                                modalTitle="Data do Sonho"
+                                modalDescription={[
+                                    "Defina a data de ocorreência de seu sonho.",
+                                    "A) Selecione um ciclo de sono já cadastrado como sono de seu sonho;",
+                                    "B) Determine uma data e período do ciclo de sono na qual o sonho ocorreu;",
+                                    "C) Determine uma data e horários do ciclo de sono na qual o sonho ocorreu;",
+                                ]}
+                                overrideInfoColor={ systemStyle.oppositeIconColor }
+                                type="question"
+                            />
+                            <CustomButton
+                                title={
+                                    sleepExtractionType === "sleep"
+                                        ? "Eu sei em qual sono meu sonho ocorreu"
+                                        : sleepExtractionType === "date"
+                                            ? "Eu sei em qual data meu sonho ocorreu"
+                                            : "Eu sei em qual horário meu sonho ocorreu"
+                                }
+                                btnTextColor={ systemStyle.oppositeTextColor }
+                                onPress={ () => switchSleepExtraction() }
+                            />
+                        </>
+                        : <></>
+                }
             </Box.Row>
             <Box.Column>
                 { renderSleepExtraction() }
