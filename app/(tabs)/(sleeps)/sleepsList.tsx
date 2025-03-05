@@ -22,8 +22,9 @@ export default function SleepsListScreen() {
     const [ loading, setLoading ] = useState<boolean>(true)
     const [ sleeps, setSleeps ] = useState<SleepListedByUserType[] | null>(null)
     const [ errorMessage, setErrorMessage ] = useState<string>("")
-    const { checkIsConnected } = SyncContextProvider()
+    const { checkIsConnected, syncCloudData } = SyncContextProvider()
     const [ date, setDate ] = useState<Date>(new Date)
+    const [ syncing, setSyncing ] = useState<boolean>(false)
 
     const fetchSleeps = async () => {
         setLoading(true)
@@ -48,6 +49,12 @@ export default function SleepsListScreen() {
     useEffect(() => {
         fetchSleeps()
     }, [date])
+
+    const syncProcess = async (date: Date): Promise<void> => {
+        setSyncing(true)
+        await syncCloudData(date)
+        setSyncing(false)
+    }
 
     const renderSleepsCycles = () => {
         if (sleeps) {
@@ -87,12 +94,16 @@ export default function SleepsListScreen() {
                     firstCustomBtn={{
                         title: "Criar Sono",
                         action: () => router.navigate('/(tabs)/(sleeps)/createSleep'),
-                        active: true,
+                        active: !syncing,
                     }}
                     secondCustomBtn={{
                         title: "Atualizar",
                         action: async () => await fetchSleeps(),
-                        active: true,
+                        active: !syncing,
+                    }}
+                    syncButton={{
+                        onSync: async () => await syncProcess(date),
+                        syncing: syncing,
                     }}
                 />
                 { 

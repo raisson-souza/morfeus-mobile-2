@@ -20,6 +20,8 @@ type SyncContext = {
     isConnectedRef: React.MutableRefObject<boolean>
     /** Verifica se há conectividade com internet */
     checkIsConnected: () => boolean
+    /** Sincroniza os dados locais com a nuvem */
+    syncCloudData: (date: Date | null) => Promise<void>
 }
 
 const SyncContext = createContext<SyncContext | null>(null)
@@ -42,7 +44,7 @@ export default function SyncContextComponent({ children }: SyncContextProps) {
 
                 if (isLogged) {
                     await syncLocalData()
-                    await syncCloudData()
+                    await syncCloudDataFirstProcess()
                 }
                 else {
                     setLoadingLocalSyncProcess(false)
@@ -153,10 +155,7 @@ export default function SyncContextComponent({ children }: SyncContextProps) {
         }
     }
 
-    // TODO: Para syncCloudData, func primeira para sincronização cloud e func segunda para uso externo
-
-    /** realiza a sincronização de dados em nuvem com dados locais */
-    const syncCloudData = async (): Promise<void> => {
+    const syncCloudDataFirstProcess = async (): Promise<void> => {
         if (!isConnectedRef.current) {
             setLoadingCloudSyncProcess(false)
             return
@@ -174,7 +173,24 @@ export default function SyncContextComponent({ children }: SyncContextProps) {
                 return
             }
 
-            const syncRecordsResponse = await UserService.SyncRecords({ monthDate: null })
+            await syncCloudData(null)
+
+            setLoadingCloudSyncProcess(false)
+
+            await LocalStorage.syncCloudDataLastSync.set(DateFormatter.luxon.now().toMillis())
+        } catch (ex) {
+            console.error("Houve um erro ao atualizar os dados em nuvem:", (ex as Error).message)
+            setLoadingCloudSyncProcess(false)
+        }
+    }
+
+    const syncCloudData = async (date: Date | null): Promise<void> => {
+        try {
+            const syncRecordsResponse = await UserService.SyncRecords({
+                monthDate: date
+                    ? DateFormatter.forBackend.date(date.getTime())
+                    : null
+            })
 
             if (!syncRecordsResponse.Success)
                 throw new Error(syncRecordsResponse.ErrorMessage)
@@ -198,8 +214,7 @@ export default function SyncContextComponent({ children }: SyncContextProps) {
                         })
                     }
                 }
-                catch (ex) {
-                }
+                catch { }
             }
 
             for (const sleepRecord of syncRecordsResponse.Data.sleeps) {
@@ -219,16 +234,10 @@ export default function SyncContextComponent({ children }: SyncContextProps) {
                         })
                     }
                 }
-                catch (ex) {
-                }
+                catch { }
             }
-
-            setLoadingCloudSyncProcess(false)
-
-            await LocalStorage.syncCloudDataLastSync.set(DateFormatter.luxon.now().toMillis())
         } catch (ex) {
             console.error("Houve um erro ao atualizar os dados em nuvem:", (ex as Error).message)
-            setLoadingCloudSyncProcess(false)
         }
     }
 
@@ -246,6 +255,7 @@ export default function SyncContextComponent({ children }: SyncContextProps) {
         <SyncContext.Provider value={{
             isConnectedRef,
             checkIsConnected,
+            syncCloudData,
         }}>
             { children }
         </SyncContext.Provider>

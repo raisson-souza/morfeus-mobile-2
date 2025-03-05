@@ -24,8 +24,9 @@ export default function DreamsList() {
     const { systemStyle } = StyleContextProvider()
     const router = useRouter()
     const [ loading, setLoading ] = useState<boolean>(true)
+    const [ syncing, setSyncing ] = useState<boolean>(false)
     const [ dreamList, setDreamList ] = useState<DreamListedByUserType[] | null>(null)
-    const { checkIsConnected } = SyncContextProvider()
+    const { checkIsConnected, syncCloudData } = SyncContextProvider()
     const [ date, setDate ] = useState<Date>(new Date())
     const [ listDreamsByUserForm, setListDreamsByUserForm ] = useState<ListDreamsByUserRequest>({
         dreamOriginFilter: "all",
@@ -93,6 +94,12 @@ export default function DreamsList() {
         await fetchDreams(newDate)
     }
 
+    const syncProcess = async (date: Date): Promise<void> => {
+        setSyncing(true)
+        await syncCloudData(date)
+        setSyncing(false)
+    }
+
     const renderDreamList = () => {
         if (dreamList) {
             if (dreamList.length > 0) {
@@ -142,12 +149,16 @@ export default function DreamsList() {
                     firstCustomBtn={{
                         title: "Criar Sonho",
                         action: () => router.navigate('/(tabs)/(dreams)/createDream'),
-                        active: true,
+                        active: !syncing,
                     }}
                     secondCustomBtn={{
                         title: "Atualizar",
                         action: async () => await fetchDreams(),
-                        active: true,
+                        active: !syncing,
+                    }}
+                    syncButton={{
+                        onSync: async () => await syncProcess(date),
+                        syncing: syncing,
                     }}
                 />
                 {

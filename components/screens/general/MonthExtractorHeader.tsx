@@ -1,7 +1,11 @@
+import { StyleContextProvider } from "@/contexts/StyleContext"
 import { StyleSheet } from "react-native"
+import { SyncContextProvider } from "@/contexts/SyncContext"
 import Box from "@/components/base/Box"
 import CustomButton from "@/components/customs/CustomButton"
 import CustomText from "@/components/customs/CustomText"
+import IconAntDesign from "react-native-vector-icons/AntDesign"
+import Loading from "@/components/base/Loading"
 import MonthParser from "@/utils/MonthParser"
 import MonthYearExtractor from "@/components/customs/MonthYearExtractor"
 import React, { useState } from "react"
@@ -18,6 +22,10 @@ type MonthExtractorHeaderProps = {
     routerBtnRouterAction: () => void
     firstCustomBtn: CustomBtn
     secondCustomBtn?: CustomBtn
+    syncButton?: {
+        onSync: () => void
+        syncing: boolean
+    }
 }
 
 export default function MonthExtractorHeader({
@@ -26,8 +34,13 @@ export default function MonthExtractorHeader({
     routerBtnRouterAction,
     firstCustomBtn,
     secondCustomBtn,
+    syncButton,
 }: MonthExtractorHeaderProps) {
+    const { checkIsConnected } = SyncContextProvider()
+    const { systemStyle } = StyleContextProvider()
     const [ open, setOpen ] = useState<boolean>(false)
+
+    const isSyncing = syncButton ? syncButton.syncing : false
 
     return (
         <Box.Row style={ styles.container }>
@@ -45,26 +58,51 @@ export default function MonthExtractorHeader({
                 <CustomButton
                     title="Selecionar Mês"
                     onPress={ () => setOpen(true) }
+                    active={ !isSyncing }
                 />
+                {
+                    checkIsConnected()
+                        ? syncButton
+                            ? <Box.Row
+                                onPress={ () => syncButton.onSync() }
+                                style={ styles.syncContainer }
+                            >
+                                {
+                                    isSyncing
+                                        ? <Loading />
+                                        : <IconAntDesign
+                                            name="sync"
+                                            size={ systemStyle.smallIconSize }
+                                            color={ systemStyle.iconColor }
+                                        />
+                                }
+                                <CustomText>
+                                    { isSyncing ? "Sincronizando" : "Sincronizar" }
+                                </CustomText>
+                            </Box.Row>
+                            : <></>
+                        : <></>
+                }
             </Box.Column>
             <Box.Column style={ styles.btns }>
                 <CustomButton
                     title="Ver Mais"
                     onPress={ () => routerBtnRouterAction() }
+                    active={ !isSyncing }
                 />
                 {
                     secondCustomBtn
                         ? <CustomButton
                             title={ secondCustomBtn.title }
                             onPress={ () => secondCustomBtn.action() }
-                            active={ secondCustomBtn.active }
+                            active={ secondCustomBtn.active || !isSyncing }
                         />
                         : <></>
                 }
                 <CustomButton
                     title={ firstCustomBtn.title }
                     onPress={ () => firstCustomBtn.action() }
-                    active={ firstCustomBtn.active }
+                    active={ firstCustomBtn.active || !isSyncing }
                     important
                 />
             </Box.Column>
@@ -85,5 +123,10 @@ const styles = StyleSheet.create({
     dateContainer: {
         gap: 5,
         alignItems: "center",
+    },
+    syncContainer: {
+        gap: 5,
+        alignItems: "center",
+        marginTop: 5,
     },
 })
