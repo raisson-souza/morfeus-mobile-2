@@ -13,6 +13,8 @@ import CustomButton from "@/components/customs/CustomButton"
 import CustomText from "@/components/customs/CustomText"
 import DreamsDb from "@/db/dreamsDb"
 import DreamService from "@/services/api/DreamService"
+import DreamServiceOffline from "@/services/offline/DreamServiceOffline"
+import HELPERS from "@/data/helpers"
 import IconEntypo from "react-native-vector-icons/Entypo"
 import IconFontisto from "react-native-vector-icons/Fontisto"
 import IconFoundation from "react-native-vector-icons/Foundation"
@@ -40,14 +42,17 @@ export default function GetDreamScreen() {
     const [ loading, setLoading ] = useState<boolean>(true)
     const [ errorMessage, setErrorMessage ] = useState<string>("")
     const [ openShareDreamModal, setOpenShareDreamModal ] = useState<boolean>(false)
+    const [ needSynchronization, setNeedSynchronization ] = useState<boolean | null>(null)
 
     useEffect(() => {
         const fetchDream = async () => {
             if (checkIsConnected()) {
                 await DreamService.GetDream({ id: Number.parseInt(id) })
-                    .then(response => {
+                    .then(async (response) => {
                         if (response.Success) {
                             setDream(response.Data)
+                            await DreamServiceOffline.CheckIsSynchronized(db, response.Data.id)
+                                .then(result => setNeedSynchronization(!result))
                             return
                         }
                         setErrorMessage(response.ErrorMessage ?? "")
@@ -164,6 +169,13 @@ export default function GetDreamScreen() {
 
     const renderDreamUpperInfo = () => {
         return <Box.Column style={ styles.dreamUpperInfoContainer }>
+            {
+                needSynchronization != null
+                    ? needSynchronization
+                        ? <Info { ...HELPERS.notSynchronizedRecord } />
+                        : <></>
+                    : <></>
+            }
             {
                 dream!.hiddenDream
                     ? <Box.Row style={ styles.iconAndMessageStyle }>

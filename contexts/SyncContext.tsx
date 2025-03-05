@@ -22,6 +22,8 @@ type SyncContext = {
     checkIsConnected: () => boolean
     /** Sincroniza os dados locais com a nuvem */
     syncCloudData: (date: Date | null) => Promise<void>
+    /** Realiza a sincronização dos dados da nuvem com os locais */
+    syncLocalData: () => Promise<void>
 }
 
 const SyncContext = createContext<SyncContext | null>(null)
@@ -256,6 +258,7 @@ export default function SyncContextComponent({ children }: SyncContextProps) {
             isConnectedRef,
             checkIsConnected,
             syncCloudData,
+            syncLocalData,
         }}>
             { children }
         </SyncContext.Provider>

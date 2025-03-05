@@ -12,6 +12,7 @@ type HelperListType = {
     importDataSameOrigin: HelperType
     importDataExternal: HelperType
     importDataExternalDreamsPath: HelperType
+    notSynchronizedRecord: HelperType
 }
 
 const HELPERS: HelperListType = {
@@ -77,6 +78,14 @@ const HELPERS: HelperListType = {
             'Exemplo 1: { "dreams": [] }, se seu arquivo de importação for similar ao exemplo, informe apenas "dreams" como caminho, pois é ele que levará à listagem dos sonhos.',
             'Exemplo 2: { "data": { "dreams": [] } }, para o exemplo 2 será necessário informar "data" e "dreams", conforme a profundidade do caminho, em ordem.',
             "Apenas JSONs válidos serão aceitos neste processo, em caso de dúvidas, solicite suporte.",
+        ],
+    },
+    notSynchronizedRecord: {
+        modalTitle: "Registro não Sincronizado",
+        infoDescription: "registro não sincronizado",
+        modalDescription: [
+            "Este registro não está salvo localmente em seu dispositivo, ou seja, não será possível visualizá-lo offline.",
+            "Realize a sincronização de registros na listagem do mesmo, conforme sua data.",
         ],
     },
 }

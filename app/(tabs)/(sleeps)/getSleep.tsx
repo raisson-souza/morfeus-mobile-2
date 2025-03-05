@@ -17,6 +17,7 @@ import CustomButton from "@/components/customs/CustomButton"
 import CustomText from "@/components/customs/CustomText"
 import DreamListedByUser from "@/components/screens/dreams/DreamListedByUser"
 import DreamService from "@/services/api/DreamService"
+import HELPERS from "@/data/helpers"
 import IconFeather from "react-native-vector-icons/Feather"
 import IconFontisto from "react-native-vector-icons/Fontisto"
 import IconMaterialIcons from "react-native-vector-icons/MaterialIcons"
@@ -45,13 +46,16 @@ export default function GetSleepScreen() {
     const [ openBiologicalOccurencesInfo, setOpenBiologicalOccurencesInfo ] = useState<boolean>(false)
     const [ loadingSleepDreams, setLoadingSleepDreams ] = useState<boolean>(true)
     const [ sleepDreams, setSleepDreams ] = useState<ListedDreamBySleepCycle[]>([])
+    const [ needSynchronization, setNeedSynchronization ] = useState<boolean | null>(null)
 
     const fetchSleep = async () => {
         if (checkIsConnected()) {
             await SleepService.GetSleep({ id: Number.parseInt(id) })
-                .then(response => {
+                .then(async (response) => {
                     if (response.Success) {
                         setSleep(response.Data)
+                        await SleepServiceOffline.CheckIsSynchronized(db, response.Data.id)
+                            .then(result => setNeedSynchronization(!result))
                         return
                     }
                     setErrorMessage(response.ErrorMessage ?? "")
@@ -357,6 +361,13 @@ export default function GetSleepScreen() {
         }
 
         return <>
+            {
+                needSynchronization != null
+                    ? needSynchronization
+                        ? <Info { ...HELPERS.notSynchronizedRecord } />
+                        : <></>
+                    : <></>
+            }
             { renderIsNightSleep() }
             <Box.Column
                 style={{
