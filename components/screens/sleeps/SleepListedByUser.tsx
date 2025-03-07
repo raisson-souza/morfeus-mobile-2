@@ -8,9 +8,9 @@ import { useSQLiteContext } from "expo-sqlite"
 import Box from "@/components/base/Box"
 import CustomText from "@/components/customs/CustomText"
 import IconFeather from "react-native-vector-icons/Feather"
-import IconMaterialIcons from "react-native-vector-icons/MaterialIcons"
 import React, { useEffect, useState } from "react"
 import SleepServiceOffline from "@/services/offline/SleepServiceOffline"
+import SynchronizedRecordListedByUser from "../general/SynchronizedRecordListedByUser"
 import WeekDayParser from "@/utils/WeekDayParser"
 
 type SleepListedByUserProps = {
@@ -25,7 +25,7 @@ export default function SleepListedByUser({
     const db = useSQLiteContext()
     const router = useRouter()
     const { systemStyle } = StyleContextProvider()
-    const [ synchronizedRecord, setSynchronizedRecord ] = useState<boolean>(false)
+    const [ synchronizedRecord, setSynchronizedRecord ] = useState<boolean | null>(null)
 
     const checkSynchronizedRecord = async () => {
         if (useSync) {
@@ -101,17 +101,10 @@ export default function SleepListedByUser({
                 onPress={ () => redirectToSleepCycle() }
             >
                 <Box.Row style={ styles.dayIconContainer }>
-                    {
-                        useSync
-                            ? synchronizedRecord
-                                ? <></>
-                                :<IconMaterialIcons
-                                    name="sync-problem"
-                                    color="red"
-                                    size={ systemStyle.largeIconSize }
-                                />
-                            : <></>
-                    }
+                    <SynchronizedRecordListedByUser
+                        useSync={ useSync }
+                        isSynchronized={ synchronizedRecord }
+                    />
                     { renderIsNightSleep() }
                     <CustomText weight="bold">{ fixedDate }</CustomText>
                 </Box.Row>

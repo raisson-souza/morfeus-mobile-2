@@ -8,8 +8,8 @@ import Box from "@/components/base/Box"
 import CustomText from "@/components/customs/CustomText"
 import DreamServiceOffline from "@/services/offline/DreamServiceOffline"
 import IconEntypo from "react-native-vector-icons/Entypo"
-import IconMaterialIcons from "react-native-vector-icons/MaterialIcons"
 import React, { useEffect, useState } from "react"
+import SynchronizedRecordListedByUser from "../general/SynchronizedRecordListedByUser"
 
 type DreamListedByUserProps = {
     dream: DreamListedByUserType
@@ -37,7 +37,7 @@ export default function DreamListedByUser({
     titleSize = titleSize ? titleSize : systemStyle.largeTextSize
 
     const [ showDream, setShowDream ] = useState<boolean>(!isHiddenOrErotic)
-    const [ synchronizedRecord, setSynchronizedRecord ] = useState<boolean>(false)
+    const [ synchronizedRecord, setSynchronizedRecord ] = useState<boolean | null>(null)
     const router = useRouter()
 
     const checkSynchronizedRecord = async () => {
@@ -80,18 +80,10 @@ export default function DreamListedByUser({
     return (
         <Box.Column style={{ ...containerStyle as any }}>
             <Box.Row style={ styles.titleContainer }>
-                {
-                    useSync
-                        ? synchronizedRecord
-                            ? <></>
-                            :<IconMaterialIcons
-                                name="sync-problem"
-                                color="red"
-                                size={ systemStyle.largeIconSize }
-                                style={ styles.syncIcon }
-                            />
-                        : <></>
-                }
+                <SynchronizedRecordListedByUser
+                    useSync={ useSync }
+                    isSynchronized={ synchronizedRecord }
+                />
                 <CustomText
                     onPress={ () => router.navigate({ pathname: "/getDream", params: { id: dream.id, sleepDate: treatedDate } }) }
                     size="xxl"
