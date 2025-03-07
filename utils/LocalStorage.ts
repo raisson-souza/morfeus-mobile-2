@@ -81,6 +81,7 @@ export const LocalStorage: LocalStorageProps = {
     async logoff() {
         await LocalStorage.loginCredentials.remove()
         await LocalStorage.tokenInfo.remove()
+        await LocalStorage.syncCloudDataLastSync.remove()
     },
     userInfo: {
         async get() {
