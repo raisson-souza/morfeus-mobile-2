@@ -59,8 +59,9 @@ export default function SleepsListScreen() {
     const renderSleepsCycles = () => {
         if (sleeps) {
             if (sleeps.length > 0) {
-                return (
-                    <>
+                return syncing
+                    ? <Loading />
+                    : <>
                         <Box.Column style={ styles.sleepsCycleList }>
                             { sleeps.map((sleepCycle, i) => <SleepListedByUser sleepCycle={ sleepCycle } key={ i } useSync />) }
                         </Box.Column>
@@ -77,7 +78,6 @@ export default function SleepsListScreen() {
                                 : <></>
                         }
                     </>
-                )
             }
             return <CustomText style={ styles.noSleepCycleFound }>Nenhum Ciclo de Sono encontrado.</CustomText>
         }

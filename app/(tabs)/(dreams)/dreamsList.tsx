@@ -103,8 +103,9 @@ export default function DreamsList() {
     const renderDreamList = () => {
         if (dreamList) {
             if (dreamList.length > 0) {
-                return (
-                    <>
+                return syncing
+                    ? <Loading />
+                    : <>
                         <Box.Column style={ styles.dreamsListContainer }>
                             {
                                 dreamList.map((dream, i) => (
@@ -133,7 +134,6 @@ export default function DreamsList() {
                                 : <></>
                         }
                     </>
-                )
             }
             return <CustomText>Nenhum sonho encontrado.</CustomText>
         }
