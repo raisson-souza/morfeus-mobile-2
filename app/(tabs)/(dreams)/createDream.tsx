@@ -1,11 +1,12 @@
+import { Alert, StyleSheet } from "react-native"
 import { CreateCompleteDreamModel, CreateDreamModel } from "@/types/dream"
 import { DateFormatter } from "@/utils/DateFormatter"
 import { Screen } from "@/components/base/Screen"
-import { StyleSheet } from "react-native"
 import { SyncContextProvider } from "@/contexts/SyncContext"
 import { useCustomBackHandler } from "@/hooks/useHardwareBackPress"
 import { useEffect, useState } from "react"
 import { useNavigation, useRouter } from "expo-router"
+import { useSQLiteContext } from "expo-sqlite"
 import Box from "@/components/base/Box"
 import ConfirmActionButton from "@/components/screens/general/ConfirmActionButton"
 import CreateCompleteDream from "@/components/screens/dreams/CreateCompleteDream"
@@ -13,6 +14,7 @@ import CustomButton from "@/components/customs/CustomButton"
 import CustomText from "@/components/customs/CustomText"
 import DefineDreamSleep from "@/components/screens/dreams/DefineDreamSleep"
 import DreamService from "@/services/api/DreamService"
+import DreamServiceOffline from "@/services/offline/DreamServiceOffline"
 import HELPERS from "@/data/helpers"
 import Info from "@/components/base/Info"
 import Loading from "@/components/base/Loading"
@@ -46,9 +48,10 @@ const defaultDreamModel: CreateDreamModel = {
 }
 
 export default function CreateDreamScreen() {
+    const db = useSQLiteContext()
     const router = useRouter()
-    const navigation = useNavigation()
     const { checkIsConnected } = SyncContextProvider()
+    const navigation = useNavigation()
     const [ dreamModel, setDreamModel ] = useState<CreateDreamModel>(defaultDreamModel)
     const [ completeDreamModel, setCompleteDreamModel ] = useState<CreateCompleteDreamModel>({
         dreamNoSleepDateKnown: null,
@@ -76,32 +79,44 @@ export default function CreateDreamScreen() {
 
     const createDream = async () => {
         setLoading(true)
-        await DreamService.Create({
-            ...dreamModel,
-            sleepId: sleepId,
-            dreamNoSleepDateKnown: completeDreamModel.dreamNoSleepDateKnown
-                ? {
-                    date: DateFormatter.forBackend.date(completeDreamModel.dreamNoSleepDateKnown.date.getTime()),
-                    period: completeDreamModel.dreamNoSleepDateKnown.period
+        if (checkIsConnected()) {
+            await DreamService.Create({
+                ...dreamModel,
+                sleepId: sleepId,
+                dreamNoSleepDateKnown: completeDreamModel.dreamNoSleepDateKnown
+                    ? {
+                        date: DateFormatter.forBackend.date(completeDreamModel.dreamNoSleepDateKnown.date.getTime()),
+                        period: completeDreamModel.dreamNoSleepDateKnown.period
+                    }
+                    : null,
+                dreamNoSleepTimeKnown: completeDreamModel.dreamNoSleepTimeKnown
+                    ? {
+                        date: DateFormatter.forBackend.date(completeDreamModel.dreamNoSleepTimeKnown.date.getTime()),
+                        sleepStart: DateFormatter.forBackend.timestamp(completeDreamModel.dreamNoSleepTimeKnown.sleepStart.getTime()),
+                        sleepEnd: DateFormatter.forBackend.timestamp(completeDreamModel.dreamNoSleepTimeKnown.sleepEnd.getTime()),
+                    }
+                    : null,
+            })
+            .then(response => {
+                if (response.Success) {
+                    alert(response.Data)
+                    router.navigate("/dreamsList")
+                    return
                 }
-                : null,
-            dreamNoSleepTimeKnown: completeDreamModel.dreamNoSleepTimeKnown
-                ? {
-                    date: DateFormatter.forBackend.date(completeDreamModel.dreamNoSleepTimeKnown.date.getTime()),
-                    sleepStart: DateFormatter.forBackend.timestamp(completeDreamModel.dreamNoSleepTimeKnown.sleepStart.getTime()),
-                    sleepEnd: DateFormatter.forBackend.timestamp(completeDreamModel.dreamNoSleepTimeKnown.sleepEnd.getTime()),
-                }
-                : null,
-        })
-        .then(response => {
-            if (response.Success) {
-                alert(response.Data)
-                router.navigate("/dreamsList")
-                return
-            }
-            setLoading(false)
-            alert(response.ErrorMessage)
-        })
+                alert(response.ErrorMessage)
+            })
+        }
+        else {
+            await DreamServiceOffline.Create(db, {
+                ...dreamModel,
+                sleepId: sleepId,
+                dreamNoSleepDateKnown: null,
+                dreamNoSleepTimeKnown: null,
+            })
+                .then(() => router.navigate("/dreamsList"))
+                .catch(ex => Alert.alert("Erro ao Criar Sonho", (ex as Error).message))
+        }
+        setLoading(false)
     }
 
     return (

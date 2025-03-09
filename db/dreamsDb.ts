@@ -21,8 +21,8 @@ export default abstract class DreamsDb {
                 dreamTypeId, 
                 dreamRealityLevelId,
                 sleepId,
-                dreamTags,
-                synchronized
+                synchronized,
+                dreamTags
             ) VALUES (
                 ${ model.id ? `${ model.id },` : "" }
                 '${ model.title }',

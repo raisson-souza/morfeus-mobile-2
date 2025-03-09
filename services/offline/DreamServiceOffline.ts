@@ -1,15 +1,93 @@
+import { CreateDreamRequest, DreamListedByUserType, DreamModel, ListDreamByUserResponse, ListDreamsByUserRequest, UpdateDreamRequest } from "@/types/dream"
 import { DateFormatter } from "@/utils/DateFormatter"
 import { DateTime } from "luxon"
 import { DefaultDreamClimate } from "@/types/dreamClimate"
-import { DreamListedByUserType, DreamModel, ListDreamByUserResponse, ListDreamsByUserRequest } from "@/types/dream"
 import { ListedSleepForDreamCreation, ListSleepsForDreamCreationRequest } from "@/types/sleeps"
 import { PaginationResponse } from "@/types/pagination"
 import { SQLiteDatabase } from "expo-sqlite"
 import DreamsDb from "@/db/dreamsDb"
 
-export default abstract class DreamServiceOffline {
-    static async Create() {
+// EDIÇÃO DE SONHO E CICLO DE SONO AGORA
 
+export default abstract class DreamServiceOffline {
+    static async Create(db: SQLiteDatabase, request: CreateDreamRequest): Promise<void> {
+        await db.getFirstAsync<{ id: number }>(`SELECT id FROM sleeps WHERE id = ${ request.sleepId }`)
+            .then(result => {
+                if (!result)
+                    throw new Error("O ciclo de sono referente não existe.")
+            })
+
+        await db.getFirstAsync<{ title: string }>(`SELECT title FROM dreams WHERE title = '${ request.title }'`)
+            .then(result => {
+                if (result)
+                    throw new Error("Já existe um sonho no sistema com o mesmo nome, por favor, escolha outro.")
+            })
+
+        if (request.dreamPointOfViewId <= 0 || request.dreamPointOfViewId > 3)
+            throw new Error("Ponto de vista inválido.")
+        if (request.dreamHourId <= 0 || request.dreamHourId > 6)
+            throw new Error("Horário do sonho inválido.")
+        if (request.dreamDurationId <= 0 || request.dreamDurationId > 4)
+            throw new Error("Duração de sonho inválida.")
+        if (request.dreamLucidityLevelId <= 0 || request.dreamLucidityLevelId > 4)
+            throw new Error("Nível de lucidez inválido.")
+        if (request.dreamTypeId <= 0 || request.dreamTypeId > 3)
+            throw new Error("Tipo de sonho inválido.")
+        if (request.dreamRealityLevelId <= 0 || request.dreamRealityLevelId > 3)
+            throw new Error("Nível de realidade inválido.")
+
+        try {
+            await DreamsDb.Create(db, {
+                ...request,
+                personalAnalysis: request.personalAnalysis,
+                isComplete: true,
+                sleepId: request.sleepId!,
+                synchronized: false,
+                dreamTags: request.tags,
+                dreamOriginId: 1,
+            })
+        }
+        catch { }
+    }
+
+    static async Update(db: SQLiteDatabase, request: UpdateDreamRequest): Promise<void> {
+        await db.getFirstAsync<{ id: number }>(`SELECT id FROM dreams WHERE id = ${ request.id }`)
+            .then(result => {
+                if (!result)
+                    throw new Error("Sonho inexistente.")
+            })
+
+        await db.getFirstAsync<{ id: number }>(`SELECT id FROM sleeps WHERE id = ${ request.sleepId }`)
+            .then(result => {
+                if (!result)
+                    throw new Error("O ciclo de sono referente não existe.")
+            })
+
+        if (request.dreamPointOfViewId <= 0 || request.dreamPointOfViewId > 3)
+            throw new Error("Ponto de vista inválido.")
+        if (request.dreamHourId <= 0 || request.dreamHourId > 6)
+            throw new Error("Horário do sonho inválido.")
+        if (request.dreamDurationId <= 0 || request.dreamDurationId > 4)
+            throw new Error("Duração de sonho inválida.")
+        if (request.dreamLucidityLevelId <= 0 || request.dreamLucidityLevelId > 4)
+            throw new Error("Nível de lucidez inválido.")
+        if (request.dreamTypeId <= 0 || request.dreamTypeId > 3)
+            throw new Error("Tipo de sonho inválido.")
+        if (request.dreamRealityLevelId <= 0 || request.dreamRealityLevelId > 3)
+            throw new Error("Nível de realidade inválido.")
+
+        try {
+            await DreamsDb.Update(db, {
+                ...request,
+                personalAnalysis: request.personalAnalysis,
+                isComplete: true,
+                sleepId: request.sleepId!,
+                synchronized: false,
+                dreamTags: request.tags,
+                dreamOriginId: 1,
+            })
+        }
+        catch { }
     }
 
     static async ListSleepCycles(db: SQLiteDatabase, request: ListSleepsForDreamCreationRequest): Promise<PaginationResponse<ListedSleepForDreamCreation>> {
@@ -111,15 +189,13 @@ export default abstract class DreamServiceOffline {
             `)
                 .then(result => {
                     return result.map(dream => {
-                        const tags = (dream.tags as any) == 1
-                            ? []
-                            : JSON.parse(dream.tags as any)
+                        const parsedTags = DreamsDb.FixDreamTags(dream.tags)
                         return {
                             ...dream,
-                            tags: tags.map((tag: any) => {
+                            tags: parsedTags.map(tag => {
                                 return {
                                     id: 0,
-                                    title: tag
+                                    title: tag,
                                 }
                             })
                         }

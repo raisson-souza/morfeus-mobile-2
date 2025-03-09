@@ -1,14 +1,15 @@
+import { Alert, StyleSheet } from "react-native"
 import { CreateSleepCycleModel } from "@/types/sleeps"
 import { createSleepCycleValidator } from "@/validators/sleeps"
 import { DateFormatter } from "@/utils/DateFormatter"
 import { DefaultBiologicalOccurences } from "@/types/biologicalOccurences"
 import { DefaultSleepHumor } from "@/types/sleepHumor"
 import { Screen } from "@/components/base/Screen"
-import { StyleSheet } from "react-native"
 import { SyncContextProvider } from "@/contexts/SyncContext"
 import { useCustomBackHandler } from "@/hooks/useHardwareBackPress"
 import { useEffect, useRef, useState } from "react"
 import { useNavigation, useRouter } from "expo-router"
+import { useSQLiteContext } from "expo-sqlite"
 import BiologicalOccurencesForm from "@/components/screens/sleeps/BiologicalOccurencesForm"
 import Box from "@/components/base/Box"
 import ConfirmActionButton from "@/components/screens/general/ConfirmActionButton"
@@ -20,6 +21,7 @@ import Info from "@/components/base/Info"
 import React from "react"
 import SleepCycleHoursForm from "@/components/screens/sleeps/SleepCycleHoursForm"
 import SleepService from "@/services/api/SleepService"
+import SleepServiceOffline from "@/services/offline/SleepServiceOffline"
 import validatorErrorParser from "@/validators/base/validatorErrorParser"
 
 const defaultSleepCycleModel: CreateSleepCycleModel = {
@@ -32,6 +34,7 @@ const defaultSleepCycleModel: CreateSleepCycleModel = {
 }
 
 export default function CreateSleepScreen() {
+    const db = useSQLiteContext()
     const router = useRouter()
     const navigation = useNavigation()
     const { checkIsConnected } = SyncContextProvider()
@@ -71,22 +74,46 @@ export default function CreateSleepScreen() {
             return
         }
 
-        const response = await SleepService.Create({
-            sleepStart: DateFormatter.forBackend.timestamp(sleepCycleModel.sleepStart.getTime()),
-            sleepEnd: DateFormatter.forBackend.timestamp(sleepCycleModel.sleepEnd.getTime()),
-            wakeUpHumor: sleepCycleModel.wakeUpHumor,
-            layDownHumor: sleepCycleModel.layDownHumor,
-            biologicalOccurences: sleepCycleModel.biologicalOccurences,
-            dreams: sleepCycleModel.dreams,
-        })
+        let successResponse = false
+        let errorMessage = ""
 
-        if (response.Success) {
-            alert("Ciclo de sono criado com sucesso.")
+        if (checkIsConnected()) {
+            const response = await SleepService.Create({
+                sleepStart: DateFormatter.forBackend.timestamp(sleepCycleModel.sleepStart.getTime()),
+                sleepEnd: DateFormatter.forBackend.timestamp(sleepCycleModel.sleepEnd.getTime()),
+                wakeUpHumor: sleepCycleModel.wakeUpHumor,
+                layDownHumor: sleepCycleModel.layDownHumor,
+                biologicalOccurences: sleepCycleModel.biologicalOccurences,
+                dreams: sleepCycleModel.dreams,
+            })
+
+            if (response.Success) {
+                successResponse = true
+                return
+            }
+
+            errorMessage = response.ErrorMessage ?? ""
+        }
+        else {
+            await SleepServiceOffline.Create(db, {
+                sleepStart: DateFormatter.forBackend.timestamp(sleepCycleModel.sleepStart.getTime()),
+                sleepEnd: DateFormatter.forBackend.timestamp(sleepCycleModel.sleepEnd.getTime()),
+                wakeUpHumor: sleepCycleModel.wakeUpHumor,
+                layDownHumor: sleepCycleModel.layDownHumor,
+                biologicalOccurences: sleepCycleModel.biologicalOccurences,
+                dreams: sleepCycleModel.dreams,
+            })
+                .then(() => successResponse = true)
+                .catch((ex) => errorMessage = (ex as Error).message)
+        }
+
+        if (successResponse) {
+            Alert.alert("Ciclo de sono criado com sucesso.")
             router.navigate("/(tabs)/(sleeps)/sleepsList")
             return
         }
 
-        alert(response.ErrorMessage)
+        Alert.alert("Ocorreu um erro ao criar o ciclo de sono", errorMessage)
     }
 
     return (

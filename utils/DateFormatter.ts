@@ -53,5 +53,8 @@ export const DateFormatter = {
         date: (date: string) => {
             return DateTime.fromISO(`${ date.replaceAll("/", "-") }T00:00:01.000-03:00`) as DateTime<true>
         },
+        dateTime: (date: string) => {
+            return DateTime.fromISO(`${ date.split(" ")[0].replaceAll("/", "-") }T${ date.split(" ")[1] }.000`)
+        },
     },
 }

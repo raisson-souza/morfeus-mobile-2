@@ -70,6 +70,10 @@ export type ImportUserDataResponse = string
 
 export type SyncRecordsRequest = {
     monthDate: string | null
+    daysPeriodOverride: {
+        start: string
+        end: string
+    } | null
 }
 
 export type SyncRecordsResponse = ExportUserDataResponse

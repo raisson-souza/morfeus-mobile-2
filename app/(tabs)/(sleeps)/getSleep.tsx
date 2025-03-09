@@ -67,6 +67,7 @@ export default function GetSleepScreen() {
                     if (result) {
                         setSleep({
                             ...result,
+                            id: result.id!,
                             createdAt: "",
                             updatedAt: "",
                             userId: 0,

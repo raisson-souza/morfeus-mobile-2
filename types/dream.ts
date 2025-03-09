@@ -72,7 +72,7 @@ export type DreamModel = {
 }
 
 export type DreamDbModel = {
-	id: number
+	id?: number
 	title: string
 	description: string
 	climate: DreamClimateModel

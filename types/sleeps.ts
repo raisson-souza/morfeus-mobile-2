@@ -34,7 +34,7 @@ export type SleepModel = {
 }
 
 export type SleepDbModel = {
-    id: number
+    id?: number
     date: string
     sleepTime: number
     sleepStart: string
@@ -120,3 +120,8 @@ export type UpdateSleepCycleRequest = {
 }
 
 export type UpdateSleepCycleResponse = string
+
+export type SlepPeriodsEpoch = {
+    sleepStart: number
+    sleepEnd: number
+}

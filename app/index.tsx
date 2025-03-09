@@ -22,9 +22,7 @@ export default function InfoScreen() {
         <TutorialEnclosure openTutorialAction={ () => setTutorialModalOpen(true) }>
             <Screen flex>
                 {/* // TESTE */}
-                <CustomButton btnWidth={ btnWidth } title="dreams" onPress={ async () => { await db.execAsync("DROM TABLE dreams") } } important />
                 <CustomButton btnWidth={ btnWidth } title="dream TRUNC" onPress={ async () => { await db.execAsync("DELETE FROM dreams") } } important />
-                <CustomButton btnWidth={ btnWidth } title="sleeps" onPress={ async () => { await db.execAsync("DROM TABLE sleeps") } } important />
                 <CustomButton btnWidth={ btnWidth } title="sleeps TRUNC" onPress={ async () => { await db.execAsync("DELETE FROM sleeps") } } important />
                 {/* // TESTE */}
                 <TutorialModal
