@@ -30,8 +30,19 @@ export default abstract class SleepsDb {
         `)
     }
 
-    static async Get(db: SQLiteDatabase, sleepId: number) {
+    static async Get(db: SQLiteDatabase, sleepId: number): Promise<SleepDbModel | null> {
         return await db.getFirstAsync<SleepDbModel>(`SELECT * FROM sleeps WHERE id = ${ sleepId }`)
+            .then(result => {
+                if (result) {
+                    return {
+                        ...result,
+                        wakeUpHumor: JSON.parse(result.wakeUpHumor as any),
+                        layDownHumor: JSON.parse(result.layDownHumor as any),
+                        biologicalOccurences: JSON.parse(result.biologicalOccurences as any)
+                    }
+                }
+                return null
+            })
     }
 
     static async Update(db: SQLiteDatabase, model: SleepDbModel) {

@@ -80,7 +80,6 @@ export default function DefineDreamSleep({
             }}
         >
             <Box.Row style={ styles.sleepCycleExtractionQuestionContainer }>
-                
                 {
                     checkIsConnected()
                         ? <>

@@ -1,7 +1,7 @@
 import { AuthContextProvider } from "./AuthContext"
-import { CreateCompleteDreamModel, DreamDbModel } from "@/types/dream"
+import { CreateCompleteDreamModel } from "@/types/dream"
 import { createContext, useContext, useEffect, useRef, useState } from "react"
-import { CreateSleepCycleModel, SleepDbModel } from "@/types/sleeps"
+import { CreateSleepCycleModel } from "@/types/sleeps"
 import { DateFormatter } from "@/utils/DateFormatter"
 import { DateTime } from "luxon"
 import { ExportUserData } from "@/types/userData"
@@ -100,8 +100,8 @@ export default function SyncContextComponent({ children }: SyncContextProps) {
                         if (newIdResponse.Data === dream.id)
                             continue
 
-                        await DreamsDb.UpdateId(db, dream, newIdResponse.Data)
                         dream.synchronized = true
+                        await DreamsDb.UpdateId(db, dream, newIdResponse.Data)
                     }
                 }
                 catch { }
@@ -122,8 +122,8 @@ export default function SyncContextComponent({ children }: SyncContextProps) {
                         if (newIdResponse.Data === sleep.id)
                             continue
 
-                        await SleepsDb.UpdateId(db, sleep, newIdResponse.Data)
                         sleep.synchronized = true
+                        await SleepsDb.UpdateId(db, sleep, newIdResponse.Data)
                     }
                 }
                 catch { }
@@ -136,9 +136,10 @@ export default function SyncContextComponent({ children }: SyncContextProps) {
 
             dreams.map(dream => {
                 if (!dream.synchronized) {
+                    const { synchronized, ...parsedDream } = dream
                     importData.dreams.push({
-                        ...dream,
-                        dreamTags: dream.dreamTags ?? [],
+                        ...parsedDream,
+                        dreamTags: dream.dreamTags ? JSON.parse(dream.dreamTags as any) : [],
                         id: dream.id!
                     })
                 }
@@ -146,14 +147,15 @@ export default function SyncContextComponent({ children }: SyncContextProps) {
 
             sleeps.map(sleep => {
                 if (!sleep.synchronized) {
-                    importData.sleeps.push({ ...sleep, id: sleep.id! })
+                    const { synchronized, ...parsedSleep } = sleep
+                    importData.sleeps.push({ ...parsedSleep, id: sleep.id! })
                 }
             })
 
             dreams.length = 0
             sleeps.length = 0
 
-            if (importData.dreams.length > 0 && importData.sleeps.length > 0) {
+            if (importData.dreams.length > 0 || importData.sleeps.length > 0) {
                 await UserService.ImportUserData({
                     dreamsPath: null,
                     fileContent: JSON.stringify(importData),

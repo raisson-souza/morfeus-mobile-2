@@ -124,4 +124,5 @@ export type UpdateSleepCycleResponse = string
 export type SlepPeriodsEpoch = {
     sleepStart: number
     sleepEnd: number
+    id?: number
 }

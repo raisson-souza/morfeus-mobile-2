@@ -52,6 +52,7 @@ export default abstract class DreamsDb {
                 if (result) {
                     return {
                         ...result,
+                        climate: JSON.parse(result.climate as any),
                         dreamTags: DreamsDb.FixDreamTags(result.dreamTags ?? []),
                     }
                 }

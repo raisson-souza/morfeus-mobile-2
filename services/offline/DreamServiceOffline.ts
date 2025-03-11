@@ -7,7 +7,7 @@ import { PaginationResponse } from "@/types/pagination"
 import { SQLiteDatabase } from "expo-sqlite"
 import DreamsDb from "@/db/dreamsDb"
 
-// EDIÇÃO DE SONHO E CICLO DE SONO AGORA
+// CICLO DE SONO AO SER SINCRONIZADO VOLTA UM DIA NA DATA
 
 export default abstract class DreamServiceOffline {
     static async Create(db: SQLiteDatabase, request: CreateDreamRequest): Promise<void> {
@@ -23,18 +23,7 @@ export default abstract class DreamServiceOffline {
                     throw new Error("Já existe um sonho no sistema com o mesmo nome, por favor, escolha outro.")
             })
 
-        if (request.dreamPointOfViewId <= 0 || request.dreamPointOfViewId > 3)
-            throw new Error("Ponto de vista inválido.")
-        if (request.dreamHourId <= 0 || request.dreamHourId > 6)
-            throw new Error("Horário do sonho inválido.")
-        if (request.dreamDurationId <= 0 || request.dreamDurationId > 4)
-            throw new Error("Duração de sonho inválida.")
-        if (request.dreamLucidityLevelId <= 0 || request.dreamLucidityLevelId > 4)
-            throw new Error("Nível de lucidez inválido.")
-        if (request.dreamTypeId <= 0 || request.dreamTypeId > 3)
-            throw new Error("Tipo de sonho inválido.")
-        if (request.dreamRealityLevelId <= 0 || request.dreamRealityLevelId > 3)
-            throw new Error("Nível de realidade inválido.")
+        this.validateForeignKeys(request)
 
         try {
             await DreamsDb.Create(db, {
@@ -63,18 +52,7 @@ export default abstract class DreamServiceOffline {
                     throw new Error("O ciclo de sono referente não existe.")
             })
 
-        if (request.dreamPointOfViewId <= 0 || request.dreamPointOfViewId > 3)
-            throw new Error("Ponto de vista inválido.")
-        if (request.dreamHourId <= 0 || request.dreamHourId > 6)
-            throw new Error("Horário do sonho inválido.")
-        if (request.dreamDurationId <= 0 || request.dreamDurationId > 4)
-            throw new Error("Duração de sonho inválida.")
-        if (request.dreamLucidityLevelId <= 0 || request.dreamLucidityLevelId > 4)
-            throw new Error("Nível de lucidez inválido.")
-        if (request.dreamTypeId <= 0 || request.dreamTypeId > 3)
-            throw new Error("Tipo de sonho inválido.")
-        if (request.dreamRealityLevelId <= 0 || request.dreamRealityLevelId > 3)
-            throw new Error("Nível de realidade inválido.")
+        this.validateForeignKeys(request)
 
         try {
             await DreamsDb.Update(db, {
@@ -88,6 +66,21 @@ export default abstract class DreamServiceOffline {
             })
         }
         catch { }
+    }
+
+    private static validateForeignKeys(request: CreateDreamRequest | UpdateDreamRequest): void {
+        if (request.dreamPointOfViewId <= 0 || request.dreamPointOfViewId > 3)
+            throw new Error("Ponto de vista inválido.")
+        if (request.dreamHourId <= 0 || request.dreamHourId > 6)
+            throw new Error("Horário do sonho inválido.")
+        if (request.dreamDurationId <= 0 || request.dreamDurationId > 4)
+            throw new Error("Duração de sonho inválida.")
+        if (request.dreamLucidityLevelId <= 0 || request.dreamLucidityLevelId > 4)
+            throw new Error("Nível de lucidez inválido.")
+        if (request.dreamTypeId <= 0 || request.dreamTypeId > 3)
+            throw new Error("Tipo de sonho inválido.")
+        if (request.dreamRealityLevelId <= 0 || request.dreamRealityLevelId > 3)
+            throw new Error("Nível de realidade inválido.")
     }
 
     static async ListSleepCycles(db: SQLiteDatabase, request: ListSleepsForDreamCreationRequest): Promise<PaginationResponse<ListedSleepForDreamCreation>> {

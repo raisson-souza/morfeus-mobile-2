@@ -1,4 +1,4 @@
-import { CreateSleepCycleRequest, ListSleepByUserRequest, ListSleepByUserResponse, SleepDbModel, SleepListedByUserType, SleepModel, SlepPeriodsEpoch } from "@/types/sleeps"
+import { CreateSleepCycleRequest, ListSleepByUserRequest, ListSleepByUserResponse, SleepDbModel, SleepListedByUserType, SlepPeriodsEpoch, UpdateSleepCycleRequest } from "@/types/sleeps"
 import { DateFormatter } from "@/utils/DateFormatter"
 import { DateTime } from "luxon"
 import { ListedDreamBySleepCycle } from "@/types/dream"
@@ -9,41 +9,23 @@ import SleepsDb from "@/db/sleepsDb"
 
 export default abstract class SleepServiceOffline {
     static async Create(db: SQLiteDatabase, request: CreateSleepCycleRequest): Promise<void> {
-        const sleepStart = DateFormatter.restoreFromBackend.dateTime(request.sleepStart)
-        const sleepEnd = DateFormatter.restoreFromBackend.dateTime(request.sleepEnd)
+        const sleepStart = DateFormatter.restoreFromBackend.dateTime(request.sleepStart) as DateTime<true>
+        const sleepEnd = DateFormatter.restoreFromBackend.dateTime(request.sleepEnd) as DateTime<true>
 
-        if (sleepEnd < sleepStart)
-            throw new Error("Horários de ir dormir e acordar inválidos.")
+        this.verifySleepPeriod(sleepStart, sleepEnd)
 
-        if (sleepEnd.diff(sleepStart, "hours").hours > 24)
-            throw new Error("Intervalo de sono inválido.")
+        const date = this.defineSleepCycleDate(sleepStart, sleepEnd)
 
-        const date = sleepStart.day != sleepEnd.day
-            ? sleepStart.set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
-            : sleepStart.hour >= 0 && sleepStart.hour < 12
-                ? sleepStart.minus({ days: 1 }).set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
-                : sleepStart.set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+        const sleepTime = this.defineSleepCycleTime(sleepStart.toMillis(), sleepEnd.toMillis())
 
-        const sleepTime = (sleepEnd.toMillis() - sleepStart.toMillis()) / (1000 * 60 * 60)
+        const isNightSleep = this.isNightSleep(sleepStart, sleepEnd)
 
-        const isNightSleep = sleepStart.day != sleepEnd.day || (sleepStart.hour >= 18 || (sleepStart.hour >= 0 && sleepStart.hour < 12))
-
-        const sleepCyclesDateConflitcts = await db.getAllAsync<SleepDbModel>(`SELECT * FROM sleeps WHERE date = '${ date.toISO() }'`)
-
-        sleepCyclesDateConflitcts.map(sleepCycleDateConflit => {
-            const hasConflict = SleepServiceOffline.checkSleepPeriod(
-                {
-                    sleepStart: sleepStart.toMillis(),
-                    sleepEnd: sleepEnd.toMillis(),
-                },
-                {
-                    sleepStart: DateTime.fromISO(sleepCycleDateConflit.sleepStart).toMillis(),
-                    sleepEnd: DateTime.fromISO(sleepCycleDateConflit.sleepStart).toMillis(),
-                }
-            )
-            if (hasConflict)
-                throw new Error("Já existe um ciclo de sono cadastrado neste mesmo período.")
-        })
+        await this.verifySleepCycleConflicts(
+            db,
+            date.toISODate(),
+            sleepStart.toMillis(),
+            sleepEnd.toMillis(),
+        )
 
         await SleepsDb.Create(db, {
             date: date.toISO()!,
@@ -88,6 +70,97 @@ export default abstract class SleepServiceOffline {
             }
             catch { }
         }
+    }
+
+    static async Update(db: SQLiteDatabase, request: UpdateSleepCycleRequest): Promise<void> {
+        const sleepExists = await SleepsDb.Get(db, request.id)
+            .then(result => result != null)
+
+        if (!sleepExists)
+            throw new Error("Ciclo de sono não encontrado.")
+
+        const sleepStart = DateFormatter.restoreFromBackend.dateTime(request.sleep.sleepStart) as DateTime<true>
+        const sleepEnd = DateFormatter.restoreFromBackend.dateTime(request.sleep.sleepEnd) as DateTime<true>
+
+        this.verifySleepPeriod(sleepStart, sleepEnd)
+
+        const date = this.defineSleepCycleDate(sleepStart, sleepEnd)
+
+        const sleepTime = this.defineSleepCycleTime(sleepStart.toMillis(), sleepEnd.toMillis())
+
+        const isNightSleep = this.isNightSleep(sleepStart, sleepEnd)
+
+        await this.verifySleepCycleConflicts(
+            db,
+            date.toISODate(),
+            sleepStart.toMillis(),
+            sleepEnd.toMillis(),
+            request.id,
+        )
+
+        await SleepsDb.Update(db, {
+            date: date.toISO()!,
+            sleepTime: sleepTime,
+            sleepStart: `${ request.sleep.sleepStart.split(" ")[0].replaceAll("/", "-") }T${ request.sleep.sleepStart.split(" ")[1] }.000-03:00`,
+            sleepEnd: `${ request.sleep.sleepEnd.split(" ")[0].replaceAll("/", "-") }T${ request.sleep.sleepEnd.split(" ")[1] }.000-03:00`,
+            isNightSleep: isNightSleep,
+            wakeUpHumor: request.sleep.wakeUpHumor,
+            layDownHumor: request.sleep.layDownHumor,
+            biologicalOccurences: request.sleep.biologicalOccurences,
+            synchronized: false,
+        })
+    }
+
+    private static defineSleepCycleDate(sleepStart: DateTime<true>, sleepEnd: DateTime<true>): DateTime<true> {
+        return sleepStart.day != sleepEnd.day
+            ? sleepStart.set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+            : sleepStart.hour >= 0 && sleepStart.hour < 12
+                ? sleepStart.minus({ days: 1 }).set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+                : sleepStart.set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+    }
+
+    private static async verifySleepCycleConflicts(
+        db: SQLiteDatabase,
+        dateIso: string,
+        sleepStartMilis: number,
+        sleepEndMilis: number,
+        sleepId?: number,
+    ): Promise<void> {
+        const sleepCyclesDateConflitcts = await db.getAllAsync<SleepDbModel>(`SELECT * FROM sleeps WHERE date = '${ dateIso }'`)
+
+        sleepCyclesDateConflitcts.map(sleepCycleDateConflit => {
+            const { hasConflict, isSameId } = SleepServiceOffline.checkSleepPeriod(
+                {
+                    sleepStart: sleepStartMilis,
+                    sleepEnd: sleepEndMilis,
+                    id: sleepCycleDateConflit.id,
+                },
+                {
+                    sleepStart: DateTime.fromISO(sleepCycleDateConflit.sleepStart).toMillis(),
+                    sleepEnd: DateTime.fromISO(sleepCycleDateConflit.sleepStart).toMillis(),
+                    id: sleepId,
+                },
+            )
+
+            if (hasConflict && !isSameId)
+                throw new Error("Já existe um ciclo de sono cadastrado neste mesmo período.")
+        })
+    }
+
+    private static isNightSleep(sleepStart: DateTime<true>, sleepEnd: DateTime<true>): boolean {
+        return sleepStart.day != sleepEnd.day || (sleepStart.hour >= 18 || (sleepStart.hour >= 0 && sleepStart.hour < 12))
+    }
+
+    private static defineSleepCycleTime(sleepStartMilis: number, sleepEndMilis: number): number {
+        return (sleepEndMilis - sleepStartMilis) / (1000 * 60 * 60)
+    }
+
+    private static verifySleepPeriod(sleepStart: DateTime<true>, sleepEnd: DateTime<true>): void {
+        if (sleepEnd < sleepStart)
+            throw new Error("Horários de ir dormir e acordar inválidos.")
+
+        if (sleepEnd.diff(sleepStart, "hours").hours > 24)
+            throw new Error("Intervalo de sono inválido.")
     }
 
     static async GetDreams(db: SQLiteDatabase, sleepId: number): Promise<ListedDreamBySleepCycle[]> {
@@ -140,30 +213,36 @@ export default abstract class SleepServiceOffline {
             .then(result => result ? result.synchronized : false)
     }
 
-    private static checkSleepPeriod(dbSleepPeriods: SlepPeriodsEpoch, newSleepPeriods: SlepPeriodsEpoch): boolean {
-        return (
-            // o novo sono inicia antes do inicio sono e termina antes do fim
-            (
-                dbSleepPeriods.sleepStart >= newSleepPeriods.sleepStart &&
-                dbSleepPeriods.sleepStart <= newSleepPeriods.sleepEnd &&
-                dbSleepPeriods.sleepEnd >= newSleepPeriods.sleepEnd
-            ) ||
-            // o novo sono inicia após o inicio do sono e termina antes do fim
-            (
-                dbSleepPeriods.sleepStart >= newSleepPeriods.sleepStart &&
-                dbSleepPeriods.sleepEnd <= newSleepPeriods.sleepEnd
-            ) ||
-            // o novo sono inicia antes do inicio do sono e termina após o fim
-            (
-                dbSleepPeriods.sleepStart <= newSleepPeriods.sleepStart &&
-                dbSleepPeriods.sleepEnd >= newSleepPeriods.sleepEnd
-            ) ||
-            // o novo sono inicia após o inicio do sono e termina após o fim
-            (
-                dbSleepPeriods.sleepStart <= newSleepPeriods.sleepStart &&
-                dbSleepPeriods.sleepEnd >= newSleepPeriods.sleepStart &&
-                dbSleepPeriods.sleepEnd <= newSleepPeriods.sleepEnd
-            )
-        )
+    private static checkSleepPeriod(dbSleepPeriods: SlepPeriodsEpoch, newSleepPeriods: SlepPeriodsEpoch)
+    : { hasConflict: boolean, isSameId: boolean } {
+        return {
+            hasConflict: (
+                // o novo sono inicia antes do inicio sono e termina antes do fim
+                (
+                    dbSleepPeriods.sleepStart >= newSleepPeriods.sleepStart &&
+                    dbSleepPeriods.sleepStart <= newSleepPeriods.sleepEnd &&
+                    dbSleepPeriods.sleepEnd >= newSleepPeriods.sleepEnd
+                ) ||
+                // o novo sono inicia após o inicio do sono e termina antes do fim
+                (
+                    dbSleepPeriods.sleepStart >= newSleepPeriods.sleepStart &&
+                    dbSleepPeriods.sleepEnd <= newSleepPeriods.sleepEnd
+                ) ||
+                // o novo sono inicia antes do inicio do sono e termina após o fim
+                (
+                    dbSleepPeriods.sleepStart <= newSleepPeriods.sleepStart &&
+                    dbSleepPeriods.sleepEnd >= newSleepPeriods.sleepEnd
+                ) ||
+                // o novo sono inicia após o inicio do sono e termina após o fim
+                (
+                    dbSleepPeriods.sleepStart <= newSleepPeriods.sleepStart &&
+                    dbSleepPeriods.sleepEnd >= newSleepPeriods.sleepStart &&
+                    dbSleepPeriods.sleepEnd <= newSleepPeriods.sleepEnd
+                )
+            ),
+            isSameId: dbSleepPeriods.id || newSleepPeriods.id
+                ? dbSleepPeriods.id === newSleepPeriods.id
+                : false,
+        }
     }
 }
