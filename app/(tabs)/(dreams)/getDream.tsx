@@ -1,3 +1,4 @@
+import { Alert } from "react-native"
 import { DreamModel } from "@/types/dream"
 import { Pressable, StyleSheet } from "react-native"
 import { Screen } from "@/components/base/Screen"
@@ -43,10 +44,12 @@ export default function GetDreamScreen() {
     const [ errorMessage, setErrorMessage ] = useState<string>("")
     const [ openShareDreamModal, setOpenShareDreamModal ] = useState<boolean>(false)
     const [ needSynchronization, setNeedSynchronization ] = useState<boolean | null>(null)
+    const [ canDelete, setCanDelete ] = useState<boolean>(false)
 
     useEffect(() => {
         const fetchDream = async () => {
             if (checkIsConnected()) {
+                setCanDelete(true)
                 await DreamService.GetDream({ id: Number.parseInt(id) })
                     .then(async (response) => {
                         if (response.Success) {
@@ -69,6 +72,7 @@ export default function GetDreamScreen() {
                                     title: dreamTag,
                                 }
                             }))
+                            if (!result.synchronized) setCanDelete(true)
                             return
                         }
                         setErrorMessage("Sonho não encontrado.")
@@ -91,6 +95,33 @@ export default function GetDreamScreen() {
         fetchDream()
         fetchTags()
     }, [])
+
+    const deleteDream = async () => {
+        setLoading(true)
+        if (checkIsConnected()) {
+            await DreamService.DeleteDream({ id: dream!.id })
+                .then((response) => {
+                    if (response.Success) {
+                        alert(response.Data)
+                        router.navigate("/(tabs)/(dreams)/dreamsList")
+                        return
+                    }
+                    setLoading(false)
+                    alert(response.ErrorMessage)
+                })
+        }
+        else {
+            await DreamsDb.Delete(db, dream!.id)
+                .then(() => {
+                    Alert.prompt("Sonho excluído com sucesso.")
+                    router.navigate("/(tabs)/(dreams)/dreamsList")
+                })
+                .catch(ex => {
+                    Alert.alert("Erro ao excluir sonho", (ex as Error).message)
+                    setLoading(false)
+                })
+        }
+    }
 
     const renderDreamPointOfView = () => {
         switch (dream?.dreamPointOfViewId) {
@@ -243,19 +274,8 @@ export default function GetDreamScreen() {
             <Box.Row style={ styles.goBackAndUpdateBtnsContainer }>
                 <ConfirmRecordDeletion
                     btnWidth="50%"
-                    deletionAction={ async () => {
-                        setLoading(true)
-                        await DreamService.DeleteDream({ id: dream!.id })
-                            .then((response) => {
-                                if (response.Success) {
-                                    alert(response.Data)
-                                    router.navigate("/(tabs)/(dreams)/dreamsList")
-                                    return
-                                }
-                                setLoading(false)
-                                alert(response.ErrorMessage)
-                            })
-                    }}
+                    deletionAction={ async () => await deleteDream() }
+                    isActive={ canDelete }
                 />
                 <CustomButton
                     title="Editar"

@@ -1,3 +1,4 @@
+import { Alert, StyleSheet } from "react-native"
 import { DateFormatter } from "@/utils/DateFormatter"
 import { DateTime } from "luxon"
 import { ListedDreamBySleepCycle } from "@/types/dream"
@@ -5,7 +6,6 @@ import { Screen } from "@/components/base/Screen"
 import { SleepHumorType } from "@/types/sleepHumor"
 import { SleepModel } from "@/types/sleeps"
 import { StyleContextProvider } from "@/contexts/StyleContext"
-import { StyleSheet } from "react-native"
 import { SyncContextProvider } from "@/contexts/SyncContext"
 import { useEffect, useState } from "react"
 import { useLocalSearchParams, useRouter } from "expo-router"
@@ -47,9 +47,11 @@ export default function GetSleepScreen() {
     const [ loadingSleepDreams, setLoadingSleepDreams ] = useState<boolean>(true)
     const [ sleepDreams, setSleepDreams ] = useState<ListedDreamBySleepCycle[]>([])
     const [ needSynchronization, setNeedSynchronization ] = useState<boolean | null>(null)
+    const [ canDelete, setCanDelete ] = useState<boolean>(false)
 
     const fetchSleep = async () => {
         if (checkIsConnected()) {
+            setCanDelete(true)
             await SleepService.GetSleep({ id: Number.parseInt(id) })
                 .then(async (response) => {
                     if (response.Success) {
@@ -72,6 +74,7 @@ export default function GetSleepScreen() {
                             updatedAt: "",
                             userId: 0,
                         })
+                        if (!result.synchronized) setCanDelete(true)
                         return
                     }
                     setErrorMessage("Ciclo de sono não encontrado.")
@@ -95,16 +98,29 @@ export default function GetSleepScreen() {
 
     const deleteSleepCycleAction = async () => {
         setLoading(true)
-        await SleepService.DeleteSleep({ id: sleep!.id })
-            .then(response => {
-                if (response.Success) {
-                    alert(response.Data)
+        if (checkIsConnected()) {
+            await SleepService.DeleteSleep({ id: sleep!.id })
+                .then(response => {
+                    if (response.Success) {
+                        Alert.prompt(response.Data)
+                        router.navigate("/(tabs)/(sleeps)/sleepsList")
+                        return
+                    }
+                    setLoading(false)
+                    Alert.alert("Erro ao excluir", response.ErrorMessage ?? "")
+                })
+        }
+        else {
+            await SleepServiceOffline.Delete(db, sleep!.id)
+                .then(() => {
+                    Alert.prompt("Ciclo de sono excluído com sucesso.")
                     router.navigate("/(tabs)/(sleeps)/sleepsList")
-                    return
-                }
-                setLoading(false)
-                alert(response.ErrorMessage)
-            })
+                })
+                .catch(ex => {
+                    Alert.alert("Erro ao excluir ciclo de sono", (ex as Error).message)
+                    setLoading(false)
+                })
+        }
     }
 
     useEffect(() => {
@@ -436,7 +452,10 @@ export default function GetSleepScreen() {
                 setVisible={ setOpenBiologicalOccurencesInfo }
             />
             { renderDreams() }
-            <ConfirmRecordDeletion deletionAction={ async () => await deleteSleepCycleAction() } />
+            <ConfirmRecordDeletion
+                deletionAction={ async () => await deleteSleepCycleAction() }
+                isActive={ canDelete }
+            />
             <CustomButton
                 title="Editar"
                 onPress={ () => router.navigate({ pathname: "/(tabs)/(sleeps)/updateSleep", params: { id: sleep?.id }})}

@@ -213,6 +213,16 @@ export default abstract class SleepServiceOffline {
             .then(result => result ? result.synchronized : false)
     }
 
+    static async Delete(db: SQLiteDatabase, id: number): Promise<void> {
+        const hasDreams = await db.getAllAsync<{ id: number }>(`SELECT id FROM dreams WHERE sleepId = ${ id }`)
+            .then(result => result.length > 0)
+
+        if (hasDreams)
+            throw new Error("Há sonhos vinculados neste ciclo de sono, por favor, troque o ciclo de sono referente desses sonhos ou exclua-os e tente novamente.")
+
+        await SleepsDb.Delete(db, id)
+    }
+
     private static checkSleepPeriod(dbSleepPeriods: SlepPeriodsEpoch, newSleepPeriods: SlepPeriodsEpoch)
     : { hasConflict: boolean, isSameId: boolean } {
         return {
