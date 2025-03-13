@@ -27,13 +27,15 @@ export default function SleepsListScreen() {
     const [ syncing, setSyncing ] = useState<boolean>(false)
 
     const fetchSleeps = async () => {
+        const requestDate = DateFormatter.forBackend.date(date.getTime())
         setLoading(true)
         setSleeps(null)
         if (checkIsConnected()) {
-            await SleepService.ListByUser({ date: DateFormatter.forBackend.date(date.getTime()) })
-                .then(response => {
+            await SleepService.ListByUser({ date: requestDate })
+                .then(async (response) => {
                     if (response.Success) {
-                        setSleeps(response.Data)
+                        const offlineSleeps = await SleepServiceOffline.List(db, { date: requestDate }, true)
+                        setSleeps([ ...response.Data, ...offlineSleeps ])
                     }
                     else {
                         setErrorMessage(response.ErrorMessage ?? "")
@@ -41,7 +43,7 @@ export default function SleepsListScreen() {
                 })
         }
         else {
-            setSleeps(await SleepServiceOffline.List(db, { date: DateFormatter.forBackend.date(date.getTime()) }))
+            setSleeps(await SleepServiceOffline.List(db, { date: requestDate }))
         }
         setLoading(false)
     }

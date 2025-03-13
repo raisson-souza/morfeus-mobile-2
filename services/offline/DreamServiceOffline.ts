@@ -128,7 +128,7 @@ export default abstract class DreamServiceOffline {
         }
     }
 
-    static async List(db: SQLiteDatabase, request: ListDreamsByUserRequest): Promise<ListDreamByUserResponse> {
+    static async List(db: SQLiteDatabase, request: ListDreamsByUserRequest, onlyNotSynchronized: boolean = false): Promise<ListDreamByUserResponse> {
         try {
             const formattedDate = DateFormatter.restoreFromBackend.date(request.date)
 
@@ -163,7 +163,8 @@ export default abstract class DreamServiceOffline {
             }
 
             const dreamCaracteristicsFilter = renderDreamCaracteristicsFilter()
-            const dreamOriginFilter  =renderDreamOriginFilter()
+            const dreamOriginFilter = renderDreamOriginFilter()
+            const syncWhereQuery = onlyNotSynchronized ? "d.synchronized = 0" : null
 
             const data = await db.getAllAsync<DreamListedByUserType>(`
                 SELECT
@@ -172,27 +173,32 @@ export default abstract class DreamServiceOffline {
                 INNER JOIN sleeps s ON s.id = d.sleepId
                 ${
                     dreamCaracteristicsFilter === "" && dreamOriginFilter === ""
-                        ? ""
+                        ? syncWhereQuery ? `WHERE ${ syncWhereQuery }` : ""
                         : dreamCaracteristicsFilter === "" && dreamOriginFilter != ""
-                            ? `WHERE ${ dreamOriginFilter }`
+                            ? `WHERE ${ dreamOriginFilter } ${ syncWhereQuery ? `AND ${ syncWhereQuery }` : "" }`
                             : dreamCaracteristicsFilter != "" && dreamOriginFilter === ""
-                                ? `WHERE ${ dreamCaracteristicsFilter }`
-                                : `WHERE ${ dreamCaracteristicsFilter } AND ${ dreamOriginFilter }`
+                                ? `WHERE ${ dreamCaracteristicsFilter } ${ syncWhereQuery ? `AND ${ syncWhereQuery }` : "" }`
+                                : `WHERE ${ dreamCaracteristicsFilter } AND ${ dreamOriginFilter } ${ syncWhereQuery ? `AND ${ syncWhereQuery }` : "" }`
                 }
             `)
                 .then(result => {
-                    return result.map(dream => {
-                        const parsedTags = DreamsDb.FixDreamTags(dream.tags)
-                        return {
-                            ...dream,
-                            tags: parsedTags.map(tag => {
-                                return {
-                                    id: 0,
-                                    title: tag,
-                                }
+                    const dreams: DreamListedByUserType[] = []
+                    for (const dream of result) {
+                        try {
+                            const parsedTags = DreamsDb.FixDreamTags(dream.tags)
+                            dreams.push({
+                                ...dream,
+                                tags: parsedTags.map(tag => {
+                                    return {
+                                        id: 0,
+                                        title: tag,
+                                    }
+                                })
                             })
                         }
-                    })
+                        catch (e) { console.log((e as Error).message)}
+                    }
+                    return dreams
                 })
 
             return data.filter(dream => {

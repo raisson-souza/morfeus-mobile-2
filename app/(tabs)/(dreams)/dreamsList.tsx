@@ -57,18 +57,23 @@ export default function DreamsList() {
     })
 
     const fetchDreams = async (newDate?: Date) => {
+        const requestDate = newDate
+            ? DateFormatter.forBackend.date(newDate.getTime())
+            : DateFormatter.forBackend.date(date.getTime())
         setLoading(true)
         setDreamList(null)
         if (checkIsConnected()) {
             await DreamService.ListByUser({
                 ...listDreamsByUserForm,
-                date: newDate
-                    ? DateFormatter.forBackend.date(newDate.getTime())
-                    : DateFormatter.forBackend.date(date.getTime())
+                date: requestDate
             })
-                .then(response => {
+                .then(async (response) => {
                     if (response.Success) {
-                        setDreamList(response.Data)
+                        const offlineDreams = await DreamServiceOffline.List(db, {
+                            ...listDreamsByUserForm,
+                            date: requestDate,
+                        }, true)
+                        setDreamList([ ...response.Data, ...offlineDreams ])
                         return
                     }
                     alert(response.ErrorMessage)
@@ -77,9 +82,7 @@ export default function DreamsList() {
         else {
             setDreamList(await DreamServiceOffline.List(db, {
                 ...listDreamsByUserForm,
-                date: newDate
-                    ? DateFormatter.forBackend.date(newDate.getTime())
-                    : DateFormatter.forBackend.date(date.getTime())
+                date: requestDate,
             }))
         }
         setLoading(false)

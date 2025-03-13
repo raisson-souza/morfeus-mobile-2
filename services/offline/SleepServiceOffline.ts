@@ -188,7 +188,7 @@ export default abstract class SleepServiceOffline {
         }
     }
 
-    static async List(db: SQLiteDatabase, request: ListSleepByUserRequest): Promise<ListSleepByUserResponse> {
+    static async List(db: SQLiteDatabase, request: ListSleepByUserRequest, onlyNotSynchronized: boolean = false): Promise<ListSleepByUserResponse> {
         try {
             const formattedDate = DateFormatter.restoreFromBackend.date(request.date)
 
@@ -196,6 +196,7 @@ export default abstract class SleepServiceOffline {
                 SELECT
                     id, date, sleepTime, sleepStart, sleepEnd, isNightSleep
                 FROM sleeps
+                ${ onlyNotSynchronized ? "WHERE synchronized = 0" : "" }
             `)
 
             return data.filter(sleep => {
