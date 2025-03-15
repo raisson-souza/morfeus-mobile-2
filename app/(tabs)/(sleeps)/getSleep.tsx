@@ -36,7 +36,7 @@ type GetSleepCycleParams = {
 
 export default function GetSleepScreen() {
     const db = useSQLiteContext()
-    const { checkIsConnected } = SyncContextProvider()
+    const { checkIsConnected, deleteRecord } = SyncContextProvider()
     const { systemStyle } = StyleContextProvider()
     const router = useRouter()
     const { id } = useLocalSearchParams<GetSleepCycleParams>()
@@ -100,10 +100,11 @@ export default function GetSleepScreen() {
         setLoading(true)
         if (checkIsConnected()) {
             await SleepService.DeleteSleep({ id: sleep!.id })
-                .then(response => {
+                .then(async (response) => {
                     if (response.Success) {
                         Alert.prompt(response.Data)
                         router.navigate("/(tabs)/(sleeps)/sleepsList")
+                        await deleteRecord(Number.parseInt(id), "sleep")
                         return
                     }
                     setLoading(false)

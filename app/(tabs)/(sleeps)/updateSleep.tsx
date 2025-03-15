@@ -25,7 +25,7 @@ type UpdateSleepParams = {
 export default function UpdateSleepScreen() {
     const db = useSQLiteContext()
     const router = useRouter()
-    const { checkIsConnected } = SyncContextProvider()
+    const { checkIsConnected, desynchronizeRecord } = SyncContextProvider()
     const { id } = useLocalSearchParams<UpdateSleepParams>()
     const [ loading, setLoading ] = useState<boolean>(true)
     const [ sleep, setSleep ] = useState<UpdateSleepCycleModel | null>(null)
@@ -87,10 +87,11 @@ export default function UpdateSleepScreen() {
                     dreams: [],
                 },
             })
-                .then(response => {
+                .then(async (response) => {
                     if (response.Success) {
                         alert(response.Data)
                         router.navigate({ pathname: "/(tabs)/(sleeps)/getSleep", params: { id: sleep?.id }})
+                        await desynchronizeRecord(Number.parseInt(id), "sleep")
                         return
                     }
                     alert(response.ErrorMessage)

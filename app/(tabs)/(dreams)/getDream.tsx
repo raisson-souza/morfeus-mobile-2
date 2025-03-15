@@ -34,7 +34,7 @@ type GetDreamParams = {
 
 export default function GetDreamScreen() {
     const { systemStyle } = StyleContextProvider()
-    const { checkIsConnected } = SyncContextProvider()
+    const { checkIsConnected, deleteRecord } = SyncContextProvider()
     const db = useSQLiteContext()
     const router = useRouter()
     const { id, sleepDate } = useLocalSearchParams<GetDreamParams>()
@@ -100,10 +100,11 @@ export default function GetDreamScreen() {
         setLoading(true)
         if (checkIsConnected()) {
             await DreamService.DeleteDream({ id: dream!.id })
-                .then((response) => {
+                .then(async (response) => {
                     if (response.Success) {
                         alert(response.Data)
                         router.navigate("/(tabs)/(dreams)/dreamsList")
+                        await deleteRecord(Number.parseInt(id), "dream")
                         return
                     }
                     setLoading(false)

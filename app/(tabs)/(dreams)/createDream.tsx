@@ -1,5 +1,5 @@
 import { Alert, StyleSheet } from "react-native"
-import { CreateCompleteDreamModel, CreateDreamModel } from "@/types/dream"
+import { CreateCompleteDreamModel, CreateDreamModel, DreamNoSleepDateKnownRequest, DreamNoSleepTimeKnownRequest } from "@/types/dream"
 import { DateFormatter } from "@/utils/DateFormatter"
 import { Screen } from "@/components/base/Screen"
 import { SyncContextProvider } from "@/contexts/SyncContext"
@@ -50,7 +50,7 @@ const defaultDreamModel: CreateDreamModel = {
 export default function CreateDreamScreen() {
     const db = useSQLiteContext()
     const router = useRouter()
-    const { checkIsConnected } = SyncContextProvider()
+    const { checkIsConnected, syncCreateDream } = SyncContextProvider()
     const navigation = useNavigation()
     const [ dreamModel, setDreamModel ] = useState<CreateDreamModel>(defaultDreamModel)
     const [ completeDreamModel, setCompleteDreamModel ] = useState<CreateCompleteDreamModel>({
@@ -80,27 +80,34 @@ export default function CreateDreamScreen() {
     const createDream = async () => {
         setLoading(true)
         if (checkIsConnected()) {
+            const dreamNoSleepDateKnown: DreamNoSleepDateKnownRequest | null = completeDreamModel.dreamNoSleepDateKnown
+                ? {
+                    date: DateFormatter.forBackend.date(completeDreamModel.dreamNoSleepDateKnown.date.getTime()),
+                    period: completeDreamModel.dreamNoSleepDateKnown.period
+                }
+                : null
+            const dreamNoSleepTimeKnown: DreamNoSleepTimeKnownRequest  | null = completeDreamModel.dreamNoSleepTimeKnown
+                ? {
+                    date: DateFormatter.forBackend.date(completeDreamModel.dreamNoSleepTimeKnown.date.getTime()),
+                    sleepStart: DateFormatter.forBackend.timestamp(completeDreamModel.dreamNoSleepTimeKnown.sleepStart.getTime()),
+                    sleepEnd: DateFormatter.forBackend.timestamp(completeDreamModel.dreamNoSleepTimeKnown.sleepEnd.getTime()),
+                }
+                : null
+
             await DreamService.Create({
                 ...dreamModel,
                 sleepId: sleepId,
-                dreamNoSleepDateKnown: completeDreamModel.dreamNoSleepDateKnown
-                    ? {
-                        date: DateFormatter.forBackend.date(completeDreamModel.dreamNoSleepDateKnown.date.getTime()),
-                        period: completeDreamModel.dreamNoSleepDateKnown.period
-                    }
-                    : null,
-                dreamNoSleepTimeKnown: completeDreamModel.dreamNoSleepTimeKnown
-                    ? {
-                        date: DateFormatter.forBackend.date(completeDreamModel.dreamNoSleepTimeKnown.date.getTime()),
-                        sleepStart: DateFormatter.forBackend.timestamp(completeDreamModel.dreamNoSleepTimeKnown.sleepStart.getTime()),
-                        sleepEnd: DateFormatter.forBackend.timestamp(completeDreamModel.dreamNoSleepTimeKnown.sleepEnd.getTime()),
-                    }
-                    : null,
+                dreamNoSleepDateKnown: dreamNoSleepDateKnown,
+                dreamNoSleepTimeKnown: dreamNoSleepTimeKnown,
             })
-            .then(response => {
+            .then(async (response) => {
                 if (response.Success) {
                     alert(response.Data)
                     router.navigate("/dreamsList")
+                    await syncCreateDream(sleepId, {
+                        dreamNoSleepDateKnown: completeDreamModel.dreamNoSleepDateKnown,
+                        dreamNoSleepTimeKnown: completeDreamModel.dreamNoSleepTimeKnown,
+                    })
                     return
                 }
                 alert(response.ErrorMessage)

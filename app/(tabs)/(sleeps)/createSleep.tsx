@@ -37,7 +37,7 @@ export default function CreateSleepScreen() {
     const db = useSQLiteContext()
     const router = useRouter()
     const navigation = useNavigation()
-    const { checkIsConnected } = SyncContextProvider()
+    const { checkIsConnected, syncCreateSleepCycle, syncCreateDream } = SyncContextProvider()
     const [ sleepCycleModel, setSleepCycleModel ] = useState<CreateSleepCycleModel>(defaultSleepCycleModel)
     const [ isHoursPending, setIsHoursPending ] = useState<boolean>(true)
     const [ canCreateSleepCycle, setCanCreateSleepCycle ] = useState<boolean>(true)
@@ -66,54 +66,60 @@ export default function CreateSleepScreen() {
     }
 
     const createSleepCycle = async () => {
-        const parsedSleepCycleModel = createSleepCycleValidator.safeParse(sleepCycleModel)
+        try {
+            const parsedSleepCycleModel = createSleepCycleValidator.safeParse(sleepCycleModel)
 
-        if (!parsedSleepCycleModel.success) {
-            const errorMessage = validatorErrorParser(parsedSleepCycleModel.error)
-            alert(errorMessage)
-            return
-        }
-
-        let successResponse = false
-        let errorMessage = ""
-
-        if (checkIsConnected()) {
-            const response = await SleepService.Create({
-                sleepStart: DateFormatter.forBackend.timestamp(sleepCycleModel.sleepStart.getTime()),
-                sleepEnd: DateFormatter.forBackend.timestamp(sleepCycleModel.sleepEnd.getTime()),
-                wakeUpHumor: sleepCycleModel.wakeUpHumor,
-                layDownHumor: sleepCycleModel.layDownHumor,
-                biologicalOccurences: sleepCycleModel.biologicalOccurences,
-                dreams: sleepCycleModel.dreams,
-            })
-
-            if (response.Success) {
-                successResponse = true
+            if (!parsedSleepCycleModel.success) {
+                const errorMessage = validatorErrorParser(parsedSleepCycleModel.error)
+                alert(errorMessage)
                 return
             }
 
-            errorMessage = response.ErrorMessage ?? ""
-        }
-        else {
-            await SleepServiceOffline.Create(db, {
-                sleepStart: DateFormatter.forBackend.timestamp(sleepCycleModel.sleepStart.getTime()),
-                sleepEnd: DateFormatter.forBackend.timestamp(sleepCycleModel.sleepEnd.getTime()),
-                wakeUpHumor: sleepCycleModel.wakeUpHumor,
-                layDownHumor: sleepCycleModel.layDownHumor,
-                biologicalOccurences: sleepCycleModel.biologicalOccurences,
-                dreams: sleepCycleModel.dreams,
-            })
-                .then(() => successResponse = true)
-                .catch((ex) => errorMessage = (ex as Error).message)
-        }
+            let successResponse = false
+            let errorMessage = ""
 
-        if (successResponse) {
-            Alert.alert("Ciclo de sono criado com sucesso.")
-            router.navigate("/(tabs)/(sleeps)/sleepsList")
-            return
-        }
+            if (checkIsConnected()) {
+                const response = await SleepService.Create({
+                    sleepStart: DateFormatter.forBackend.timestamp(sleepCycleModel.sleepStart.getTime()),
+                    sleepEnd: DateFormatter.forBackend.timestamp(sleepCycleModel.sleepEnd.getTime()),
+                    wakeUpHumor: sleepCycleModel.wakeUpHumor,
+                    layDownHumor: sleepCycleModel.layDownHumor,
+                    biologicalOccurences: sleepCycleModel.biologicalOccurences,
+                    dreams: sleepCycleModel.dreams,
+                })
 
-        Alert.alert("Ocorreu um erro ao criar o ciclo de sono", errorMessage)
+                if (response.Success) {
+                    successResponse = true
+                    await syncCreateSleepCycle(sleepCycleModel)
+                }
+                else {
+                    errorMessage = response.ErrorMessage ?? ""
+                }
+            }
+            else {
+                await SleepServiceOffline.Create(db, {
+                    sleepStart: DateFormatter.forBackend.timestamp(sleepCycleModel.sleepStart.getTime()),
+                    sleepEnd: DateFormatter.forBackend.timestamp(sleepCycleModel.sleepEnd.getTime()),
+                    wakeUpHumor: sleepCycleModel.wakeUpHumor,
+                    layDownHumor: sleepCycleModel.layDownHumor,
+                    biologicalOccurences: sleepCycleModel.biologicalOccurences,
+                    dreams: sleepCycleModel.dreams,
+                })
+                    .then(() => successResponse = true)
+                    .catch((ex) => errorMessage = (ex as Error).message)
+            }
+
+            if (successResponse) {
+                Alert.alert("Ciclo de sono criado com sucesso.")
+                router.navigate("/(tabs)/(sleeps)/sleepsList")
+                return
+            }
+
+            Alert.alert("Ocorreu um erro ao criar o ciclo de sono", errorMessage)
+        }
+        catch (e) {
+            Alert.alert("Ocorreu um erro ao criar o ciclo de sono", (e as Error).message)
+        }
     }
 
     return (

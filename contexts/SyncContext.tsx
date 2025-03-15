@@ -1,7 +1,7 @@
 import { AuthContextProvider } from "./AuthContext"
-import { CreateCompleteDreamModel } from "@/types/dream"
+import { CreateCompleteDreamModel, DreamDbModel } from "@/types/dream"
 import { createContext, useContext, useEffect, useRef, useState } from "react"
-import { CreateSleepCycleModel } from "@/types/sleeps"
+import { CreateSleepCycleModel, SleepDbModel } from "@/types/sleeps"
 import { DateFormatter } from "@/utils/DateFormatter"
 import { DateTime } from "luxon"
 import { ExportUserData } from "@/types/userData"
@@ -27,11 +27,11 @@ type SyncContext = {
     /** Realiza a sincronização dos dados da nuvem com os locais */
     syncLocalData: () => Promise<void>
     /** Realiza a sincronização de um sonho após a criação online */
-    createDream: (sleepId: number | null, sleepDateInfo: CreateCompleteDreamModel | null) => Promise<void>
+    syncCreateDream: (sleepId: number | null, sleepDateInfo: CreateCompleteDreamModel | null) => Promise<void>
     /** Realiza a sincronização de um ciclo de sono após criação online */
-    createSleepCycle: (model: CreateSleepCycleModel) => Promise<void>
-    // /** Realiza a dessincronização de um registro localmente (após update) */
-    // desynchronizeRecord: (id: number, type: "dream" | "sleep") => Promise<void>
+    syncCreateSleepCycle: (model: CreateSleepCycleModel) => Promise<void>
+    /** Realiza a dessincronização de um registro localmente (após update) */
+    desynchronizeRecord: (id: number, type: "dream" | "sleep") => Promise<void>
     /** Realiza a exclusão de um registro local */
     deleteRecord: (id: number, type: "dream" | "sleep") => Promise<void>
 }
@@ -104,7 +104,9 @@ export default function SyncContextComponent({ children }: SyncContextProps) {
                         await DreamsDb.UpdateId(db, dream, newIdResponse.Data)
                     }
                 }
-                catch { }
+                catch (e) {
+                    console.log(`Erro ao sincronizar o sonho ${ dream.title } para a nuvem.`)
+                }
             }
 
             for (const sleep of sleeps) {
@@ -126,7 +128,9 @@ export default function SyncContextComponent({ children }: SyncContextProps) {
                         await SleepsDb.UpdateId(db, sleep, newIdResponse.Data)
                     }
                 }
-                catch { }
+                catch (e) {
+                    console.log(`Erro ao sincronizar o ciclo de sono ${ sleep.date } para a nuvem.`)
+                }
             }
 
             const importData: ExportUserData = {
@@ -170,6 +174,7 @@ export default function SyncContextComponent({ children }: SyncContextProps) {
         }
     }
 
+    /** Sincronização dos dados em nuvem para o repositório local (a cada 24h) */
     const syncCloudDataFirstProcess = async (): Promise<void> => {
         if (!isConnectedRef.current) {
             setLoadingCloudSyncProcess(false)
@@ -211,49 +216,57 @@ export default function SyncContextComponent({ children }: SyncContextProps) {
             if (!syncRecordsResponse.Success)
                 throw new Error(syncRecordsResponse.ErrorMessage)
 
-            for (const dreamRecord of syncRecordsResponse.Data.dreams) {
-                try {
-                    const dbDream = await DreamsDb.Get(db, dreamRecord.id)
-
-                    if (dbDream) {
-                        await DreamsDb.Update(db, {
-                            ...dreamRecord,
-                            isComplete: true,
-                            synchronized: true,
-                        })
-                    }
-                    else {
-                        await DreamsDb.Create(db, {
-                            ...dreamRecord,
-                            isComplete: true,
-                            synchronized: true,
-                        })
-                    }
-                }
-                catch { }
-            }
-
-            for (const sleepRecord of syncRecordsResponse.Data.sleeps) {
-                try {
-                    const dbSleep = await SleepsDb.Get(db, sleepRecord.id)
-
-                    if (dbSleep) {
-                        await SleepsDb.Update(db, {
-                            ...sleepRecord,
-                            synchronized: true,
-                        })
-                    }
-                    else {
-                        await SleepsDb.Create(db, {
-                            ...sleepRecord,
-                            synchronized: true,
-                        })
-                    }
-                }
-                catch { }
-            }
+            await syncDataToLocalDb(syncRecordsResponse.Data)
         } catch (ex) {
             console.error("Houve um erro ao atualizar os dados em nuvem:", (ex as Error).message)
+        }
+    }
+
+    const syncDataToLocalDb = async (data: ExportUserData): Promise<void> => {
+        for (const dreamRecord of data.dreams) {
+            try {
+                const dbDream = await DreamsDb.Get(db, dreamRecord.id)
+
+                if (dbDream) {
+                    await DreamsDb.Update(db, {
+                        ...dreamRecord,
+                        isComplete: true,
+                        synchronized: true,
+                    })
+                }
+                else {
+                    await DreamsDb.Create(db, {
+                        ...dreamRecord,
+                        isComplete: true,
+                        synchronized: true,
+                    })
+                }
+            }
+            catch (e) {
+                console.log(`Erro ao sincronizar o sonho ${ dreamRecord.title } para o banco local.`)
+            }
+        }
+
+        for (const sleepRecord of data.sleeps) {
+            try {
+                const dbSleep = await SleepsDb.Get(db, sleepRecord.id)
+
+                if (dbSleep) {
+                    await SleepsDb.Update(db, {
+                        ...sleepRecord,
+                        synchronized: true,
+                    })
+                }
+                else {
+                    await SleepsDb.Create(db, {
+                        ...sleepRecord,
+                        synchronized: true,
+                    })
+                }
+            }
+            catch (e) {
+                console.log(`Erro ao sincronizar o ciclo de sono ${ sleepRecord.date } para o banco local.`)
+            }
         }
     }
 
@@ -261,7 +274,7 @@ export default function SyncContextComponent({ children }: SyncContextProps) {
         return isConnectedRef.current
     }
 
-    const createDream = async (sleepId: number | null, sleepDateInfo: CreateCompleteDreamModel | null) => {
+    const syncCreateDream = async (sleepId: number | null, sleepDateInfo: CreateCompleteDreamModel | null) => {
         try {
             let startDate = ""
             let endDate = ""
@@ -296,12 +309,16 @@ export default function SyncContextComponent({ children }: SyncContextProps) {
                         end: endDate,
                     }
                 })
+                    .then(async (response) => {
+                        if (response.Success)
+                            await syncDataToLocalDb(response.Data)
+                    })
             }
         }
         catch { }
     }
 
-    const createSleepCycle = async (model: CreateSleepCycleModel) => {
+    const syncCreateSleepCycle = async (model: CreateSleepCycleModel) => {
         try {
             const startDate = DateFormatter.forBackend.date(DateTime.fromJSDate(model.sleepStart).minus({ days: 2 }).toJSDate().getTime())
             await UserService.SyncRecords({
@@ -311,56 +328,52 @@ export default function SyncContextComponent({ children }: SyncContextProps) {
                     end: DateFormatter.forBackend.date(model.sleepStart.getTime())
                 }
             })
+                .then(async (response) => {
+                    if (response.Success)
+                        await syncDataToLocalDb(response.Data)
+                })
         }
-        catch (ex) {
-            console.log((ex as Error).message)
-        }
+        catch { }
     }
 
-    // const desynchronizeRecord = async (id: number, type: "dream" | "sleep") => {
-    //     try {
-    //         await db.execAsync(`UPDATE ${ type === "dream" ? "dream" : "sleep" } SET synchronized = 0 WHERE id = ${ id }`)
-    //     }
-    //     catch (ex) {
-    //         console.log((ex as Error).message)
-    //     }
+    const desynchronizeRecord = async (id: number, type: "dream" | "sleep") => {
+        try {
+            await db.execAsync(`UPDATE ${ type === "dream" ? "dreams" : "sleeps" } SET synchronized = 0 WHERE id = ${ id }`)
+        }
+        catch { }
 
-    //     try {
-    //         if (type === "dream") {
-    //             await db.getFirstAsync<DreamDbModel>(`SELECT * FROM dreams WHERE id = ${ id }`)
-    //                 .then(async (result) => {
-    //                     if (result)
-    //                         await createDream(result.sleepId, null)
-    //                 })
-    //             return
-    //         }
+        try {
+            if (type === "dream") {
+                await db.getFirstAsync<DreamDbModel>(`SELECT * FROM dreams WHERE id = ${ id }`)
+                    .then(async (result) => {
+                        if (result)
+                            await syncCreateDream(result.sleepId, null)
+                    })
+                return
+            }
 
-    //         await db.getFirstAsync<SleepDbModel>(`SELECT * FROM sleeps WHERE id = ${ id }`)
-    //             .then(async (result) => {
-    //                 if (result) {
-    //                     await createSleepCycle({
-    //                         sleepStart: DateTime.fromISO(result.sleepStart).toJSDate(),
-    //                         sleepEnd: DateTime.fromISO(result.sleepEnd).toJSDate(),
-    //                         wakeUpHumor: {} as any,
-    //                         layDownHumor: {} as any,
-    //                         biologicalOccurences: {} as any,
-    //                         dreams: [],
-    //                     })
-    //                 }
-    //             })
-    //     }
-    //     catch (ex) {
-    //         console.log((ex as Error).message)
-    //     }
-    // }
+            await db.getFirstAsync<SleepDbModel>(`SELECT * FROM sleeps WHERE id = ${ id }`)
+                .then(async (result) => {
+                    if (result) {
+                        await syncCreateSleepCycle({
+                            sleepStart: DateTime.fromISO(result.sleepStart).toJSDate(),
+                            sleepEnd: DateTime.fromISO(result.sleepEnd).toJSDate(),
+                            wakeUpHumor: {} as any,
+                            layDownHumor: {} as any,
+                            biologicalOccurences: {} as any,
+                            dreams: [],
+                        })
+                    }
+                })
+        }
+        catch { }
+    }
 
     const deleteRecord = async (id: number, type: "dream" | "sleep") => {
         try {
-            await db.execAsync(`DELETE FROM ${ type === "dream" ? "dream" : "sleep" } WHERE id = ${ id }`)
+            await db.execAsync(`DELETE FROM ${ type === "dream" ? "dreams" : "sleeps" } WHERE id = ${ id }`)
         }
-        catch (ex) {
-            console.log((ex as Error).message)
-        }
+        catch { }
     }
 
     if (
@@ -375,9 +388,9 @@ export default function SyncContextComponent({ children }: SyncContextProps) {
             checkIsConnected,
             syncCloudData,
             syncLocalData,
-            createDream,
-            createSleepCycle,
-            // desynchronizeRecord,
+            syncCreateDream,
+            syncCreateSleepCycle,
+            desynchronizeRecord,
             deleteRecord,
         }}>
             { children }

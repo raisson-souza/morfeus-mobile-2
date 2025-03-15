@@ -29,7 +29,7 @@ export default function UpdateDreamScreen() {
     const db = useSQLiteContext()
     const navigation = useNavigation()
     const router = useRouter()
-    const { checkIsConnected } = SyncContextProvider()
+    const { checkIsConnected, desynchronizeRecord } = SyncContextProvider()
     const { id } = useLocalSearchParams<UpdateDreamParams>()
     const [ dream, setDream ] = useState<UpdateDreamModel | null>(null)
     const [ tags, setTags ] = useState<string[]>([])
@@ -141,10 +141,11 @@ export default function UpdateDreamScreen() {
                 ...dream!,
                 tags: tags,
             })
-                .then(response => {
+                .then(async (response) => {
                     if (response.Success) {
                         alert(response.Data)
                         router.navigate({ pathname: "/(tabs)/(dreams)/getDream", params: { id: dream!.id }})
+                        await desynchronizeRecord(Number.parseInt(id), "dream")
                     }
                     else {
                         setErrorOnFetch(true)
