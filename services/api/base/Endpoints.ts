@@ -17,6 +17,8 @@ export default abstract class Endpoints {
         if (authorization)
             requestHeaders.push({ "Authorization": `Bearer ${ authorization }` })
 
+        requestHeaders.push({ "App-Version": env.AppVersion() })
+
         return requestHeaders.reduce((previousHeader, currentHeader) => {
             return { ...previousHeader, ...currentHeader }
         }, {} as any)
