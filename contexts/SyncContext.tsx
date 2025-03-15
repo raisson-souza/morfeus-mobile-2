@@ -34,6 +34,8 @@ type SyncContext = {
     desynchronizeRecord: (id: number, type: "dream" | "sleep") => Promise<void>
     /** Realiza a exclusão de um registro local */
     deleteRecord: (id: number, type: "dream" | "sleep") => Promise<void>
+    /** Realiza o processo de truncamento das tabelas de sonho e ciclo de sono */
+    purgeLocalData: () => Promise<void>
 }
 
 const SyncContext = createContext<SyncContext | null>(null)
@@ -376,6 +378,13 @@ export default function SyncContextComponent({ children }: SyncContextProps) {
         catch { }
     }
 
+    const purgeLocalData = async () => {
+        try { await db.execAsync("DELETE FROM dreams") }
+        catch { }
+        try { await db.execAsync("DELETE FROM sleeps") }
+        catch { }
+    }
+
     if (
         loadingInternetInfo ||
         loadingLocalSyncProcess ||
@@ -392,6 +401,7 @@ export default function SyncContextComponent({ children }: SyncContextProps) {
             syncCreateSleepCycle,
             desynchronizeRecord,
             deleteRecord,
+            purgeLocalData,
         }}>
             { children }
         </SyncContext.Provider>

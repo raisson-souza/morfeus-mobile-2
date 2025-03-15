@@ -1,10 +1,12 @@
 import { AuthContextProvider } from "@/contexts/AuthContext"
 import { Screen } from "@/components/base/Screen"
 import { StyleSheet } from "react-native"
+import { SyncContextProvider } from "@/contexts/SyncContext"
 import { useEffect, useState } from "react"
 import { useNavigation, useRouter } from "expo-router"
 import { UserPresentationModel } from "@/types/user"
 import Box from "@/components/base/Box"
+import ConfirmActionButton from "@/components/screens/general/ConfirmActionButton"
 import CustomButton from "@/components/customs/CustomButton"
 import CustomInput from "@/components/customs/CustomInput"
 import CustomText from "@/components/customs/CustomText"
@@ -15,6 +17,7 @@ import UserService from "@/services/api/UserService"
 export default function User() {
     const router = useRouter()
     const navigation = useNavigation()
+    const { purgeLocalData } = SyncContextProvider()
     const [ loading, setLoading ] = useState<boolean>(false)
     const [ updating, setUpdating ] = useState<boolean>(false)
     const [ allowUpdate, setAllowUpdate ] = useState<boolean>(false)
@@ -167,6 +170,16 @@ export default function User() {
                                 onPress={ () => router.navigate("/(user)/userData") }
                                 active={ !updating }
                                 btnWidth="100%"
+                            />
+                            <ConfirmActionButton
+                                btnTitle="Limpar Dados Locais"
+                                description="Em caso de problemas na sincronização de registros offline experimente acessar o app estando offline, se não conseguir resolver, solicite suporte ou limpe agora seus dados locais (eles serão perdidos)."
+                                onConfirm={ async () => await purgeLocalData() }
+                                btnWidth="100%"
+                                btnColor={{
+                                    text: "red",
+                                    border: "red",
+                                }}
                             />
                             <CustomButton
                                 title="Excluir Dados"
