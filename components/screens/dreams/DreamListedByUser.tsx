@@ -1,4 +1,5 @@
 import { DateFormatter } from "@/utils/DateFormatter"
+import { DateTime } from "luxon"
 import { DreamListedByUserType } from "@/types/dream"
 import { StyleContextProvider } from "@/contexts/StyleContext"
 import { StyleSheet, StyleProp, ViewStyle } from "react-native"
@@ -7,6 +8,7 @@ import Box from "@/components/base/Box"
 import CustomText from "@/components/customs/CustomText"
 import IconEntypo from "react-native-vector-icons/Entypo"
 import React, { useState } from "react"
+import WeekDayParser from "@/utils/WeekDayParser"
 
 type DreamListedByUserProps = {
     dream: DreamListedByUserType
@@ -38,6 +40,17 @@ export default function DreamListedByUser({
         return `${ dateFormatted[2] }-${ dateFormatted[1] }-${ dateFormatted[0][2] }${ dateFormatted[0][3] }`
     }
     const treatedDate = treatDate()
+
+    const renderDayOfTheWeek = (): string | null => {
+        try {
+            const parsedDate = DateTime.fromISO(dream.date)
+            if (parsedDate.isValid)
+                return WeekDayParser(parsedDate.weekday, true)
+            return null
+        }
+        catch { return null }
+    }
+    const dayOfTheWeek = renderDayOfTheWeek()
 
     const onDreamDatePress = () => {
         if (sleepId)
@@ -72,12 +85,19 @@ export default function DreamListedByUser({
             </CustomText>
             {
                 showDate
-                    ? <CustomText
-                        onPress={ () => onDreamDatePress() }
-                        weight="thin"
-                    >
-                        { treatedDate }
-                    </CustomText>
+                    ? <Box.Row>
+                        <CustomText
+                            onPress={ () => onDreamDatePress() }
+                            weight="thin"
+                        >
+                            { treatedDate }
+                        </CustomText>
+                        {
+                            dayOfTheWeek
+                                ? <CustomText weight="thin">{ ` - ${ dayOfTheWeek }` }</CustomText>
+                                : <></>
+                        }
+                    </Box.Row>
                     : <></>
             }
             <Box.Row style={ styles.tags }>

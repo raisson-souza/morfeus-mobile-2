@@ -1,3 +1,4 @@
+import { DateTime } from "luxon"
 import { DreamModel } from "@/types/dream"
 import { Pressable, StyleSheet } from "react-native"
 import { Screen } from "@/components/base/Screen"
@@ -21,6 +22,7 @@ import React from "react"
 import ShareDreamModal from "@/components/screens/dreams/ShareDreamModal"
 import ShowTags from "@/components/screens/dreams/ShowTags"
 import TagService from "@/services/api/TagService"
+import WeekDayParser from "@/utils/WeekDayParser"
 
 type GetDreamParams = {
     id: string
@@ -183,14 +185,29 @@ export default function GetDreamScreen() {
     const renderDreamDate = () => {
         if (sleepDate === "undefined-undefined-undefinedundefined") return <></>
         return (
-            <Pressable onPress={ () => { router.navigate({ pathname: "/(tabs)/(sleeps)/getSleep", params: { id: dream!.sleepId }}) } }>
-                <CustomText
-                    size="l"
-                    weight="thin"
+            <Box.Row>
+                <Pressable
+                    onPress={ () => { router.navigate({ pathname: "/(tabs)/(sleeps)/getSleep", params: { id: dream!.sleepId }}) } }
+                    style={ styles.dreamDateContainer }
                 >
-                    { sleepDate }
-                </CustomText>
-            </Pressable>
+                    <CustomText
+                        size="l"
+                        weight="thin"
+                    >
+                        { sleepDate }
+                    </CustomText>
+                    {
+                        dayOfTheWeek
+                            ? <CustomText
+                                size="l"
+                                weight="thin"
+                            >
+                                { ` - ${ dayOfTheWeek }` }
+                            </CustomText>
+                            : <></>
+                    }
+                </Pressable>
+            </Box.Row>
         )
     }
 
@@ -204,6 +221,18 @@ export default function GetDreamScreen() {
             { title: "Nível de Realidade", description: renderRealityLevel() },
         ]
     }
+
+    const renderDayOfTheWeek = (): string | null => {
+        try {
+            const splittedSleepDate = sleepDate.split("-")
+            const parsedDate = DateTime.fromISO(`${ new Date().getFullYear() }-${ splittedSleepDate[1] }-${ splittedSleepDate[0] }T12:00:00.000-03:00`)
+            if (parsedDate.isValid)
+                return WeekDayParser(parsedDate.weekday, true)
+            return null
+        }
+        catch { return null }
+    }
+    const dayOfTheWeek = renderDayOfTheWeek()
 
     const renderButtons = () => {
         return <Box.Column style={ styles.btns }>
@@ -482,5 +511,10 @@ const styles = StyleSheet.create({
     goBackAndUpdateBtnsContainer: {
         width: "100%",
         justifyContent: "space-between",
+    },
+    dreamDateContainer: {
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
     },
 })
