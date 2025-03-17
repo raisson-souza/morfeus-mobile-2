@@ -1,10 +1,10 @@
+import { Alert, StyleSheet } from "react-native"
 import { CreateSleepCycleModel } from "@/types/sleeps"
 import { createSleepCycleValidator } from "@/validators/sleeps"
 import { DateFormatter } from "@/utils/DateFormatter"
 import { DefaultBiologicalOccurences } from "@/types/biologicalOccurences"
 import { DefaultSleepHumor } from "@/types/sleepHumor"
 import { Screen } from "@/components/base/Screen"
-import { StyleSheet } from "react-native"
 import { SyncContextProvider } from "@/contexts/SyncContext"
 import { useCustomBackHandler } from "@/hooks/useHardwareBackPress"
 import { useEffect, useRef, useState } from "react"
@@ -17,6 +17,7 @@ import DreamAppender from "@/components/screens/sleeps/DreamAppender"
 import HELPERS from "@/data/helpers"
 import HumorsForm from "@/components/screens/sleeps/HumorsForm"
 import Info from "@/components/base/Info"
+import Loading from "@/components/base/Loading"
 import React from "react"
 import SleepCycleHoursForm from "@/components/screens/sleeps/SleepCycleHoursForm"
 import SleepService from "@/services/api/SleepService"
@@ -40,6 +41,7 @@ export default function CreateSleepScreen() {
     const [ canCreateSleepCycle, setCanCreateSleepCycle ] = useState<boolean>(true)
     const sleepCycleCreationActionsRef = useRef<number>(0)
     const [ canExit, setCanExit ] = useState<boolean>(true)
+    const [ loading, setLoading ] = useState<boolean>(false)
 
     useEffect(() => {
         return navigation.addListener("blur", () => {
@@ -63,32 +65,41 @@ export default function CreateSleepScreen() {
     }
 
     const createSleepCycle = async () => {
-        const parsedSleepCycleModel = createSleepCycleValidator.safeParse(sleepCycleModel)
+        try {
+            setLoading(true)
+            const parsedSleepCycleModel = createSleepCycleValidator.safeParse(sleepCycleModel)
 
-        if (!parsedSleepCycleModel.success) {
-            const errorMessage = validatorErrorParser(parsedSleepCycleModel.error)
-            alert(errorMessage)
-            return
-        }
-
-        const response = await SleepService.Create(checkIsConnected(),
-            {
-                sleepStart: DateFormatter.forBackend.timestamp(sleepCycleModel.sleepStart.getTime()),
-                sleepEnd: DateFormatter.forBackend.timestamp(sleepCycleModel.sleepEnd.getTime()),
-                wakeUpHumor: sleepCycleModel.wakeUpHumor,
-                layDownHumor: sleepCycleModel.layDownHumor,
-                biologicalOccurences: sleepCycleModel.biologicalOccurences,
-                dreams: sleepCycleModel.dreams,
+            if (!parsedSleepCycleModel.success) {
+                const errorMessage = validatorErrorParser(parsedSleepCycleModel.error)
+                Alert.alert("Erro ao criar ciclo de sono", errorMessage)
+                return
             }
-        )
 
-        if (response.Success) {
-            alert("Ciclo de sono criado com sucesso.")
-            router.navigate("/(tabs)/(sleeps)/sleepsList")
-            return
+            const response = await SleepService.Create(checkIsConnected(),
+                {
+                    sleepStart: DateFormatter.forBackend.timestamp(sleepCycleModel.sleepStart.getTime()),
+                    sleepEnd: DateFormatter.forBackend.timestamp(sleepCycleModel.sleepEnd.getTime()),
+                    wakeUpHumor: sleepCycleModel.wakeUpHumor,
+                    layDownHumor: sleepCycleModel.layDownHumor,
+                    biologicalOccurences: sleepCycleModel.biologicalOccurences,
+                    dreams: sleepCycleModel.dreams,
+                }
+            )
+
+            if (response.Success) {
+                Alert.alert("Ciclo de sono criado com sucesso.")
+                router.navigate("/(tabs)/(sleeps)/sleepsList")
+                return
+            }
+
+            Alert.alert("Erro ao criar ciclo de sono", response.ErrorMessage)
         }
-
-        alert(response.ErrorMessage)
+        catch (ex) {
+            Alert.alert("Erro ao criar ciclo de sono", ((ex as Error).message))
+        }
+        finally {
+            setLoading(false)
+        }
     }
 
     return (
@@ -163,23 +174,29 @@ export default function CreateSleepScreen() {
                     />
                 </Box.Column>
                 <Box.Column style={ styles.btns }>
-                    <CustomButton
-                        title="Criar Ciclo de Sono"
-                        onPress={ () => createSleepCycle() }
-                        active={ canCreateSleepCycle && !isHoursPending }
-                        important
-                    />
+                    {
+                        loading
+                            ? <Loading />
+                            : <CustomButton
+                                title="Criar Ciclo de Sono"
+                                onPress={ () => createSleepCycle() }
+                                active={ canCreateSleepCycle && !isHoursPending }
+                                important
+                            />
+                    }
                     {
                         canExit
                             ? <CustomButton
                                 title="Voltar"
                                 onPress={ () => router.back() }
+                                active={ !loading }
                             />
                             : <ConfirmActionButton
                                 btnTitle="Cancelar Ciclo de Sono"
                                 description="Certeza que deseja cancelar esse ciclo de sono?"
                                 onConfirm={ () => router.back() }
                                 btnColor={{ text: "red", border: "red" }}
+                                isActive={ !loading }
                             />
                     }
                 </Box.Column>
