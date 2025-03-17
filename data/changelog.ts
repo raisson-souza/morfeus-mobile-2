@@ -10,6 +10,18 @@ export type Changelog = {
 
 const CHANGELOG: Changelog[] = [
     {
+        version: "1.11.0",
+        date: "19/02/2025",
+        title: "Melhorias",
+        description: [
+            "Correção de bugs",
+            "Melhorias de interface",
+        ],
+        apk: undefined,
+        published: true,
+        id: 14,
+    },
+    {
         version: "1.10.0",
         date: "25/02/2025",
         title: "Importação de Sonhos Externos",
