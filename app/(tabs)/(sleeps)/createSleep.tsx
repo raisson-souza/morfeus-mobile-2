@@ -36,7 +36,17 @@ export default function CreateSleepScreen() {
     const router = useRouter()
     const navigation = useNavigation()
     const { checkIsConnected } = SyncContextProvider()
-    const [ sleepCycleModel, setSleepCycleModel ] = useState<CreateSleepCycleModel>(defaultSleepCycleModel)
+    const [ sleepCycleModel, setSleepCycleModel ] = useState<CreateSleepCycleModel>({
+        ...defaultSleepCycleModel,
+        wakeUpHumor: {
+            ...defaultSleepCycleModel.wakeUpHumor,
+            undefinedHumor: true,
+        },
+        layDownHumor: {
+            ...defaultSleepCycleModel.layDownHumor,
+            undefinedHumor: true,
+        },
+    })
     const [ isHoursPending, setIsHoursPending ] = useState<boolean>(true)
     const [ canCreateSleepCycle, setCanCreateSleepCycle ] = useState<boolean>(true)
     const sleepCycleCreationActionsRef = useRef<number>(0)

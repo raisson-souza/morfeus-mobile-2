@@ -31,7 +31,7 @@ const defaultDreamModel: CreateDreamModel = {
         neve: false,
         multiplos: false,
         outro: false,
-        indefinido: false,
+        indefinido: true,
     },
     dreamHourId: 2,
     dreamDurationId: 2,

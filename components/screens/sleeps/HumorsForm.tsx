@@ -41,42 +41,54 @@ export default function HumorsForm({
                         <CustomSwitch
                             value={ value.calm }
                             label="Calma"
-                            onChange={ (e) => onChange({ ...value, undefinedHumor: false, calm: e })}
+                            onChange={ (e) => onChange({ ...value, undefinedHumor: false, other: false, calm: e })}
                         />
                         <CustomSwitch
                             value={ value.drowsiness }
                             label="Preguiça"
-                            onChange={ (e) => onChange({ ...value, undefinedHumor: false, drowsiness: e })}
+                            onChange={ (e) => onChange({ ...value, undefinedHumor: false, other: false, drowsiness: e })}
                         />
                         <CustomSwitch
                             value={ value.tiredness }
                             label="Cansaço"
-                            onChange={ (e) => onChange({ ...value, undefinedHumor: false, tiredness: e })}
+                            onChange={ (e) => onChange({ ...value, undefinedHumor: false, other: false, tiredness: e })}
                         />
                         <CustomSwitch
                             value={ value.anxiety }
                             label="Ansiedade"
-                            onChange={ (e) => onChange({ ...value, undefinedHumor: false, anxiety: e })}
+                            onChange={ (e) => onChange({ ...value, undefinedHumor: false, other: false, anxiety: e })}
                         />
                         <CustomSwitch
                             value={ value.happiness }
                             label="Felicidade"
-                            onChange={ (e) => onChange({ ...value, undefinedHumor: false, happiness: e })}
+                            onChange={ (e) => onChange({ ...value, undefinedHumor: false, other: false, happiness: e })}
                         />
                         <CustomSwitch
                             value={ value.fear }
                             label="Medo"
-                            onChange={ (e) => onChange({ ...value, undefinedHumor: false, fear: e })}
+                            onChange={ (e) => onChange({ ...value, undefinedHumor: false, other: false, fear: e })}
                         />
                         <CustomSwitch
                             value={ value.sadness }
                             label="Tristeza"
-                            onChange={ (e) => onChange({ ...value, undefinedHumor: false, sadness: e })}
+                            onChange={ (e) => onChange({ ...value, undefinedHumor: false, other: false, sadness: e })}
                         />
                         <CustomSwitch
                             value={ value.other }
                             label="Outro"
-                            onChange={ (e) => onChange({ ...value, undefinedHumor: false, other: e })}
+                            onChange={ (e) =>
+                                onChange({
+                                    calm: false,
+                                    drowsiness: false,
+                                    tiredness: false,
+                                    anxiety: false,
+                                    happiness: false,
+                                    fear: false,
+                                    sadness: false,
+                                    other: e,
+                                    undefinedHumor: false,
+                                })
+                            }
                         />
                         <CustomSwitch
                             value={ value.undefinedHumor }
@@ -91,7 +103,7 @@ export default function HumorsForm({
                                     fear: false,
                                     sadness: false,
                                     other: false,
-                                    undefinedHumor: e
+                                    undefinedHumor: e,
                                 })
                             }
                         />

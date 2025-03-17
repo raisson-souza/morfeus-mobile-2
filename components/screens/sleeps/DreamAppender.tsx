@@ -35,7 +35,10 @@ export default function DreamAppender({
             title: "",
             description: "",
             dreamPointOfViewId: 1,
-            climate: DefaultDreamClimate,
+            climate: {
+                ...DefaultDreamClimate,
+                indefinido: true,
+            },
             dreamHourId: 1,
             dreamDurationId: 1,
             dreamLucidityLevelId: 1,
