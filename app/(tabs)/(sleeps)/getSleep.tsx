@@ -322,11 +322,11 @@ export default function GetSleepScreen() {
 
         const renderWeekDay = () => {
             try {
-                const weekDay = DateTime.fromISO(sleep!.date).weekday
+                const weekDay = DateTime.fromISO(`${ sleep!.date }T12:00:00.000-03:00`).weekday
                 return WeekDayParser(weekDay, true)
             }
             catch {
-                return "Data referente"
+                return "Data"
             }
         }
 
