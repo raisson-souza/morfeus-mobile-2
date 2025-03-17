@@ -1,6 +1,6 @@
 import { DateTime } from "luxon"
 import { DreamModel } from "@/types/dream"
-import { Pressable, StyleSheet } from "react-native"
+import { Alert, Pressable, StyleSheet } from "react-native"
 import { Screen } from "@/components/base/Screen"
 import { StyleContextProvider } from "@/contexts/StyleContext"
 import { SyncContextProvider } from "@/contexts/SyncContext"
@@ -244,12 +244,12 @@ export default function GetDreamScreen() {
                         await DreamService.DeleteDream(checkIsConnected(), { id: dream!.id })
                             .then((response) => {
                                 if (response.Success) {
-                                    alert(response.Data)
+                                    Alert.alert(response.Data)
                                     router.navigate("/(tabs)/(dreams)/dreamsList")
                                     return
                                 }
                                 setLoading(false)
-                                alert(response.ErrorMessage)
+                                Alert.alert("Erro ao deletar sonho", response.ErrorMessage)
                             })
                     }}
                 />

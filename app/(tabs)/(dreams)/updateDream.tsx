@@ -1,7 +1,7 @@
 import { DateFormatter } from "@/utils/DateFormatter"
 import { ListedSleepForDreamCreation } from "@/types/sleeps"
 import { Screen } from "@/components/base/Screen"
-import { StyleSheet } from "react-native"
+import { Alert, StyleSheet } from "react-native"
 import { SyncContextProvider } from "@/contexts/SyncContext"
 import { UpdateDreamModel } from "@/types/dream"
 import { useEffect, useState } from "react"
@@ -45,7 +45,7 @@ export default function UpdateDreamScreen() {
                     return
                 }
                 setErrorOnFetch(true)
-                alert(response.ErrorMessage)
+                Alert.alert("Erro ao buscar sonho", response.ErrorMessage)
             })
     }
 
@@ -73,7 +73,7 @@ export default function UpdateDreamScreen() {
                     return
                 }
                 setErrorOnFetch(true)
-                alert(response.ErrorMessage)
+                Alert.alert("Erro ao buscar ciclo de sono referente", response.ErrorMessage)
             })
             .finally(() => setLoading(false))
     }
@@ -86,12 +86,12 @@ export default function UpdateDreamScreen() {
         })
             .then(response => {
                 if (response.Success) {
-                    alert(response.Data)
+                    Alert.alert(response.Data)
                     router.navigate({ pathname: "/(tabs)/(dreams)/getDream", params: { id: dream!.id }})
                 }
                 else {
                     setErrorOnFetch(true)
-                    alert(response.ErrorMessage)
+                    Alert.alert("Erro ao atualizar sonho", response.ErrorMessage)
                 }
                 setLoading(false)
             })

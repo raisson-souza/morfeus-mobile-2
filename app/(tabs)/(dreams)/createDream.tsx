@@ -1,7 +1,7 @@
 import { CreateCompleteDreamModel, CreateDreamModel } from "@/types/dream"
 import { DateFormatter } from "@/utils/DateFormatter"
 import { Screen } from "@/components/base/Screen"
-import { StyleSheet } from "react-native"
+import { Alert, StyleSheet } from "react-native"
 import { SyncContextProvider } from "@/contexts/SyncContext"
 import { useCustomBackHandler } from "@/hooks/useHardwareBackPress"
 import { useEffect, useState } from "react"
@@ -95,12 +95,12 @@ export default function CreateDreamScreen() {
         })
         .then(response => {
             if (response.Success) {
-                alert(response.Data)
+                Alert.alert(response.Data)
                 router.navigate("/dreamsList")
                 return
             }
             setLoading(false)
-            alert(response.ErrorMessage)
+            Alert.alert("Erro ao criar sonho", response.ErrorMessage)
         })
     }
 
