@@ -450,13 +450,13 @@ export default function CreateCompleteDream({
                         label="TAG"
                         onChange={ (e) => setTag(e.toUpperCase().trim()) }
                         innerProps={{ value: tag }}
-                        width={ 200 }
+                        width="100%"
                         active={ !isLocked }
                     />
                     <CustomButton
                         title="Adicionar TAG"
                         onPress={ appendTag }
-                        active={ !isLocked }
+                        active={ !isLocked && tag != "" }
                     />
                 </Box.Column>
                 <Box.Row style={ styles.tagsContainer }>

@@ -432,11 +432,12 @@ export default function AppendDream({
                         label="TAG"
                         onChange={ (e) => setTag(e.toUpperCase().trim()) }
                         innerProps={{ value: tag }}
-                        width={ 200 }
+                        width="100%"
                     />
                     <CustomButton
                         title="Adicionar TAG"
                         onPress={ appendTag }
+                        active={ tag != "" }
                     />
                 </Box.Column>
                 <Box.Row style={ styles.tagsContainer }>
