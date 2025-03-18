@@ -5,7 +5,7 @@ import { Screen } from "@/components/base/Screen"
 import { SleepHumorType } from "@/types/sleepHumor"
 import { SleepModel } from "@/types/sleeps"
 import { StyleContextProvider } from "@/contexts/StyleContext"
-import { StyleSheet } from "react-native"
+import { Alert, StyleSheet } from "react-native"
 import { SyncContextProvider } from "@/contexts/SyncContext"
 import { useEffect, useState } from "react"
 import { useLocalSearchParams, useRouter } from "expo-router"
@@ -67,12 +67,12 @@ export default function GetSleepScreen() {
         await SleepService.DeleteSleep(checkIsConnected(), { id: sleep!.id })
             .then(response => {
                 if (response.Success) {
-                    alert(response.Data)
+                    Alert.alert(response.Data)
                     router.navigate("/(tabs)/(sleeps)/sleepsList")
                     return
                 }
                 setLoading(false)
-                alert(response.ErrorMessage)
+                Alert.alert("Erro ao deletar ciclo de sono", response.ErrorMessage)
             })
     }
 
@@ -322,11 +322,11 @@ export default function GetSleepScreen() {
 
         const renderWeekDay = () => {
             try {
-                const weekDay = DateTime.fromISO(sleep!.date).weekday
+                const weekDay = DateTime.fromISO(`${ sleep!.date }T12:00:00.000-03:00`).weekday
                 return WeekDayParser(weekDay, true)
             }
             catch {
-                return "Data referente"
+                return "Data"
             }
         }
 

@@ -42,7 +42,13 @@ export default function SleepExtractionByTime({
 
     return (
         <Box.Column style={ styles.container }>
-            <CustomText isOpposite>Data referente ao ciclo de sono</CustomText>
+            <CustomSwitch
+                label="Dormiu no dia anterior?"
+                onChange={ (e) => setIsSleepStartYesterday(e) }
+                value={ isSleepStartYesterday }
+                labelStyle={{ color: systemStyle.oppositeIconColor }}
+            />
+            <CustomText isOpposite weight="bold">Data referente ao ciclo de sono</CustomText>
             <DatePickerShow
                 date={ sleepDate }
                 onChange={ (e) => {
@@ -60,15 +66,7 @@ export default function SleepExtractionByTime({
                 }}
                 iconColor={ systemStyle.oppositeIconColor }
             />
-            <Box.Column>
-                <CustomText isOpposite>Horário de dormir</CustomText>
-                <CustomSwitch
-                    label="Dormiu no dia anterior?"
-                    onChange={ (e) => setIsSleepStartYesterday(e) }
-                    value={ isSleepStartYesterday }
-                    labelStyle={{ color: systemStyle.oppositeIconColor }}
-                />
-            </Box.Column>
+            <CustomText isOpposite weight="bold">Horário de dormir</CustomText>
             <TimePickerShow
                 time={ sleepStart }
                 onChange={ (e) => {
@@ -90,7 +88,7 @@ export default function SleepExtractionByTime({
                 }}
                 iconColor={ systemStyle.oppositeIconColor }
             />
-            <CustomText isOpposite>Horário de acordar</CustomText>
+            <CustomText isOpposite weight="bold">Horário de acordar</CustomText>
             <TimePickerShow
                 time={ sleepEnd }
                 onChange={ (e) => {

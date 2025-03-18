@@ -1,6 +1,6 @@
 import { DateFormatter } from "@/utils/DateFormatter"
 import { Screen } from "@/components/base/Screen"
-import { StyleSheet } from "react-native"
+import { Alert, StyleSheet } from "react-native"
 import { SyncContextProvider } from "@/contexts/SyncContext"
 import { UpdateSleepCycleModel } from "@/types/sleeps"
 import { useEffect, useState } from "react"
@@ -43,7 +43,7 @@ export default function UpdateSleepScreen() {
                     return
                 }
                 setErrorOnFetch(true)
-                alert(response.ErrorMessage)
+                Alert.alert("Erro ao buscar ciclo de sono", response.ErrorMessage)
             })
             .finally(() => setLoading(false))
     }
@@ -62,11 +62,11 @@ export default function UpdateSleepScreen() {
         })
             .then(response => {
                 if (response.Success) {
-                    alert(response.Data)
+                    Alert.alert(response.Data)
                     router.navigate({ pathname: "/(tabs)/(sleeps)/getSleep", params: { id: sleep?.id }})
                     return
                 }
-                alert(response.ErrorMessage)
+                Alert.alert("Erro ao atualizar ciclo de sono", response.ErrorMessage)
             })
     }
 

@@ -432,27 +432,38 @@ export default function AppendDream({
                         label="TAG"
                         onChange={ (e) => setTag(e.toUpperCase().trim()) }
                         innerProps={{ value: tag }}
-                        width={ 200 }
+                        width="100%"
                     />
                     <CustomButton
                         title="Adicionar TAG"
                         onPress={ appendTag }
+                        active={ tag != "" }
                     />
                 </Box.Column>
-                <Box.Row style={ styles.tagsContainer }>
-                    {
-                        dream.tags.map((tag, i) => {
-                            return <CustomText
-                                key={ i }
-                                onPress={ () => removeTag(tag) }
-                                size="l"
-                                weight="bold"
-                            >
-                                { tag }
-                            </CustomText>
-                        })
-                    }
-                </Box.Row>
+                {
+                    dream.tags.length > 0
+                        ? <Box.Row
+                            style={{
+                                ...styles.tagsContainer,
+                                backgroundColor: systemStyle.secondary,
+                            }}
+                        >
+                            {
+                                dream.tags.map((tag, i) => {
+                                    return <CustomText
+                                        key={ i }
+                                        onPress={ () => removeTag(tag) }
+                                        size="l"
+                                        weight="bold"
+                                        isOpposite
+                                    >
+                                        { tag }
+                                    </CustomText>
+                                })
+                            }
+                        </Box.Row>
+                        : <></>
+                }
             </Box.Column>
         </Box.Column>
     )
@@ -472,7 +483,10 @@ const styles = StyleSheet.create({
         gap: 10,
     },
     tagsContainer: {
-        gap: 10,
+        columnGap: 10,
+        flexWrap: "wrap",
+        padding: 10,
+        borderRadius: 10,
     },
     infoContainer: {
         alignItems: 'center',
