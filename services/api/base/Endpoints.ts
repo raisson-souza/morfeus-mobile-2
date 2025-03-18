@@ -1,6 +1,7 @@
 import { BACKEND_URL } from "@/app/_layout"
 import { DeleteProps, GetProps, PostProps, PutProps, RequestHeader } from "./EndpointProps"
 import { LocalStorage } from "../../../utils/LocalStorage"
+import env from "@/config/env"
 import Response from "./Response"
 
 export default abstract class Endpoints {

@@ -88,7 +88,7 @@ export default function StagingHeader(): JSX.Element {
                 <IconFeather
                     name="alert-circle"
                     color="white"
-                    size={ systemStyle.xXLargeIconSize }
+                    size={ 50 }
                 />
             </Draggable>
             <CustomText
