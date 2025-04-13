@@ -33,13 +33,22 @@ export default async function SqliteDbManager(db: SQLiteDatabase): Promise<void>
                 CREATE TABLE IF NOT EXISTS PARAMS (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     tutorial_read BOOLEAN NOT NULL DEFAULT 0,
+                    term_of_acceptance_read BOOLEAN NOT NULL DEFAULT 0,
+                    privacy_policy_read BOOLEAN NOT NULL DEFAULT 0,
                     is_dark_style BOOLEAN NOT NULL DEFAULT 0
                 );
                 INSERT INTO PARAMS (
                     tutorial_read,
+                    term_of_acceptance_read,
+                    privacy_policy_read,
                     is_dark_style
                 )
-                VALUES (0, 0);
+                VALUES (
+                    0,
+                    0,
+                    0,
+                    0
+                );
             `)
             newUserVersion = 1
         }
