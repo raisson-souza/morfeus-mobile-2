@@ -91,6 +91,13 @@ export default function TutorialModal({
             ],
             5,
         ),
+        renderComponent(
+            "Fim",
+            [
+                "Você poderá acessar novamente esse tutorial sempre que quiser nas configurações, bons sonhos!",
+            ],
+            6,
+        ),
     ]
 
     return <CustomCarousel
